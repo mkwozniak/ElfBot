@@ -59,9 +59,11 @@
 			if (pID > 0)
 			{
 				m.OpenProcess(pID);
+				ProcessHookLabel.Text = "Process Hook Success!";
 				return true;
 			}
 
+			ProcessHookLabel.Text = "Process Hook Failed.";
 			return false;
 		}
 

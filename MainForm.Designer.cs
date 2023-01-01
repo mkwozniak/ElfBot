@@ -43,6 +43,7 @@ namespace ElfBot
 			this.attackingTimer = new System.Windows.Forms.Timer(this.components);
 			this.targettingTimer = new System.Windows.Forms.Timer(this.components);
 			this.label1 = new System.Windows.Forms.Label();
+			this.ProcessHookLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// jellybeanTimer
@@ -53,7 +54,7 @@ namespace ElfBot
 			// 
 			this.AutoJellyBeanLabel.AutoSize = true;
 			this.AutoJellyBeanLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.AutoJellyBeanLabel.Location = new System.Drawing.Point(9, 38);
+			this.AutoJellyBeanLabel.Location = new System.Drawing.Point(6, 80);
 			this.AutoJellyBeanLabel.Name = "AutoJellyBeanLabel";
 			this.AutoJellyBeanLabel.Size = new System.Drawing.Size(62, 15);
 			this.AutoJellyBeanLabel.TabIndex = 2;
@@ -62,7 +63,7 @@ namespace ElfBot
 			// AutoJellyBeanBox
 			// 
 			this.AutoJellyBeanBox.AutoSize = true;
-			this.AutoJellyBeanBox.Location = new System.Drawing.Point(12, 12);
+			this.AutoJellyBeanBox.Location = new System.Drawing.Point(6, 45);
 			this.AutoJellyBeanBox.Name = "AutoJellyBeanBox";
 			this.AutoJellyBeanBox.Size = new System.Drawing.Size(99, 17);
 			this.AutoJellyBeanBox.TabIndex = 3;
@@ -74,7 +75,7 @@ namespace ElfBot
 			// 
 			this.CurrentXPLabel.AutoSize = true;
 			this.CurrentXPLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.CurrentXPLabel.Location = new System.Drawing.Point(9, 65);
+			this.CurrentXPLabel.Location = new System.Drawing.Point(6, 105);
 			this.CurrentXPLabel.Name = "CurrentXPLabel";
 			this.CurrentXPLabel.Size = new System.Drawing.Size(72, 15);
 			this.CurrentXPLabel.TabIndex = 4;
@@ -84,7 +85,7 @@ namespace ElfBot
 			// 
 			this.XPBeforeKillLabel.AutoSize = true;
 			this.XPBeforeKillLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.XPBeforeKillLabel.Location = new System.Drawing.Point(9, 90);
+			this.XPBeforeKillLabel.Location = new System.Drawing.Point(6, 132);
 			this.XPBeforeKillLabel.Name = "XPBeforeKillLabel";
 			this.XPBeforeKillLabel.Size = new System.Drawing.Size(88, 15);
 			this.XPBeforeKillLabel.TabIndex = 5;
@@ -94,7 +95,7 @@ namespace ElfBot
 			// 
 			this.AutoJellyBeanState.AutoSize = true;
 			this.AutoJellyBeanState.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.AutoJellyBeanState.Location = new System.Drawing.Point(77, 38);
+			this.AutoJellyBeanState.Location = new System.Drawing.Point(74, 80);
 			this.AutoJellyBeanState.Name = "AutoJellyBeanState";
 			this.AutoJellyBeanState.Size = new System.Drawing.Size(58, 15);
 			this.AutoJellyBeanState.TabIndex = 7;
@@ -104,7 +105,7 @@ namespace ElfBot
 			// 
 			this.TargetLabel.AutoSize = true;
 			this.TargetLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TargetLabel.Location = new System.Drawing.Point(9, 114);
+			this.TargetLabel.Location = new System.Drawing.Point(6, 158);
 			this.TargetLabel.Name = "TargetLabel";
 			this.TargetLabel.Size = new System.Drawing.Size(43, 15);
 			this.TargetLabel.TabIndex = 8;
@@ -114,7 +115,7 @@ namespace ElfBot
 			// 
 			this.TargetUIDLabel.AutoSize = true;
 			this.TargetUIDLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TargetUIDLabel.Location = new System.Drawing.Point(9, 139);
+			this.TargetUIDLabel.Location = new System.Drawing.Point(6, 183);
 			this.TargetUIDLabel.Name = "TargetUIDLabel";
 			this.TargetUIDLabel.Size = new System.Drawing.Size(65, 15);
 			this.TargetUIDLabel.TabIndex = 9;
@@ -132,11 +133,21 @@ namespace ElfBot
 			this.label1.TabIndex = 10;
 			this.label1.Text = "0.0.1 ";
 			// 
+			// ProcessHookLabel
+			// 
+			this.ProcessHookLabel.AutoSize = true;
+			this.ProcessHookLabel.Location = new System.Drawing.Point(6, 9);
+			this.ProcessHookLabel.Name = "ProcessHookLabel";
+			this.ProcessHookLabel.Size = new System.Drawing.Size(106, 13);
+			this.ProcessHookLabel.TabIndex = 11;
+			this.ProcessHookLabel.Text = "Process Not Hooked";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.Controls.Add(this.ProcessHookLabel);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.TargetUIDLabel);
 			this.Controls.Add(this.TargetLabel);
@@ -167,6 +178,7 @@ namespace ElfBot
 		private System.Windows.Forms.Timer attackingTimer;
 		private System.Windows.Forms.Timer targettingTimer;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label ProcessHookLabel;
 	}
 }
 
