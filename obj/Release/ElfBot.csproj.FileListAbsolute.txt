@@ -13,3 +13,5 @@ C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Release\ElfBot.pdb
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Release\ElfBot.Properties.Resources.resources
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Release\ElfBot.exe
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Release\ElfBot.pdb
+C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Release\ElfBot.csproj.AssemblyReference.cache
+C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Release\ElfBot.g.resources

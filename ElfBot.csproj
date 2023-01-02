@@ -123,6 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="elfbot-icon.ico" />
+    <Resource Include="Resources\elfbot-icon-large.png" />
+    <Resource Include="Resources\elfbot-icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

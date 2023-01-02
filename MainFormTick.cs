@@ -9,30 +9,35 @@
 	{
 		private void mainTimer_Tick(object sender, EventArgs e)
 		{
-			if(_combatState == CombatStates.Attacking && !combatTimer.Enabled)
+			LogDateMsg("Main Timer Tick");
+			
+			if (_combatState == CombatStates.Attacking && !combatTimer.Enabled)
 			{
-				ListenToTimer(combatTimer, (int)(_actionDelay * 1000), attacking_Tick);
+				_pressedCombatKey = false;
+				StartTimer(combatTimer, (int)(_combatKeyDelay * 1000));
+				StartTimer(attackTimeoutTimer, (int)(_retargetTimeout * 1000));
 			}
 
-			if(_combatState == CombatStates.Targetting && !targettingTimer.Enabled)
+			if (_combatState == CombatStates.Targetting && !targettingTimer.Enabled)
 			{
-				ListenToTimer(targettingTimer, (int)(_actionDelay * 1000), targetting_Tick);
+				StartTimer(targettingTimer, (int)(_actionDelay * 1000));
 			}
 
 			if (_combatState == CombatStates.CheckingTarget && !checkTimer.Enabled)
 			{
-				ListenToTimer(checkTimer, (int)(_actionDelay * 1000), checkingTarget_Tick);
+				StartTimer(checkTimer, (int)(_actionDelay * 1000));
 			}
 
-			if (_combatState == CombatStates.Looting)
+			// TODO: Get item count memory to skip looting phase if 0
+			if (_combatState == CombatStates.Looting && !lootingTimer.Enabled)
 			{
-				AutoCombatState.Text = "Looting";
-				sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
+				StartTimer(lootingTimer, (int)(_actionDelay * 1000));
 			}
 
-			TargetLabel.Text = _currentTarget;
-			TargetUIDLabel.Text = _currentTargetUID.ToString();
-			AutoCombatState.Text = _combatState.ToString();
+			if (!interfaceTimer.Enabled)
+			{
+				StartTimer(interfaceTimer, 60);
+			}
 		}
 
 		private void targetting_Tick(object sender, EventArgs e)
@@ -40,14 +45,18 @@
 			AutoCombatState.Text = _combatState.ToString();
 
 			// unassign timer event
-			targettingTimer.Tick -= targetting_Tick;
-			targettingTimer.Enabled = false;
+			StopTimer(targettingTimer);
 
 			// if current target isnt in monstertable or there is no unique target id
-			if (!MonsterTable.Contains(_currentTarget) || _currentTargetUID == 0)
+			if ((!MonsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
 			{
+				StopTimer(attackTimeoutTimer);
+
 				// press targetting key
 				sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+				_pressedTargetting = true;
+
+				LogDateMsg("Target Tab Press");
 
 				// go into checking target mode to make sure the tab target was OK
 				_combatState = CombatStates.CheckingTarget;
@@ -70,61 +79,55 @@
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
-			// unassign timer event
-			checkTimer.Tick -= checkingTarget_Tick;
-			checkTimer.Enabled = false;
-
 			// get target memory
 			_currentTarget = m.ReadString(Addresses["CurrentTarget"]);
 			_currentTargetUID = m.ReadInt(Addresses["TargetUID"]);
 
+			LogDateMsg("Checking Target ...");
+
+			StopTimer(checkTimer);
+
 			// if current target is in monster table
-			if (MonsterTable.Contains(_currentTarget))
+			if (MonsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
 			{
 				// go into attack state
-				Console.WriteLine("Found Target");
+				_pressedCombatKey = false;
+				// unassign timer event
+				StopTimer(combatTimer);
+
 				_combatState = CombatStates.Attacking;
 				return;
 			}
 
+			_currentTarget = "";
+			_pressedTargetting = false;
 			_combatState = CombatStates.Targetting;
+
 		}
 
 		private void attacking_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
-			// unassign timer event
-			combatTimer.Tick -= attacking_Tick;
-			combatTimer.Enabled = false;
-
 			_currentXP = m.ReadInt(Addresses["CurrentXP"]); // get current xp
 			_currentTarget = m.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
 			_currentTargetUID = m.ReadInt(Addresses["TargetUID"]);
 
+			StopTimer(combatTimer);
+			StartTimer(attackTimeoutTimer, (int)(_retargetTimeout * 1000));
+
 			if (MonsterTable.Contains(_currentTarget))
 			{
-				// if current xp is greater than our xp while targetting
-				if (_currentXP > _xpBeforeKill)
-				{
-					if(combatLootCheckbox.Checked)
-					{
-						// enemy has died, loot now and start the loot timer
-						_combatState = CombatStates.Looting;
-						lootTimer.Interval = (int)(_lootForSeconds * 1000);
-						lootTimer.Tick += new EventHandler(lootEnd_Tick);
-						lootTimer.Enabled = true;
-					}
-					else
-					{
-						_currentTarget = "";
-						_combatState = CombatStates.Targetting;
-					}
-				}
+				LogDateMsg("Found Target.");
 
-				if (_currentTargetUID != 0)
+				CheckTargetKilled();
+
+				if (_currentTargetUID != 0 && ActiveCombatKeys.Count > 0 && !_pressedCombatKey)
 				{
-					sim.Keyboard.KeyPress(VirtualKeyCode.VK_1); // attack press
+					int ranSkill = _ran.Next(0, ActiveCombatKeys.Count);
+					Console.WriteLine("Using Skill: " + ActiveCombatKeys[ranSkill].ToString());
+					sim.Keyboard.KeyPress(ActiveCombatKeys[ranSkill]); // attack press
+					_pressedCombatKey = true;
 				}
 			}
 
@@ -132,6 +135,8 @@
 			if (_currentTargetUID == 0)
 			{
 				// back to targetting
+				_currentTarget = "";
+				_pressedTargetting = false;
 				_combatState = CombatStates.Targetting;
 			}
 
@@ -145,44 +150,50 @@
 			}
 		}
 
+		private void interface_Tick(object sender, EventArgs e)
+		{
+			StopTimer(interfaceTimer);
+
+			TargetLabel.Text = _currentTarget;
+			TargetUIDLabel.Text = _currentTargetUID.ToString();
+			AutoCombatState.Text = _combatState.ToString();
+		}
+
+		private void loot_Tick(object sender, EventArgs e)
+		{
+			StopTimer(lootingTimer);
+
+			LogDateMsg("Looting Tick");
+			AutoCombatState.Text = "Looting";
+			sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
+		}
+
 		private void lootEnd_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
-			// unassign timer event
-			lootTimer.Tick -= new EventHandler(lootEnd_Tick);
-			lootTimer.Enabled = false;
+			StopTimer(lootTimer);
 
+			LogDateMsg("End Loot Tick");
 			// go back to targetting
 			_currentTarget = "";
+			_pressedTargetting = false;
 			_combatState = CombatStates.Targetting;
 		}
 
-		private void AutoCombatBox_CheckedChanged(object sender, EventArgs e)
+		private void retargetTimeout_Tick(object sender, EventArgs e)
 		{
-			if (!AutoCombatBox.Checked && mainTimer.Enabled)
+			if (_combatState == CombatStates.Attacking)
 			{
-				mainTimer.Tick -= mainTimer_Tick;
-				mainTimer.Enabled = false;
-				AutoCombatLabel.Text = "DISABLED";
-				_currentTarget = "None";
+				LogDateMsg("Attack Timeout Tick");
+
+				// go back to targetting
+				_currentTarget = "";
+				_pressedTargetting = false;
 				_combatState = CombatStates.Targetting;
-				return;
 			}
 
-			if (MonsterTable.Count == 0)
-			{
-				ErrorLabel.Text = "Error: Empty Monstertable.";
-				AutoCombatBox.Checked = false;
-				return;
-			}
-
-			AutoCombatLabel.Text = "ENABLED";
-			mainTimer.Interval = 1000;
-			mainTimer.Tick += new EventHandler(mainTimer_Tick);
-			mainTimer.Enabled = true;
-			_xpBeforeKill = -1;
-			_combatState = CombatStates.Targetting;
+			StopTimer(attackTimeoutTimer);
 		}
 	}
 }

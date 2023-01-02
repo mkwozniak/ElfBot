@@ -56,11 +56,11 @@ namespace ElfBot
 			this.actionDelayInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
-			this.checkedListBox4 = new System.Windows.Forms.CheckedListBox();
+			this.combatKeys = new System.Windows.Forms.CheckedListBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.combatLootCheckbox = new System.Windows.Forms.CheckBox();
 			this.label13 = new System.Windows.Forms.Label();
-			this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+			this.combatShiftKeys = new System.Windows.Forms.CheckedListBox();
 			this.checkedListBox2 = new System.Windows.Forms.CheckedListBox();
 			this.checkedListBox3 = new System.Windows.Forms.CheckedListBox();
 			this.label14 = new System.Windows.Forms.Label();
@@ -79,6 +79,14 @@ namespace ElfBot
 			this.label18 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.CombatOptions = new System.Windows.Forms.TabPage();
+			this.combatKeyDelayInputBox = new System.Windows.Forms.MaskedTextBox();
+			this.label19 = new System.Windows.Forms.Label();
+			this.updateCombatKeysBtn = new System.Windows.Forms.Button();
+			this.label12 = new System.Windows.Forms.Label();
+			this.retargetTimeoutInputBox = new System.Windows.Forms.MaskedTextBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.comboBox3 = new System.Windows.Forms.ComboBox();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -90,6 +98,9 @@ namespace ElfBot
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
+			this.attackTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+			this.lootingTimer = new System.Windows.Forms.Timer(this.components);
+			this.interfaceTimer = new System.Windows.Forms.Timer(this.components);
 			this.monsterTablePanel.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.CombatOptions.SuspendLayout();
@@ -202,17 +213,18 @@ namespace ElfBot
 			// 
 			// monsterRemoveBtn
 			// 
+			this.monsterRemoveBtn.BackColor = System.Drawing.Color.DimGray;
 			this.monsterRemoveBtn.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
 			this.monsterRemoveBtn.FlatAppearance.BorderSize = 2;
 			this.monsterRemoveBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.monsterRemoveBtn.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.monsterRemoveBtn.ForeColor = System.Drawing.Color.Maroon;
-			this.monsterRemoveBtn.Location = new System.Drawing.Point(53, 46);
+			this.monsterRemoveBtn.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.monsterRemoveBtn.ForeColor = System.Drawing.Color.White;
+			this.monsterRemoveBtn.Location = new System.Drawing.Point(91, 352);
 			this.monsterRemoveBtn.Name = "monsterRemoveBtn";
-			this.monsterRemoveBtn.Size = new System.Drawing.Size(64, 34);
+			this.monsterRemoveBtn.Size = new System.Drawing.Size(27, 38);
 			this.monsterRemoveBtn.TabIndex = 13;
-			this.monsterRemoveBtn.Text = "REMOVE";
-			this.monsterRemoveBtn.UseVisualStyleBackColor = true;
+			this.monsterRemoveBtn.Text = "-";
+			this.monsterRemoveBtn.UseVisualStyleBackColor = false;
 			this.monsterRemoveBtn.Click += new System.EventHandler(this.monsterRemoveBtn_Click);
 			// 
 			// monsterTablePanel
@@ -224,11 +236,11 @@ namespace ElfBot
 			this.monsterTablePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.monsterTablePanel.Controls.Add(this.monsterTableText);
 			this.monsterTablePanel.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.monsterTablePanel.Location = new System.Drawing.Point(7, 90);
-			this.monsterTablePanel.MaximumSize = new System.Drawing.Size(150, 300);
-			this.monsterTablePanel.MinimumSize = new System.Drawing.Size(110, 300);
+			this.monsterTablePanel.Location = new System.Drawing.Point(3, 20);
+			this.monsterTablePanel.MaximumSize = new System.Drawing.Size(120, 300);
+			this.monsterTablePanel.MinimumSize = new System.Drawing.Size(120, 300);
 			this.monsterTablePanel.Name = "monsterTablePanel";
-			this.monsterTablePanel.Size = new System.Drawing.Size(110, 300);
+			this.monsterTablePanel.Size = new System.Drawing.Size(120, 300);
 			this.monsterTablePanel.TabIndex = 16;
 			// 
 			// monsterTableText
@@ -242,17 +254,18 @@ namespace ElfBot
 			// 
 			// monsterAddBtn
 			// 
+			this.monsterAddBtn.BackColor = System.Drawing.Color.DimGray;
 			this.monsterAddBtn.FlatAppearance.BorderColor = System.Drawing.Color.Lime;
 			this.monsterAddBtn.FlatAppearance.BorderSize = 2;
 			this.monsterAddBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.monsterAddBtn.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.monsterAddBtn.ForeColor = System.Drawing.Color.ForestGreen;
-			this.monsterAddBtn.Location = new System.Drawing.Point(7, 46);
+			this.monsterAddBtn.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.monsterAddBtn.ForeColor = System.Drawing.Color.Ivory;
+			this.monsterAddBtn.Location = new System.Drawing.Point(6, 352);
 			this.monsterAddBtn.Name = "monsterAddBtn";
-			this.monsterAddBtn.Size = new System.Drawing.Size(45, 34);
+			this.monsterAddBtn.Size = new System.Drawing.Size(27, 38);
 			this.monsterAddBtn.TabIndex = 15;
-			this.monsterAddBtn.Text = "ADD";
-			this.monsterAddBtn.UseVisualStyleBackColor = true;
+			this.monsterAddBtn.Text = "+";
+			this.monsterAddBtn.UseVisualStyleBackColor = false;
 			this.monsterAddBtn.Click += new System.EventHandler(this.monsterAddBtn_Click);
 			// 
 			// monsterTableTitle
@@ -268,7 +281,7 @@ namespace ElfBot
 			// monsterInputBox
 			// 
 			this.monsterInputBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.monsterInputBox.Location = new System.Drawing.Point(7, 20);
+			this.monsterInputBox.Location = new System.Drawing.Point(6, 326);
 			this.monsterInputBox.Name = "monsterInputBox";
 			this.monsterInputBox.Size = new System.Drawing.Size(112, 20);
 			this.monsterInputBox.TabIndex = 13;
@@ -353,12 +366,12 @@ namespace ElfBot
 			this.checkBox1.Text = "Auto Food";
 			this.checkBox1.UseVisualStyleBackColor = true;
 			// 
-			// checkedListBox4
+			// combatKeys
 			// 
-			this.checkedListBox4.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.checkedListBox4.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.checkedListBox4.FormattingEnabled = true;
-			this.checkedListBox4.Items.AddRange(new object[] {
+			this.combatKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.combatKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.combatKeys.FormattingEnabled = true;
+			this.combatKeys.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -369,16 +382,16 @@ namespace ElfBot
             "8",
             "9",
             "0"});
-			this.checkedListBox4.Location = new System.Drawing.Point(130, 276);
-			this.checkedListBox4.Name = "checkedListBox4";
-			this.checkedListBox4.Size = new System.Drawing.Size(33, 154);
-			this.checkedListBox4.TabIndex = 1;
+			this.combatKeys.Location = new System.Drawing.Point(130, 120);
+			this.combatKeys.Name = "combatKeys";
+			this.combatKeys.Size = new System.Drawing.Size(33, 154);
+			this.combatKeys.TabIndex = 1;
 			// 
 			// label9
 			// 
 			this.label9.AutoSize = true;
 			this.label9.Font = new System.Drawing.Font("Courier New", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label9.Location = new System.Drawing.Point(167, 433);
+			this.label9.Location = new System.Drawing.Point(167, 277);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(35, 14);
 			this.label9.TabIndex = 0;
@@ -403,12 +416,12 @@ namespace ElfBot
 			this.label13.TabIndex = 22;
 			this.label13.Text = "Loot Keys";
 			// 
-			// checkedListBox1
+			// combatShiftKeys
 			// 
-			this.checkedListBox1.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.checkedListBox1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.checkedListBox1.FormattingEnabled = true;
-			this.checkedListBox1.Items.AddRange(new object[] {
+			this.combatShiftKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.combatShiftKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.combatShiftKeys.FormattingEnabled = true;
+			this.combatShiftKeys.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -419,14 +432,15 @@ namespace ElfBot
             "8",
             "9",
             "0"});
-			this.checkedListBox1.Location = new System.Drawing.Point(169, 276);
-			this.checkedListBox1.Name = "checkedListBox1";
-			this.checkedListBox1.Size = new System.Drawing.Size(33, 154);
-			this.checkedListBox1.TabIndex = 23;
+			this.combatShiftKeys.Location = new System.Drawing.Point(169, 120);
+			this.combatShiftKeys.Name = "combatShiftKeys";
+			this.combatShiftKeys.Size = new System.Drawing.Size(33, 154);
+			this.combatShiftKeys.TabIndex = 23;
 			// 
 			// checkedListBox2
 			// 
 			this.checkedListBox2.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox2.Enabled = false;
 			this.checkedListBox2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox2.FormattingEnabled = true;
 			this.checkedListBox2.Items.AddRange(new object[] {
@@ -448,6 +462,7 @@ namespace ElfBot
 			// checkedListBox3
 			// 
 			this.checkedListBox3.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox3.Enabled = false;
 			this.checkedListBox3.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox3.FormattingEnabled = true;
 			this.checkedListBox3.Items.AddRange(new object[] {
@@ -479,15 +494,16 @@ namespace ElfBot
 			// label15
 			// 
 			this.label15.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label15.Location = new System.Drawing.Point(127, 241);
+			this.label15.Location = new System.Drawing.Point(127, 101);
 			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(57, 32);
+			this.label15.Size = new System.Drawing.Size(120, 16);
 			this.label15.TabIndex = 27;
 			this.label15.Text = "Combat Keys";
 			// 
 			// checkedListBox5
 			// 
 			this.checkedListBox5.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox5.Enabled = false;
 			this.checkedListBox5.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox5.FormattingEnabled = true;
 			this.checkedListBox5.Items.AddRange(new object[] {
@@ -509,6 +525,7 @@ namespace ElfBot
 			// checkedListBox6
 			// 
 			this.checkedListBox6.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox6.Enabled = false;
 			this.checkedListBox6.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox6.FormattingEnabled = true;
 			this.checkedListBox6.Items.AddRange(new object[] {
@@ -560,6 +577,7 @@ namespace ElfBot
 			// 
 			// comboBox1
 			// 
+			this.comboBox1.Enabled = false;
 			this.comboBox1.FormattingEnabled = true;
 			this.comboBox1.Items.AddRange(new object[] {
             "10%",
@@ -580,6 +598,7 @@ namespace ElfBot
 			// checkBox4
 			// 
 			this.checkBox4.AutoSize = true;
+			this.checkBox4.Enabled = false;
 			this.checkBox4.Location = new System.Drawing.Point(6, 6);
 			this.checkBox4.Name = "checkBox4";
 			this.checkBox4.Size = new System.Drawing.Size(75, 18);
@@ -590,6 +609,7 @@ namespace ElfBot
 			// checkBox5
 			// 
 			this.checkBox5.AutoSize = true;
+			this.checkBox5.Enabled = false;
 			this.checkBox5.Location = new System.Drawing.Point(133, 6);
 			this.checkBox5.Name = "checkBox5";
 			this.checkBox5.Size = new System.Drawing.Size(75, 18);
@@ -599,6 +619,7 @@ namespace ElfBot
 			// 
 			// comboBox2
 			// 
+			this.comboBox2.Enabled = false;
 			this.comboBox2.FormattingEnabled = true;
 			this.comboBox2.Items.AddRange(new object[] {
             "10%",
@@ -619,6 +640,7 @@ namespace ElfBot
 			// checkedListBox7
 			// 
 			this.checkedListBox7.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox7.Enabled = false;
 			this.checkedListBox7.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox7.FormattingEnabled = true;
 			this.checkedListBox7.Items.AddRange(new object[] {
@@ -640,6 +662,7 @@ namespace ElfBot
 			// checkedListBox8
 			// 
 			this.checkedListBox8.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.checkedListBox8.Enabled = false;
 			this.checkedListBox8.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox8.FormattingEnabled = true;
 			this.checkedListBox8.Items.AddRange(new object[] {
@@ -683,23 +706,109 @@ namespace ElfBot
 			// CombatOptions
 			// 
 			this.CombatOptions.BackColor = System.Drawing.Color.Gray;
+			this.CombatOptions.Controls.Add(this.combatKeyDelayInputBox);
+			this.CombatOptions.Controls.Add(this.label19);
+			this.CombatOptions.Controls.Add(this.updateCombatKeysBtn);
+			this.CombatOptions.Controls.Add(this.label12);
+			this.CombatOptions.Controls.Add(this.retargetTimeoutInputBox);
+			this.CombatOptions.Controls.Add(this.label11);
+			this.CombatOptions.Controls.Add(this.label10);
+			this.CombatOptions.Controls.Add(this.monsterInputBox);
+			this.CombatOptions.Controls.Add(this.comboBox3);
 			this.CombatOptions.Controls.Add(this.label15);
 			this.CombatOptions.Controls.Add(this.actionDelayInputBox);
 			this.CombatOptions.Controls.Add(this.monsterRemoveBtn);
 			this.CombatOptions.Controls.Add(this.label5);
 			this.CombatOptions.Controls.Add(this.label9);
 			this.CombatOptions.Controls.Add(this.monsterTablePanel);
-			this.CombatOptions.Controls.Add(this.checkedListBox1);
+			this.CombatOptions.Controls.Add(this.combatShiftKeys);
 			this.CombatOptions.Controls.Add(this.monsterAddBtn);
-			this.CombatOptions.Controls.Add(this.monsterInputBox);
 			this.CombatOptions.Controls.Add(this.monsterTableTitle);
-			this.CombatOptions.Controls.Add(this.checkedListBox4);
+			this.CombatOptions.Controls.Add(this.combatKeys);
 			this.CombatOptions.Location = new System.Drawing.Point(4, 23);
 			this.CombatOptions.Name = "CombatOptions";
 			this.CombatOptions.Padding = new System.Windows.Forms.Padding(3);
 			this.CombatOptions.Size = new System.Drawing.Size(683, 454);
 			this.CombatOptions.TabIndex = 0;
 			this.CombatOptions.Text = "Combat Options";
+			// 
+			// combatKeyDelayInputBox
+			// 
+			this.combatKeyDelayInputBox.Location = new System.Drawing.Point(223, 20);
+			this.combatKeyDelayInputBox.Name = "combatKeyDelayInputBox";
+			this.combatKeyDelayInputBox.Size = new System.Drawing.Size(58, 20);
+			this.combatKeyDelayInputBox.TabIndex = 34;
+			this.combatKeyDelayInputBox.Text = "1";
+			this.combatKeyDelayInputBox.TextChanged += new System.EventHandler(this.combatKeyDelayInputBox_InputChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(224, 3);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(119, 14);
+			this.label19.TabIndex = 35;
+			this.label19.Text = "Combat Key Delay";
+			// 
+			// updateCombatKeysBtn
+			// 
+			this.updateCombatKeysBtn.Location = new System.Drawing.Point(130, 294);
+			this.updateCombatKeysBtn.Name = "updateCombatKeysBtn";
+			this.updateCombatKeysBtn.Size = new System.Drawing.Size(74, 23);
+			this.updateCombatKeysBtn.TabIndex = 33;
+			this.updateCombatKeysBtn.Text = "UPDATE";
+			this.updateCombatKeysBtn.UseVisualStyleBackColor = true;
+			this.updateCombatKeysBtn.Click += new System.EventHandler(this.updateCombatKeysBtn_Click);
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(357, 3);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(119, 14);
+			this.label12.TabIndex = 32;
+			this.label12.Text = "Retarget Timeout";
+			// 
+			// retargetTimeoutInputBox
+			// 
+			this.retargetTimeoutInputBox.Location = new System.Drawing.Point(352, 20);
+			this.retargetTimeoutInputBox.Name = "retargetTimeoutInputBox";
+			this.retargetTimeoutInputBox.Size = new System.Drawing.Size(58, 20);
+			this.retargetTimeoutInputBox.TabIndex = 31;
+			this.retargetTimeoutInputBox.Text = "15";
+			this.retargetTimeoutInputBox.TextChanged += new System.EventHandler(this.retargetTimeoutInputBox_InputChanged);
+			// 
+			// label11
+			// 
+			this.label11.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label11.ForeColor = System.Drawing.Color.Maroon;
+			this.label11.Location = new System.Drawing.Point(129, 352);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(78, 93);
+			this.label11.TabIndex = 30;
+			this.label11.Text = "Disable Auto Combat before making any changes.";
+			// 
+			// label10
+			// 
+			this.label10.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label10.Location = new System.Drawing.Point(127, 46);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(124, 15);
+			this.label10.TabIndex = 29;
+			this.label10.Text = "Combat Key Mode";
+			// 
+			// comboBox3
+			// 
+			this.comboBox3.Enabled = false;
+			this.comboBox3.FormattingEnabled = true;
+			this.comboBox3.Items.AddRange(new object[] {
+            "Random",
+            "Alpha Ordered"});
+			this.comboBox3.Location = new System.Drawing.Point(126, 64);
+			this.comboBox3.Name = "comboBox3";
+			this.comboBox3.Size = new System.Drawing.Size(121, 22);
+			this.comboBox3.TabIndex = 28;
+			this.comboBox3.Text = "Random";
 			// 
 			// tabPage1
 			// 
@@ -754,6 +863,10 @@ namespace ElfBot
 			this.tabPage3.Size = new System.Drawing.Size(683, 454);
 			this.tabPage3.TabIndex = 3;
 			this.tabPage3.Text = "Misc";
+			// 
+			// combatTimer
+			// 
+			this.combatTimer.Interval = 1000;
 			// 
 			// ErrorLabel
 			// 
@@ -869,10 +982,10 @@ namespace ElfBot
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.CheckBox combatLootCheckbox;
-		private System.Windows.Forms.CheckedListBox checkedListBox4;
+		private System.Windows.Forms.CheckedListBox combatKeys;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.CheckedListBox checkedListBox1;
+		private System.Windows.Forms.CheckedListBox combatShiftKeys;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.CheckedListBox checkedListBox5;
 		private System.Windows.Forms.CheckedListBox checkedListBox6;
@@ -902,6 +1015,17 @@ namespace ElfBot
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.ComboBox comboBox3;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.MaskedTextBox retargetTimeoutInputBox;
+		private System.Windows.Forms.Button updateCombatKeysBtn;
+		private System.Windows.Forms.MaskedTextBox combatKeyDelayInputBox;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.Timer attackTimeoutTimer;
+		private System.Windows.Forms.Timer lootingTimer;
+		private System.Windows.Forms.Timer interfaceTimer;
 	}
 }
 

@@ -30,3 +30,4 @@ C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.Properties.Re
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.exe
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.pdb
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.csproj.AssemblyReference.cache
+C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.g.resources
