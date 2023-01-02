@@ -14,10 +14,7 @@ C:\Users\WozWorkPC\source\repos\JellyBot\obj\Debug\ElfBot.csproj.CoreCompileInpu
 C:\Users\WozWorkPC\source\repos\JellyBot\obj\Debug\ElfBot.csproj.CopyComplete
 C:\Users\WozWorkPC\source\repos\JellyBot\obj\Debug\RoseTrainerTest.exe
 C:\Users\WozWorkPC\source\repos\JellyBot\obj\Debug\RoseTrainerTest.pdb
-C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\Memory.dll
-C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\WindowsInput.dll
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\Memory.xml
-C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\WindowsInput.pdb
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\WindowsInput.xml
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.MainForm.resources
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.csproj.GenerateResource.cache
@@ -31,3 +28,5 @@ C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.exe
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.pdb
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.csproj.AssemblyReference.cache
 C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.g.resources
+C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\bin\Debug\System.Diagnostics.DiagnosticSource.xml
+C:\Users\WozWorkPC\source\repos\ElfBotMain\ElfBot\obj\Debug\ElfBot.csproj.Fody.CopyLocal.cache
