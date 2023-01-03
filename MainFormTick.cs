@@ -141,11 +141,15 @@
 				return;
 			}
 
+			float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
+			float y = _mem.ReadFloat(Addresses["PlayerYPos"]);
+			float z = _mem.ReadFloat(Addresses["PlayerZPos"]);
+
 			TargetLabel.Text = _currentTarget;
 			TargetUIDLabel.Text = _currentTargetUID.ToString();
 			AutoCombatState.Text = _combatState.ToString();
 			CurrentXPLabel.Text = _currentXP.ToString();
-			PlayerPosLabel.Text = "X: " + _lastXPos + "Y: " + _lastYPos;
+			PlayerPosLabel.Text = "X: " + x.ToString() + " | Y: " + y.ToString() + " |Z: " + z.ToString();
 			maxManaLabel.Text = "Max Mana: " + _playerMaxMP.ToString();
 		}
 
