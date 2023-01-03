@@ -257,6 +257,14 @@
 			{
 				LogDateMsg("Attack Timeout Tick");
 				StopAllTimers();
+				if(hpFoodCheckbox.Checked)
+				{
+					StartTimer(hpFoodTimer, (int)(_foodDelay * 1000));
+				}
+				if (mpFoodCheckbox.Checked)
+				{
+					StartTimer(mpFoodTimer, (int)(_foodDelay * 1000));
+				}
 				SwitchToTargetting(true);
 			}
 		}
