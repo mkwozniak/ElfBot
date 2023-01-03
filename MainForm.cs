@@ -14,6 +14,7 @@
 	using MonsterHashTable = System.Collections.Generic.HashSet<string>;
 	using MonsterList = System.Collections.Generic.List<string>;
 	using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
+	using MsgList = System.Collections.Generic.List<string>;
 
 	public partial class MainForm : Form
 	{
@@ -29,15 +30,12 @@
 			{ "CurrentTarget" , "trose.exe+10D8C10" },
 			{ "CurrentXP" , "trose.exe+10BCA14" },
 			{ "TargetUID" , "trose.exe+10C0458,0x8"},
-		};
+			{ "PlayerXPos" , "trose.exe+010BE100"},
+			{ "PlayerYPos" , "trose.exe+010BE100"},
+			{ "PlayerMaxMana" , "trose.exe+10BE100,0x4604"},
+			{ "TargetDefeatedMsg" , "trose.exe+10C5950"},
 
-		public static OptionDict BotOptions = new OptionDict()
-		{
-			{ "AutoCombat" , false },
-			{ "AutoCombatLoot" , false },
 		};
-
-		public static VirtualKeyCode ShiftKey = VirtualKeyCode.SHIFT;
 
 		public static KeyDict CombatKeys = new KeyDict()
 		{
@@ -53,27 +51,31 @@
 			{ "9" , VirtualKeyCode.VK_9 },
 		};
 
+		public static VirtualKeyCode ShiftKey = VirtualKeyCode.SHIFT;
 		public static KeyList ActiveCombatKeys = new KeyList();
-
 		public static MonsterHashTable MonsterTable;
+		public static MsgList SystemMsgs = new MsgList();
 
 		private CombatStates _combatState;
-		private Mem m;
-		private InputSimulator sim;
+		private Mem _mem;
+		private InputSimulator _sim;
 		private System.Random _ran = new System.Random();
 
-		private int _currentTargetUID = -1;
+		private int _currentTargetUID = 0;
 		private int _currentXP = 0;
+		private int _playerMaxMana = 0;
+		private int _lastGainedXP = 0;
 		private int _xpBeforeKill = -1;
 		private float _lootForSeconds = 4f;
-		private float _actionDelay = 1f;
+		private float _actionDelay = 0.5f;
 		private float _combatKeyDelay = 1f;
 		private float _retargetTimeout = 15f;
 		private string _currentTarget = "";
+		private string _targetDefeatedMsg = "";
 		private bool _pressedTargetting = false;
 		private bool _pressedCombatKey = false;
-		private bool _attacking = false;
-		private int _lastTargetKilled = 0;
+		private float _lastXPos = 0f;
+		private float _lastYPos = 0f;
 
 		#endregion
 
@@ -81,20 +83,22 @@
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			m = new Mem();
-			sim = new InputSimulator();
+			_mem = new Mem();
+			_sim = new InputSimulator();
 
 			ListenToTimer(combatTimer, attacking_Tick);
 			ListenToTimer(targettingTimer, targetting_Tick);
 			ListenToTimer(checkTimer, checkingTarget_Tick);
 			ListenToTimer(lootingTimer, loot_Tick);
-			ListenToTimer(lootTimer, lootEnd_Tick);
+			ListenToTimer(lootingEndTimer, lootEnd_Tick);
 			ListenToTimer(interfaceTimer, interface_Tick);
 			ListenToTimer(attackTimeoutTimer, retargetTimeout_Tick);
 
+			StartTimer(interfaceTimer, 60);
+
 			MonsterTable = new MonsterHashTable();
-			_combatState = CombatStates.Targetting;
 			AutoCombatBox.Enabled = false;
+			SystemMsgLog.Clear();
 
 			// worker threads could be useful later
 			// if (!worker.IsBusy)  {  //worker.RunWorkerAsync();  }
@@ -102,11 +106,11 @@
 
 		private bool TryOpenProcess()
 		{
-			int pID = m.GetProcIdFromName("trose");
+			int pID = _mem.GetProcIdFromName("trose");
 
 			if (pID > 0)
 			{
-				m.OpenProcess(pID);
+				_mem.OpenProcess(pID);
 				ProcessHookLabel.Text = "Process Hooked!";
 				ProcessHookLabel.ForeColor = System.Drawing.Color.LimeGreen;
 
@@ -132,17 +136,20 @@
 			timer.Start();
 		}
 
-		private void StopTimer(Timer timer, EventHandler del)
-		{
-			timer.Tick -= del;
-			timer.Stop();
-			timer.Enabled = false;
-		}
-
 		private void StopTimer(Timer timer)
 		{
 			timer.Stop();
 			timer.Enabled = false;
+		}
+
+		private void StopAllTimers()
+		{
+			StopTimer(combatTimer);
+			StopTimer(targettingTimer);
+			StopTimer(checkTimer);
+			StopTimer(lootingEndTimer);
+			StopTimer(lootingTimer);
+			StopTimer(attackTimeoutTimer);
 		}
 
 		#endregion
@@ -152,9 +159,26 @@
 		private void LogDateMsg(string msg)
 		{
 			Console.WriteLine(System.DateTime.Now.ToString() + ": " + msg);
+			LogMsgToFormLog(msg);
 		}
 
-		private void RebuildMonsterTable()
+		private void LogMsgToFormLog(string msg)
+		{
+			if (SystemMsgLog.Text.Length > 2048)
+			{
+				SystemMsgLog.Clear();
+			}
+
+			string dateFormat = DateTime.Now.ToString("hh:mm:ss tt");
+
+			string str = dateFormat + ":" + Environment.NewLine + msg;
+			SystemMsgLog.AppendText(str);
+			SystemMsgLog.AppendText(Environment.NewLine);
+			SystemMsgLog.AppendText(Environment.NewLine);
+		}
+	
+
+		private void RebuildMonsterList()
 		{
 			MonsterList monsterList = new MonsterList(MonsterTable);
 			monsterTableText.Text = "";
@@ -170,29 +194,58 @@
 			}
 		}
 
+		private void LoadToMonsterTable(string[] monsters)
+		{
+			MonsterTable.Clear();
+			for (int i = 0; i < monsters.Length; i++)
+			{
+				if (monsters[i].Length > 0)
+				{
+					LogDateMsg("Added monster to table from file: " + monsters[i]);
+					MonsterTable.Add(monsters[i]);
+				}
+			}
+			RebuildMonsterList();
+		}
+
 		private void CheckTargetKilled()
 		{
 			// if current xp is greater than our xp while targetting
 			if (_currentXP > _xpBeforeKill)
 			{
+				_targetDefeatedMsg = _mem.ReadString(Addresses["TargetDefeatedMsg"]);
+				LogDateMsg("Target Defeat: " + _targetDefeatedMsg);
+				StopTimer(attackTimeoutTimer);
+
 				if (combatLootCheckbox.Checked)
 				{
 					// enemy has died, loot now and start the loot timer
 					_combatState = CombatStates.Looting;
-					_attacking = false;
-					StartTimer(lootTimer, (int)(_lootForSeconds * 1000));
+					StopTimer(combatTimer);
+					StartTimer(lootingTimer, (int)(_actionDelay * 1000)); // start the looting timer for hotkey
+					StartTimer(lootingEndTimer, (int)(_lootForSeconds * 1000)); // start the timer to end that 
 				}
 				else
 				{
-					_currentTarget = "";
-					_pressedTargetting = false;
-					_attacking = false;
-					_combatState = CombatStates.Targetting;
+					StopTimer(combatTimer);
+					SwitchToTargetting(true);
 				}
 
 				_pressedTargetting = false;
-				_lastTargetKilled = _currentTargetUID;
 			}
+		}
+
+		private void SwitchToTargetting(bool resetUID = false)
+		{
+			if(resetUID)
+			{
+				_currentTargetUID = -1;
+			}
+
+			_currentTarget = "";
+			_pressedTargetting = false;
+			_combatState = CombatStates.Targetting;
+			StartTimer(targettingTimer, (int)(_actionDelay * 1000));
 		}
 
 		#endregion
@@ -201,35 +254,26 @@
 
 		private void AutoCombatBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!AutoCombatBox.Checked && mainTimer.Enabled)
+			if (!AutoCombatBox.Checked)
 			{
-				mainTimer.Tick -= mainTimer_Tick;
-				mainTimer.Stop();
-				mainTimer.Enabled = false;
-				StopTimer(attackTimeoutTimer);
+				StopAllTimers();
 				AutoCombatLabel.Text = "DISABLED";
-				Console.WriteLine("Disabled AutoCombat");
-				_currentTarget = "None";
-				_pressedTargetting = false;
-				_combatState = CombatStates.Targetting;
+				LogDateMsg("Disabled AutoCombat");
+				// SwitchToTargetting();
 				return;
 			}
 
 			if (MonsterTable.Count == 0)
 			{
-				ErrorLabel.Text = "Error: Empty Monstertable.";
+				LogDateMsg("Error: Empty Monstertable");
 				AutoCombatBox.Checked = false;
 				return;
 			}
 
 			AutoCombatLabel.Text = "ENABLED";
-			Console.WriteLine("Enabled AutoCombat");
-			mainTimer.Interval = 1000;
-			mainTimer.Tick += mainTimer_Tick;
-			mainTimer.Enabled = true;
-			mainTimer.Start();
+			LogDateMsg("Enabled AutoCombat");
 			_xpBeforeKill = -1;
-			_combatState = CombatStates.Targetting;
+			SwitchToTargetting();
 		}
 
 		private void monsterAddBtn_Click(object sender, EventArgs e)
@@ -248,7 +292,7 @@
 
 			MonsterTable.Add(inputTxt);
 			monsterInputBox.Text = "";
-			RebuildMonsterTable();
+			RebuildMonsterList();
 		}
 
 		private void monsterRemoveBtn_Click(object sender, EventArgs e)
@@ -258,7 +302,7 @@
 			if (MonsterTable.Contains(inputTxt))
 			{
 				MonsterTable.Remove(inputTxt);
-				RebuildMonsterTable();
+				RebuildMonsterList();
 			}
 		}
 
@@ -319,14 +363,37 @@
 				{
 					if (!ActiveCombatKeys.Contains(CombatKeys[key]))
 					{
-						Console.WriteLine("Added Active Key: " + CombatKeys[key].ToString());
+						LogDateMsg("Added Active Key: " + CombatKeys[key].ToString());
 						ActiveCombatKeys.Add(CombatKeys[key]);
 					}
 					continue;
 				}
 
-				Console.WriteLine("Removed Active Key: " + CombatKeys[key].ToString());
+				// LogDateMsg("Removed Active Key: " + CombatKeys[key].ToString());
 				ActiveCombatKeys.Remove(CombatKeys[key]);
+			}
+		}
+
+		private void loadTableButton_Click(object sender, EventArgs e)
+		{
+			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			{
+				try
+				{
+					var filePath = openFileDialog1.FileName;
+					var sr = new System.IO.StreamReader(openFileDialog1.FileName);
+					string contents = sr.ReadToEnd();
+					string[] monsters = contents.Split(',');
+					if (monsters.Length > 0)
+					{
+						LoadToMonsterTable(monsters);
+					}
+				}
+				catch (System.Security.SecurityException ex)
+				{
+					MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+					$"Details:\n\n{ex.StackTrace}");
+				}
 			}
 		}
 
