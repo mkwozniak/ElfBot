@@ -253,16 +253,19 @@
 
 			StopTimer(attackTimeoutTimer);
 
-			if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) && (x == _lastXPos && y == _lastYPos))
+			if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) || (x == _lastXPos && y == _lastYPos))
 			{
 				LogDateMsg("Attack Timeout Tick");
 				StopAllTimers();
+
 				if(hpFoodCheckbox.Checked)
 				{
+					LogDateMsg("Restart Auto Food HP");
 					StartTimer(hpFoodTimer, (int)(_foodDelay * 1000));
 				}
 				if (mpFoodCheckbox.Checked)
 				{
+					LogDateMsg("Restart Auto Food MP");
 					StartTimer(mpFoodTimer, (int)(_foodDelay * 1000));
 				}
 				SwitchToTargetting(true);
