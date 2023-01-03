@@ -1216,8 +1216,9 @@ namespace ElfBot
 			// 
 			// button2
 			// 
+			this.button2.Enabled = false;
 			this.button2.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button2.Location = new System.Drawing.Point(7, 519);
+			this.button2.Location = new System.Drawing.Point(0, 523);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(83, 20);
 			this.button2.TabIndex = 18;
