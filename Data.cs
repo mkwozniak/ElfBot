@@ -2,7 +2,7 @@
 {
 	public enum CombatStates
 	{
-		Resetting,
+		Inactive,
 		Targetting,
 		CheckingTarget,
 		Attacking,
