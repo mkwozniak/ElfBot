@@ -183,10 +183,6 @@
 			StopTimer(lootingEndTimer);
 			StopTimer(lootingTimer);
 			StopTimer(attackTimeoutTimer);
-			StopTimer(hpFoodTimer);
-			StopTimer(mpFoodTimer);
-			StopTimer(hpFoodKeyTimer);
-			StopTimer(mpFoodKeyTimer);
 		}
 
 		#endregion
