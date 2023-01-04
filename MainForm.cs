@@ -28,8 +28,12 @@
 
 		public static AddressDict Addresses = new AddressDict()
 		{
+			{ "PlayerName" , "trose.exe+10C1918" },
+			{ "PlayerLevel" , "trose.exe+10BE100,0x3AD8" },
+			{ "Zuly" , "trose.exe+10BE100,0x3D38" },
+			{ "MapID" , "trose.exe+10C4AE4" },
 			{ "CurrentTarget" , "trose.exe+10D8C10" },
-			{ "CurrentXP" , "trose.exe+10BCA14" },
+			{ "CurrentXP" , "trose.exe+10BE100,0x3AD4" },
 			{ "TargetUID" , "trose.exe+10C0458,0x8"},
 			{ "PlayerXPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1B8"},
 			{ "PlayerYPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1BC"},
@@ -576,5 +580,35 @@
 			Console.WriteLine(_mem.ReadFloat(Addresses["PlayerZPos"]).ToString());
 			_mem.WriteMemory(Addresses["PlayerZPos"], "float", "5");
 		}
-	}
+
+        private void PlayerPosLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void PlayerNameLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label27_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label26_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label20_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

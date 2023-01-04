@@ -45,8 +45,7 @@ namespace ElfBot
 			this.monsterTableTitle = new System.Windows.Forms.Label();
 			this.monsterInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.hookButton = new System.Windows.Forms.Button();
-			this.label2 = new System.Windows.Forms.Label();
-			this.PlayerPosLabel = new System.Windows.Forms.Label();
+			this.CharacterHeaderLabel = new System.Windows.Forms.Label();
 			this.lootTimeInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.label5 = new System.Windows.Forms.Label();
 			this.actionDelayInputBox = new System.Windows.Forms.MaskedTextBox();
@@ -81,7 +80,6 @@ namespace ElfBot
 			this.updateFoodKeysBtn = new System.Windows.Forms.Button();
 			this.label24 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.maxManaLabel = new System.Windows.Forms.Label();
 			this.checkBox6 = new System.Windows.Forms.CheckBox();
 			this.loadTableButton = new System.Windows.Forms.Button();
 			this.combatKeyDelayInputBox = new System.Windows.Forms.MaskedTextBox();
@@ -123,6 +121,18 @@ namespace ElfBot
 			this.FoodOptionsPanel = new System.Windows.Forms.Panel();
 			this.button1 = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
+			this.MiscHeaderLabel = new System.Windows.Forms.Label();
+			this.PlayerMPLabel = new System.Windows.Forms.Label();
+			this.PlayerHPLabel = new System.Windows.Forms.Label();
+			this.PlayerStatusHeaderLabel = new System.Windows.Forms.Label();
+			this.PlayerMapIdLabel = new System.Windows.Forms.Label();
+			this.PlayerPosZLabel = new System.Windows.Forms.Label();
+			this.PlayerPosYLabel = new System.Windows.Forms.Label();
+			this.PlayerPosXLabel = new System.Windows.Forms.Label();
+			this.LocationHeaderLabel = new System.Windows.Forms.Label();
+			this.PlayerZulyLabel = new System.Windows.Forms.Label();
+			this.PlayerLevelLabel = new System.Windows.Forms.Label();
+			this.PlayerNameLabel = new System.Windows.Forms.Label();
 			this.button2 = new System.Windows.Forms.Button();
 			this.monsterTablePanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -150,24 +160,22 @@ namespace ElfBot
 			// CurrentXPLabel
 			// 
 			this.CurrentXPLabel.AutoSize = true;
-			this.CurrentXPLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.CurrentXPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CurrentXPLabel.Location = new System.Drawing.Point(6, 53);
+			this.CurrentXPLabel.Location = new System.Drawing.Point(12, 67);
 			this.CurrentXPLabel.Name = "CurrentXPLabel";
-			this.CurrentXPLabel.Size = new System.Drawing.Size(85, 13);
+			this.CurrentXPLabel.Size = new System.Drawing.Size(47, 11);
 			this.CurrentXPLabel.TabIndex = 4;
-			this.CurrentXPLabel.Text = "Current XP: 0";
+			this.CurrentXPLabel.Text = "XP: N/A";
 			// 
 			// XPBeforeKillLabel
 			// 
 			this.XPBeforeKillLabel.AutoSize = true;
-			this.XPBeforeKillLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.XPBeforeKillLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.XPBeforeKillLabel.Location = new System.Drawing.Point(6, 69);
+			this.XPBeforeKillLabel.Location = new System.Drawing.Point(12, 284);
 			this.XPBeforeKillLabel.Name = "XPBeforeKillLabel";
-			this.XPBeforeKillLabel.Size = new System.Drawing.Size(115, 13);
+			this.XPBeforeKillLabel.Size = new System.Drawing.Size(119, 11);
 			this.XPBeforeKillLabel.TabIndex = 5;
-			this.XPBeforeKillLabel.Text = "XP Before Kill: -1";
+			this.XPBeforeKillLabel.Text = "XP Before Kill: N/A";
 			// 
 			// AutoCombatState
 			// 
@@ -184,24 +192,22 @@ namespace ElfBot
 			// TargetLabel
 			// 
 			this.TargetLabel.AutoSize = true;
-			this.TargetLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.TargetLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TargetLabel.Location = new System.Drawing.Point(6, 91);
+			this.TargetLabel.Location = new System.Drawing.Point(12, 301);
 			this.TargetLabel.Name = "TargetLabel";
-			this.TargetLabel.Size = new System.Drawing.Size(49, 13);
+			this.TargetLabel.Size = new System.Drawing.Size(71, 11);
 			this.TargetLabel.TabIndex = 8;
-			this.TargetLabel.Text = "Target:";
+			this.TargetLabel.Text = "Target: N/A";
 			// 
 			// TargetUIDLabel
 			// 
 			this.TargetUIDLabel.AutoSize = true;
-			this.TargetUIDLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.TargetUIDLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TargetUIDLabel.Location = new System.Drawing.Point(6, 104);
+			this.TargetUIDLabel.Location = new System.Drawing.Point(12, 318);
 			this.TargetUIDLabel.Name = "TargetUIDLabel";
-			this.TargetUIDLabel.Size = new System.Drawing.Size(37, 13);
+			this.TargetUIDLabel.Size = new System.Drawing.Size(95, 11);
 			this.TargetUIDLabel.TabIndex = 9;
-			this.TargetUIDLabel.Text = "UID: ";
+			this.TargetUIDLabel.Text = "Target UID: N/A";
 			// 
 			// label1
 			// 
@@ -287,26 +293,15 @@ namespace ElfBot
 			this.hookButton.UseVisualStyleBackColor = false;
 			this.hookButton.Click += new System.EventHandler(this.hookButton_Click);
 			// 
-			// label2
+			// CharacterHeaderLabel
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(3, 11);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Info";
-			// 
-			// PlayerPosLabel
-			// 
-			this.PlayerPosLabel.AutoSize = true;
-			this.PlayerPosLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.PlayerPosLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.PlayerPosLabel.Location = new System.Drawing.Point(6, 37);
-			this.PlayerPosLabel.Name = "PlayerPosLabel";
-			this.PlayerPosLabel.Size = new System.Drawing.Size(73, 13);
-			this.PlayerPosLabel.TabIndex = 16;
-			this.PlayerPosLabel.Text = "Player Pos:";
+			this.CharacterHeaderLabel.AutoSize = true;
+			this.CharacterHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CharacterHeaderLabel.Location = new System.Drawing.Point(2, 11);
+			this.CharacterHeaderLabel.Name = "CharacterHeaderLabel";
+			this.CharacterHeaderLabel.Size = new System.Drawing.Size(70, 13);
+			this.CharacterHeaderLabel.TabIndex = 14;
+			this.CharacterHeaderLabel.Text = "Character";
 			// 
 			// lootTimeInputBox
 			// 
@@ -365,16 +360,16 @@ namespace ElfBot
 			this.combatKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.combatKeys.FormattingEnabled = true;
 			this.combatKeys.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.combatKeys.Location = new System.Drawing.Point(152, 268);
 			this.combatKeys.Name = "combatKeys";
 			this.combatKeys.Size = new System.Drawing.Size(33, 154);
@@ -418,16 +413,16 @@ namespace ElfBot
 			this.combatShiftKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.combatShiftKeys.FormattingEnabled = true;
 			this.combatShiftKeys.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.combatShiftKeys.Location = new System.Drawing.Point(191, 268);
 			this.combatShiftKeys.Name = "combatShiftKeys";
 			this.combatShiftKeys.Size = new System.Drawing.Size(33, 154);
@@ -440,16 +435,16 @@ namespace ElfBot
 			this.checkedListBox2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox2.FormattingEnabled = true;
 			this.checkedListBox2.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.checkedListBox2.Location = new System.Drawing.Point(54, 268);
 			this.checkedListBox2.Name = "checkedListBox2";
 			this.checkedListBox2.Size = new System.Drawing.Size(33, 154);
@@ -462,16 +457,16 @@ namespace ElfBot
 			this.checkedListBox3.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox3.FormattingEnabled = true;
 			this.checkedListBox3.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.checkedListBox3.Location = new System.Drawing.Point(15, 268);
 			this.checkedListBox3.Name = "checkedListBox3";
 			this.checkedListBox3.Size = new System.Drawing.Size(33, 154);
@@ -504,16 +499,16 @@ namespace ElfBot
 			this.checkedListBox5.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox5.FormattingEnabled = true;
 			this.checkedListBox5.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.checkedListBox5.Location = new System.Drawing.Point(55, 262);
 			this.checkedListBox5.Name = "checkedListBox5";
 			this.checkedListBox5.Size = new System.Drawing.Size(33, 154);
@@ -525,16 +520,16 @@ namespace ElfBot
 			this.hpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.hpKeys.FormattingEnabled = true;
 			this.hpKeys.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.hpKeys.Location = new System.Drawing.Point(16, 262);
 			this.hpKeys.Name = "hpKeys";
 			this.hpKeys.Size = new System.Drawing.Size(33, 154);
@@ -570,15 +565,15 @@ namespace ElfBot
 			this.hpComboBox.ForeColor = System.Drawing.Color.White;
 			this.hpComboBox.FormattingEnabled = true;
 			this.hpComboBox.Items.AddRange(new object[] {
-            "10%",
-            "20%",
-            "30%",
-            "40%",
-            "50%",
-            "60%",
-            "70%",
-            "80%",
-            "90%"});
+			"10%",
+			"20%",
+			"30%",
+			"40%",
+			"50%",
+			"60%",
+			"70%",
+			"80%",
+			"90%"});
 			this.hpComboBox.Location = new System.Drawing.Point(6, 34);
 			this.hpComboBox.Name = "hpComboBox";
 			this.hpComboBox.Size = new System.Drawing.Size(121, 19);
@@ -619,15 +614,15 @@ namespace ElfBot
 			this.mpComboBox.ForeColor = System.Drawing.Color.White;
 			this.mpComboBox.FormattingEnabled = true;
 			this.mpComboBox.Items.AddRange(new object[] {
-            "10%",
-            "20%",
-            "30%",
-            "40%",
-            "50%",
-            "60%",
-            "70%",
-            "80%",
-            "90%"});
+			"10%",
+			"20%",
+			"30%",
+			"40%",
+			"50%",
+			"60%",
+			"70%",
+			"80%",
+			"90%"});
 			this.mpComboBox.Location = new System.Drawing.Point(133, 34);
 			this.mpComboBox.Name = "mpComboBox";
 			this.mpComboBox.Size = new System.Drawing.Size(121, 19);
@@ -640,16 +635,16 @@ namespace ElfBot
 			this.mpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.mpKeys.FormattingEnabled = true;
 			this.mpKeys.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.mpKeys.Location = new System.Drawing.Point(94, 262);
 			this.mpKeys.Name = "mpKeys";
 			this.mpKeys.Size = new System.Drawing.Size(33, 154);
@@ -662,16 +657,16 @@ namespace ElfBot
 			this.checkedListBox8.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.checkedListBox8.FormattingEnabled = true;
 			this.checkedListBox8.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "0"});
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"0"});
 			this.checkedListBox8.Location = new System.Drawing.Point(133, 262);
 			this.checkedListBox8.Name = "checkedListBox8";
 			this.checkedListBox8.Size = new System.Drawing.Size(33, 154);
@@ -780,17 +775,6 @@ namespace ElfBot
 			this.label3.TabIndex = 34;
 			this.label3.Text = "SHIFT";
 			// 
-			// maxManaLabel
-			// 
-			this.maxManaLabel.AutoSize = true;
-			this.maxManaLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.maxManaLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.maxManaLabel.Location = new System.Drawing.Point(6, 126);
-			this.maxManaLabel.Name = "maxManaLabel";
-			this.maxManaLabel.Size = new System.Drawing.Size(61, 13);
-			this.maxManaLabel.TabIndex = 17;
-			this.maxManaLabel.Text = "Max Mana:";
-			// 
 			// checkBox6
 			// 
 			this.checkBox6.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -866,8 +850,8 @@ namespace ElfBot
 			this.comboBox3.Enabled = false;
 			this.comboBox3.FormattingEnabled = true;
 			this.comboBox3.Items.AddRange(new object[] {
-            "Random",
-            "Alpha Ordered"});
+			"Random",
+			"Alpha Ordered"});
 			this.comboBox3.Location = new System.Drawing.Point(133, 188);
 			this.comboBox3.Name = "comboBox3";
 			this.comboBox3.Size = new System.Drawing.Size(121, 19);
@@ -1201,18 +1185,151 @@ namespace ElfBot
 			// panel2
 			// 
 			this.panel2.BackColor = System.Drawing.Color.DimGray;
+			this.panel2.Controls.Add(this.MiscHeaderLabel);
+			this.panel2.Controls.Add(this.PlayerMPLabel);
+			this.panel2.Controls.Add(this.PlayerHPLabel);
+			this.panel2.Controls.Add(this.PlayerStatusHeaderLabel);
+			this.panel2.Controls.Add(this.PlayerMapIdLabel);
+			this.panel2.Controls.Add(this.PlayerPosZLabel);
+			this.panel2.Controls.Add(this.PlayerPosYLabel);
+			this.panel2.Controls.Add(this.PlayerPosXLabel);
+			this.panel2.Controls.Add(this.LocationHeaderLabel);
+			this.panel2.Controls.Add(this.PlayerZulyLabel);
+			this.panel2.Controls.Add(this.PlayerLevelLabel);
+			this.panel2.Controls.Add(this.PlayerNameLabel);
 			this.panel2.Controls.Add(this.button2);
-			this.panel2.Controls.Add(this.maxManaLabel);
-			this.panel2.Controls.Add(this.label2);
+			this.panel2.Controls.Add(this.CharacterHeaderLabel);
 			this.panel2.Controls.Add(this.TargetUIDLabel);
 			this.panel2.Controls.Add(this.TargetLabel);
 			this.panel2.Controls.Add(this.XPBeforeKillLabel);
-			this.panel2.Controls.Add(this.PlayerPosLabel);
 			this.panel2.Controls.Add(this.CurrentXPLabel);
 			this.panel2.Location = new System.Drawing.Point(451, 9);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(158, 543);
 			this.panel2.TabIndex = 51;
+			this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+			// 
+			// MiscHeaderLabel
+			// 
+			this.MiscHeaderLabel.AutoSize = true;
+			this.MiscHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MiscHeaderLabel.Location = new System.Drawing.Point(2, 262);
+			this.MiscHeaderLabel.Name = "MiscHeaderLabel";
+			this.MiscHeaderLabel.Size = new System.Drawing.Size(35, 13);
+			this.MiscHeaderLabel.TabIndex = 30;
+			this.MiscHeaderLabel.Text = "Misc";
+			this.MiscHeaderLabel.Click += new System.EventHandler(this.label27_Click);
+			// 
+			// PlayerMPLabel
+			// 
+			this.PlayerMPLabel.AutoSize = true;
+			this.PlayerMPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerMPLabel.Location = new System.Drawing.Point(12, 240);
+			this.PlayerMPLabel.Name = "PlayerMPLabel";
+			this.PlayerMPLabel.Size = new System.Drawing.Size(59, 11);
+			this.PlayerMPLabel.TabIndex = 29;
+			this.PlayerMPLabel.Text = "MP: - / -";
+			// 
+			// PlayerHPLabel
+			// 
+			this.PlayerHPLabel.AutoSize = true;
+			this.PlayerHPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerHPLabel.Location = new System.Drawing.Point(12, 223);
+			this.PlayerHPLabel.Name = "PlayerHPLabel";
+			this.PlayerHPLabel.Size = new System.Drawing.Size(59, 11);
+			this.PlayerHPLabel.TabIndex = 28;
+			this.PlayerHPLabel.Text = "HP: - / -";
+			// 
+			// PlayerStatusHeaderLabel
+			// 
+			this.PlayerStatusHeaderLabel.AutoSize = true;
+			this.PlayerStatusHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerStatusHeaderLabel.Location = new System.Drawing.Point(2, 201);
+			this.PlayerStatusHeaderLabel.Name = "PlayerStatusHeaderLabel";
+			this.PlayerStatusHeaderLabel.Size = new System.Drawing.Size(49, 13);
+			this.PlayerStatusHeaderLabel.TabIndex = 27;
+			this.PlayerStatusHeaderLabel.Text = "Status";
+			// 
+			// PlayerMapIdLabel
+			// 
+			this.PlayerMapIdLabel.AutoSize = true;
+			this.PlayerMapIdLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerMapIdLabel.Location = new System.Drawing.Point(12, 179);
+			this.PlayerMapIdLabel.Name = "PlayerMapIdLabel";
+			this.PlayerMapIdLabel.Size = new System.Drawing.Size(71, 11);
+			this.PlayerMapIdLabel.TabIndex = 26;
+			this.PlayerMapIdLabel.Text = "Map ID: N/A";
+			// 
+			// PlayerPosZLabel
+			// 
+			this.PlayerPosZLabel.AutoSize = true;
+			this.PlayerPosZLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosZLabel.Location = new System.Drawing.Point(12, 162);
+			this.PlayerPosZLabel.Name = "PlayerPosZLabel";
+			this.PlayerPosZLabel.Size = new System.Drawing.Size(41, 11);
+			this.PlayerPosZLabel.TabIndex = 25;
+			this.PlayerPosZLabel.Text = "Z: N/A";
+			// 
+			// PlayerPosYLabel
+			// 
+			this.PlayerPosYLabel.AutoSize = true;
+			this.PlayerPosYLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosYLabel.Location = new System.Drawing.Point(12, 145);
+			this.PlayerPosYLabel.Name = "PlayerPosYLabel";
+			this.PlayerPosYLabel.Size = new System.Drawing.Size(41, 11);
+			this.PlayerPosYLabel.TabIndex = 24;
+			this.PlayerPosYLabel.Text = "Y: N/A";
+			// 
+			// PlayerPosXLabel
+			// 
+			this.PlayerPosXLabel.AutoSize = true;
+			this.PlayerPosXLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosXLabel.Location = new System.Drawing.Point(12, 128);
+			this.PlayerPosXLabel.Name = "PlayerPosXLabel";
+			this.PlayerPosXLabel.Size = new System.Drawing.Size(41, 11);
+			this.PlayerPosXLabel.TabIndex = 23;
+			this.PlayerPosXLabel.Text = "X: N/A";
+			// 
+			// LocationHeaderLabel
+			// 
+			this.LocationHeaderLabel.AutoSize = true;
+			this.LocationHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LocationHeaderLabel.Location = new System.Drawing.Point(2, 106);
+			this.LocationHeaderLabel.Name = "LocationHeaderLabel";
+			this.LocationHeaderLabel.Size = new System.Drawing.Size(63, 13);
+			this.LocationHeaderLabel.TabIndex = 22;
+			this.LocationHeaderLabel.Text = "Location";
+			// 
+			// PlayerZulyLabel
+			// 
+			this.PlayerZulyLabel.AutoSize = true;
+			this.PlayerZulyLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerZulyLabel.Location = new System.Drawing.Point(12, 84);
+			this.PlayerZulyLabel.Name = "PlayerZulyLabel";
+			this.PlayerZulyLabel.Size = new System.Drawing.Size(59, 11);
+			this.PlayerZulyLabel.TabIndex = 21;
+			this.PlayerZulyLabel.Text = "Zuly: N/A";
+			// 
+			// PlayerLevelLabel
+			// 
+			this.PlayerLevelLabel.AutoSize = true;
+			this.PlayerLevelLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerLevelLabel.Location = new System.Drawing.Point(12, 50);
+			this.PlayerLevelLabel.Name = "PlayerLevelLabel";
+			this.PlayerLevelLabel.Size = new System.Drawing.Size(65, 11);
+			this.PlayerLevelLabel.TabIndex = 20;
+			this.PlayerLevelLabel.Text = "Level: N/A";
+			// 
+			// PlayerNameLabel
+			// 
+			this.PlayerNameLabel.AutoSize = true;
+			this.PlayerNameLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerNameLabel.Location = new System.Drawing.Point(12, 33);
+			this.PlayerNameLabel.Name = "PlayerNameLabel";
+			this.PlayerNameLabel.Size = new System.Drawing.Size(59, 11);
+			this.PlayerNameLabel.TabIndex = 19;
+			this.PlayerNameLabel.Text = "Name: N/A";
+			this.PlayerNameLabel.Click += new System.EventHandler(this.PlayerNameLabel_Click);
 			// 
 			// button2
 			// 
@@ -1284,8 +1401,7 @@ namespace ElfBot
 		private System.Windows.Forms.Panel monsterTablePanel;
 		private System.Windows.Forms.Label monsterTableText;
 		private System.Windows.Forms.Button hookButton;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label PlayerPosLabel;
+		private System.Windows.Forms.Label CharacterHeaderLabel;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.MaskedTextBox lootTimeInputBox;
 		private System.Windows.Forms.MaskedTextBox actionDelayInputBox;
@@ -1333,7 +1449,6 @@ namespace ElfBot
 		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.CheckBox checkBox3;
-		private System.Windows.Forms.Label maxManaLabel;
 		private System.Windows.Forms.TextBox SystemMsgLog;
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label label3;
@@ -1363,6 +1478,18 @@ namespace ElfBot
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Label PlayerNameLabel;
+		private System.Windows.Forms.Label PlayerLevelLabel;
+		private System.Windows.Forms.Label PlayerMPLabel;
+		private System.Windows.Forms.Label PlayerHPLabel;
+		private System.Windows.Forms.Label PlayerStatusHeaderLabel;
+		private System.Windows.Forms.Label PlayerMapIdLabel;
+		private System.Windows.Forms.Label PlayerPosZLabel;
+		private System.Windows.Forms.Label PlayerPosYLabel;
+		private System.Windows.Forms.Label PlayerPosXLabel;
+		private System.Windows.Forms.Label LocationHeaderLabel;
+		private System.Windows.Forms.Label PlayerZulyLabel;
+		private System.Windows.Forms.Label MiscHeaderLabel;
 	}
 }
 
