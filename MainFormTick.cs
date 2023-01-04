@@ -18,7 +18,6 @@
 		private void StartTimer(Timer timer, int msDelay)
 		{
 			timer.Interval = msDelay;
-			//timer.Enabled = true;
 			timer.Start();
 		}
 

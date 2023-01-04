@@ -11,13 +11,11 @@ namespace ElfBot
 {
 	using Random = System.Random;
 	using Form = System.Windows.Forms.Form;
-	using AddressDict = System.Collections.Generic.Dictionary<string, string>;
 	using PercentageDict = System.Collections.Generic.Dictionary<string, float>;
 	using LogSet = System.Collections.Generic.HashSet<LogTypes>;
 	using KeyDict = System.Collections.Generic.Dictionary<string, WindowsInput.Native.VirtualKeyCode>;
 	using MonsterHashTable = System.Collections.Generic.HashSet<string>;
 	using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
-	using Mem = Memory.Mem;
 	using InputSimulator = WindowsInput.InputSimulator;
 	using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 
@@ -92,7 +90,6 @@ namespace ElfBot
 		private float _hpKeyDelay = 10f;
 		private float _mpKeyDelay = 10f;
 		private float _retargetTimeout = 15f;
-		private float _timedCameraYawDelay = 8f;
 		private float _lastXPos = 0f;
 		private float _lastYPos = 0f;
 
@@ -102,6 +99,5 @@ namespace ElfBot
 		private string _targetDefeatedMsg = "";
 		private const float CameraMaxZoom = 100f;
 		private const float CameraMaxPitch = 1f;
-		private float[] _cameraYawRotations = { 1.5f, -1.5f, 0f, 3f };
 	}
 }
