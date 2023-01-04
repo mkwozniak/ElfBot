@@ -35,7 +35,6 @@
 				XPBeforeKillLabel.Text = "XP Before Kill: " + _currentXP.ToString();
 				StartTimer(checkTimer, (int)(_actionDelay * 1000));
 				_combatState = CombatStates.CheckingTarget;
-
 				return;
 			}
 
@@ -92,18 +91,7 @@
 			if (MonsterTable.Contains(_currentTarget))
 			{
 				CheckTargetKilled();
-
-				if (_currentTargetUID != 0 && ActiveCombatKeys.Count > 0 && _targetDefeatedMsg.Length == 0)
-				{
-					int ranSkill = _ran.Next(0, ActiveCombatKeys.Count);
-					LogDateMsg("Attack Tick: " + ActiveCombatKeys[ranSkill].ToString());
-					_sim.Keyboard.KeyPress(ActiveCombatKeys[ranSkill]); // attack press
-
-					if (!attackTimeoutTimer.Enabled)
-					{
-						StartTimer(attackTimeoutTimer, (int)(_retargetTimeout * 1000));
-					}
-				}
+				CheckShouldAttackTarget();
 			}
 
 			// no proper target while attacking
@@ -135,7 +123,7 @@
 				return;
 			}
 
-            // Primary window 
+            // Primary window
             AutoCombatState.Text = _combatState.ToString();
 
 			// Character information
@@ -279,6 +267,43 @@
 				StopAllTimers();
 				SwitchToTargetting(true);
 			}
+		}
+
+		private void cameraTimer_Tick(object sender, EventArgs e)
+		{
+			if (!_hooked)
+				return;
+
+			CameraZoomLabel.Text = "Camera Zoom: " + _mem.ReadFloat(Addresses["CameraZoom"]).ToString();
+			CameraPitchLabel.Text = "Camera Pitch: " + _mem.ReadFloat(Addresses["CameraPitch"]).ToString();
+			CameraYawLabel.Text = "Camera Yaw: " + _mem.ReadFloat(Addresses["CameraYaw"]).ToString();
+
+			if (_forceCameraMaxZoom)
+			{
+				LogDateMsg("Force Zoom Camera Tick");
+				_mem.WriteMemory(Addresses["CameraZoom"], "float", _cameraMaxZoom);
+			}
+
+			if (_forceCameraTopDown)
+			{
+				LogDateMsg("Force Topdown Camera Tick");
+				_mem.WriteMemory(Addresses["CameraPitch"], "float", _cameraMaxPitch);
+			}
+
+			if (_timedCameraYaw)
+			{
+				int ranRot = _ran.Next(0, 2);
+				_mem.WriteMemory(Addresses["CameraYaw"], "float", _cameraYawRotations[ranRot]);
+			}
+		}
+
+		private void CameraYawTimer_Tick(object sender, EventArgs e)
+		{
+			if (!_hooked)
+				return;
+
+			LogDateMsg("Timed Camera Yaw Tick");
+			_sim.Mouse.VerticalScroll(-1);
 		}
 	}
 }
