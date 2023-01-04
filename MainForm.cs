@@ -18,6 +18,7 @@ namespace ElfBot
 	using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
 	using InputSimulator = WindowsInput.InputSimulator;
 	using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
+	using Size = System.Drawing.Size;
 
 	public sealed partial class MainForm : Form
 	{
@@ -65,7 +66,7 @@ namespace ElfBot
 		private bool _pressedTargetting = false;
 		private bool _eatHPFood = true;
 		private bool _eatMPFood = true;
-		private bool _forceCameraMaxZoom = false;
+		private bool _combatCamera = false;
 		private bool _forceCameraTopDown = false;
 		private bool _timedCameraYaw = false;
 
@@ -78,7 +79,7 @@ namespace ElfBot
 		private int _playerHP = 0;
 		private int _xpBeforeKill = -1;
 		private int _interfaceUpdateTime = 60;
-		private int _cameraTickTime = 500;
+		private int _combatCameraTickTime = 500;
 		private int _cameraYawTickTime = 50;
 		private int _panelButtonHeight = 26;
 		private int _rightClickCounter = 0;
@@ -99,5 +100,10 @@ namespace ElfBot
 		private string _targetDefeatedMsg = "";
 		private const float CameraMaxZoom = 100f;
 		private const float CameraMaxPitch = 1f;
+
+		private Size _size_monsterPanel = new Size(151, 443);
+		private Size _size_combatPanel = new Size(306, 443);
+		private Size _size_lootPanel = new Size(103, 443);
+		private Size _size_foodPanel = new Size(306, 443);
 	}
 }

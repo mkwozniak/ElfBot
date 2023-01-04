@@ -107,8 +107,7 @@
 
 			HpFoodCheckBox.Enabled = false;
 			MpFoodCheckBox.Enabled = false;
-			ForceMaxZoomCheckBox.Enabled = false;
-			ForceTopdownCheckBox.Enabled = false;
+			CombatCameraCheckBox.Enabled = false;
 			TimedCameraYawCheckBox.Enabled = false;
 			OnFinishedHooking += FinishHook;
 
@@ -128,8 +127,7 @@
 			AutoCombatCheckBox.Enabled = true;
 			HpFoodCheckBox.Enabled = true;
 			MpFoodCheckBox.Enabled = true;
-			ForceMaxZoomCheckBox.Enabled = true;
-			ForceTopdownCheckBox.Enabled = true;
+			CombatCameraCheckBox.Enabled = true;
 			TimedCameraYawCheckBox.Enabled = true;
 		}
 
@@ -257,11 +255,11 @@
 			CombatOptionsPanel.Visible = false;
 			LootOptionsPanel.Visible = false;
 			FoodOptionsPanel.Visible = false;
-			CameraOptionsPanel.Visible = false;
+			MonsterTablePanel.Visible = false;
 			CombatOptionsBtn.ForeColor = System.Drawing.Color.Black;
 			LootOptionsBtn.ForeColor = System.Drawing.Color.Black;
 			FoodOptionsBtn.ForeColor = System.Drawing.Color.Black;
-			CameraOptionsBtn.ForeColor = System.Drawing.Color.Black;
+			MonsterTableBtn.ForeColor = System.Drawing.Color.Black;
 		}
 
 		/// <summary> Tries to parse a float in an input box and stores the value in the referenced float. </summary>

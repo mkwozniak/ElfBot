@@ -6,6 +6,7 @@
 	using MessageBox = System.Windows.Forms.MessageBox;
 	using Mem = Memory.Mem;
 	using InputSimulator = WindowsInput.InputSimulator;
+	using Size = System.Drawing.Size;
 
 
 	public sealed partial class MainForm : Form
@@ -36,11 +37,11 @@
 			ListenToTimer(MpFoodTimer, MpFoodTimer_Tick);
 			ListenToTimer(HpFoodKeyTimer, HpFoodKeyTimer_Tick);
 			ListenToTimer(MpFoodKeyTimer, MpFoodKeyTimer_Tick);
-			ListenToTimer(CameraTimer, CameraTimer_Tick);
+			ListenToTimer(CombatCameraTimer, CombatCameraTimer_Tick);
 			ListenToTimer(CameraYawTimer, CameraYawTimer_Tick);
 
 			StartTimer(InterfaceTimer, _interfaceUpdateTime);
-			StartTimer(CameraTimer, _cameraTickTime);
+			StartTimer(CombatCameraTimer, _combatCameraTickTime);
 			StartTimer(CameraYawTimer, _cameraYawTickTime);
 
 			PrepareElfBot();
@@ -118,17 +119,17 @@
 			}
 		}
 
-		/// <summary> Loads a monster table  </summary>
+		/// <summary> Loads a monster table </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void LoadTableButton_Click(object sender, EventArgs e)
 		{
-			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			if (OpenMonsterTableDialog.ShowDialog() == DialogResult.OK)
 			{
 				try
 				{
-					var filePath = openFileDialog1.FileName;
-					var sr = new System.IO.StreamReader(openFileDialog1.FileName);
+					var filePath = OpenMonsterTableDialog.FileName;
+					var sr = new System.IO.StreamReader(OpenMonsterTableDialog.FileName);
 					string contents = sr.ReadToEnd();
 					string[] monsters = contents.Split(',');
 					if (monsters.Length > 0)
@@ -162,11 +163,11 @@
 				CombatOptionsBtn.Size = btnSize;
 				LootOptionsBtn.Size = btnSize;
 				FoodOptionsBtn.Size = btnSize;
-				CameraOptionsBtn.Size = newBtnSize;
+				MonsterTableBtn.Size = newBtnSize;
 
-				CameraOptionsPanel.Visible = true;
-				CameraOptionsPanel.Size = new System.Drawing.Size(103, 443);
-				CameraOptionsBtn.ForeColor = System.Drawing.Color.Green;
+				MonsterTablePanel.Visible = true;
+				MonsterTablePanel.Size = _size_monsterPanel;
+				MonsterTableBtn.ForeColor = System.Drawing.Color.Green;
 
 				_currentPanelsPage = 1;
 				return;
@@ -185,10 +186,10 @@
 				CombatOptionsBtn.Size = newBtnSize;
 				LootOptionsBtn.Size = newBtnSize;
 				FoodOptionsBtn.Size = newBtnSize;
-				CameraOptionsBtn.Size = btnSize;
+				MonsterTableBtn.Size = btnSize;
 
 				CombatOptionsPanel.Visible = true;
-				CombatOptionsPanel.Size = new System.Drawing.Size(306, 443);
+				CombatOptionsPanel.Size = _size_combatPanel;
 				CombatOptionsBtn.ForeColor = System.Drawing.Color.Green;
 
 				_currentPanelsPage = 0;
@@ -341,33 +342,17 @@
 		/// <summary> Enables/disables force max camera zoom </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ForceMaxZoomCheckbox_CheckedChanged(object sender, EventArgs e)
+		private void CombatCameraCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (ForceMaxZoomCheckBox.Checked)
+			if (CombatCameraCheckBox.Checked)
 			{
-				LogDateMsg("Enabled Force Max Camera Zoom", LogTypes.System);
-				_forceCameraMaxZoom = true;
+				LogDateMsg("Enabled Combat Camera", LogTypes.System);
+				_combatCamera = true;
 				return;
 			}
 
-			LogDateMsg("Disabled Force Max Camera Zoom", LogTypes.System);
-			_forceCameraMaxZoom = false;
-		}
-
-		/// <summary> Enables/disables force top down camera </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void ForceTopdownCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			if (ForceTopdownCheckBox.Checked)
-			{
-				LogDateMsg("Enabled Force Camera Topdown", LogTypes.System);
-				_forceCameraTopDown = true;
-				return;
-			}
-
-			LogDateMsg("Disabled Force Camera Topdown", LogTypes.System);
-			_forceCameraTopDown = false;
+			LogDateMsg("Disabled Combat Camera", LogTypes.System);
+			_combatCamera = false;
 		}
 
 		/// <summary> Enables/disables second client mode </summary>

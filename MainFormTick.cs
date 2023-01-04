@@ -41,9 +41,7 @@
 
 		#region Timer Tick Methods
 
-		/// <summary>
-		/// Timer tick for when bot is targetting
-		/// </summary>
+		/// <summary> Timer tick for when bot is targetting </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Targetting_Tick(object sender, EventArgs e)
@@ -81,9 +79,7 @@
 			SwitchToTargetting();
 		}
 
-		/// <summary>
-		/// Timer tick for when bot is checking its target
-		/// </summary>
+		/// <summary> Timer tick for when bot is checking its target </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void CheckingTarget_Tick(object sender, EventArgs e)
@@ -214,9 +210,7 @@
 			TargetUIDLabel.Text = $@"Target UID: {_currentTargetUID}";
 		}
 
-		/// <summary>
-		/// Timer tick for looting
-		/// </summary>
+		/// <summary> Timer tick for looting </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void Loot_Tick(object sender, EventArgs e)
@@ -226,9 +220,7 @@
 			_sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
 		}
 
-		/// <summary>
-		/// Timer tick for looting finished
-		/// </summary>
+		/// <summary> Timer tick for looting finished </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void LootEnd_Tick(object sender, EventArgs e)
@@ -241,9 +233,7 @@
 			SwitchToTargetting(true);
 		}
 
-		/// <summary>
-		/// Timer tick for eating hp food
-		/// </summary>
+		/// <summary> Timer tick for eating hp food </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void HpFoodTimer_Tick(object sender, EventArgs e)
@@ -273,9 +263,7 @@
 			}
 		}
 
-		/// <summary>
-		/// Timer tick for eating mp food
-		/// </summary>
+		/// <summary> Timer tick for eating mp food </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MpFoodTimer_Tick(object sender, EventArgs e)
@@ -306,9 +294,7 @@
 			}
 		}
 
-		/// <summary>
-		/// Timer tick to reset hp food key
-		/// </summary>
+		/// <summary> Timer tick to reset hp food key </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void HpFoodKeyTimer_Tick(object sender, EventArgs e)
@@ -317,9 +303,7 @@
 			StopTimer(HpFoodKeyTimer);
 		}
 
-		/// <summary>
-		/// Timer tick to reset mp food key
-		/// </summary>
+		/// <summary> Timer tick to reset mp food key </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MpFoodKeyTimer_Tick(object sender, EventArgs e)
@@ -328,9 +312,7 @@
 			StopTimer(MpFoodKeyTimer);
 		}
 
-		/// <summary>
-		/// Timer tick to timeout retarget
-		/// </summary>
+		/// <summary> Timer tick to timeout retarget </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void RetargetTimeout_Tick(object sender, EventArgs e)
@@ -349,12 +331,10 @@
 			}
 		}
 
-		/// <summary>
-		/// Timer tick for camera locks
-		/// </summary>
+		/// <summary> Timer tick for combat camera </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void CameraTimer_Tick(object sender, EventArgs e)
+		private void CombatCameraTimer_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked)
 				return;
@@ -363,19 +343,16 @@
 			CameraPitchLabel.Text = $@"Pitch: {Addresses.CameraPitch.GetValue()}";
 			CameraYawLabel.Text = $@"Yaw: {Addresses.CameraYaw.GetValue()}";
 
-			if (_forceCameraMaxZoom)
+			if (_combatCamera)
 			{
-				//LogDateMsg("Force Zoom Camera Tick", LogTypes.Camera);
 				Addresses.CameraZoom.writeValue(CameraMaxZoom);
-			}
-
-			if (_forceCameraTopDown)
-			{
-				//LogDateMsg("Force Topdown Camera Tick", LogTypes.Camera);
 				Addresses.CameraPitch.writeValue(CameraMaxPitch);
 			}
 		}
 
+		/// <summary> Timer tick for camera yaw spin </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CameraYawTimer_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked || !_timedCameraYaw)
@@ -389,7 +366,6 @@
 
 			if (_rightClickCounter > 50)
 			{
-				System.Console.WriteLine("Right Clicking ... ");
 				_rightClickCounter = 0;
 				_sim.Mouse.VerticalScroll(-1);
 			}
