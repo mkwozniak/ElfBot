@@ -123,8 +123,8 @@
 				return;
 			}
 
-            // Primary window
-            AutoCombatState.Text = _combatState.ToString();
+			// Primary window
+			AutoCombatState.Text = _combatState.ToString();
 
 			// Character information
 			String name = _mem.ReadString(Addresses["PlayerName"]);
@@ -136,28 +136,28 @@
 			CurrentXPLabel.Text = "XP: " + $"{_currentXP:n0}";
 			PlayerZulyLabel.Text = "Zuly: " + $"{zuly:n0}";
 
-            // Location information
-            float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
+			// Location information
+			float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
 			float y = _mem.ReadFloat(Addresses["PlayerYPos"]);
 			float z = _mem.ReadFloat(Addresses["PlayerZPos"]);
 			int mapId = _mem.ReadInt(Addresses["MapID"]);
-            PlayerPosXLabel.Text = "X: " + x.ToString();
-            PlayerPosYLabel.Text = "Y: " + y.ToString();
-            PlayerPosZLabel.Text = "Z: " + z.ToString();
+			PlayerPosXLabel.Text = "X: " + x.ToString();
+			PlayerPosYLabel.Text = "Y: " + y.ToString();
+			PlayerPosZLabel.Text = "Z: " + z.ToString();
 			PlayerMapIdLabel.Text = "Map ID: " + mapId.ToString();
 
 			// Status information
 			int hp = _mem.ReadInt(Addresses["PlayerHP"]);
 			int maxHp = _mem.ReadInt(Addresses["PlayerMaxHP"]);
-            int mp = _mem.ReadInt(Addresses["PlayerMP"]);
-            int maxMp = _mem.ReadInt(Addresses["PlayerMaxMP"]);
+			int mp = _mem.ReadInt(Addresses["PlayerMP"]);
+			int maxMp = _mem.ReadInt(Addresses["PlayerMaxMP"]);
 			PlayerHPLabel.Text = "HP: " + hp.ToString() + " / " + maxHp.ToString();
 			PlayerMPLabel.Text = "MP: " + mp.ToString() + " / " + maxMp.ToString();
 
-            // Misc information
-            _currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
-            _currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
-            TargetLabel.Text = "Target: " + _currentTarget;
+			// Misc information
+			_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
+			_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
+			TargetLabel.Text = "Target: " + _currentTarget;
 			TargetUIDLabel.Text = "Target UID: " + _currentTargetUID.ToString();
 		}
 

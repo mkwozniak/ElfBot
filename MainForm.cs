@@ -159,8 +159,6 @@
 			CombatOptionsPanel.Size = new System.Drawing.Size(306, 443);
 			CombatOptionsBtn.ForeColor = System.Drawing.Color.Green;
 
-			PlayerPosLabel.Text = "X: 0| Y: 0| Z: 0";
-
 			// worker threads could be useful later
 			// if (!worker.IsBusy)  {  //worker.RunWorkerAsync();  }
 		}
