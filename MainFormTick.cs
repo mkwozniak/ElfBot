@@ -5,6 +5,7 @@
 	using Form = System.Windows.Forms.Form;
 	using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 	using Timer = System.Windows.Forms.Timer;
+	using Math = System.Math;
 
 	public sealed partial class MainForm : Form
 	{
@@ -365,38 +366,34 @@
 
 			if (_forceCameraMaxZoom)
 			{
-				LogDateMsg("Force Zoom Camera Tick", LogTypes.Camera);
+				//LogDateMsg("Force Zoom Camera Tick", LogTypes.Camera);
 				Addresses.CameraZoom.writeValue(CameraMaxZoom);
 			}
 
 			if (_forceCameraTopDown)
 			{
-				LogDateMsg("Force Topdown Camera Tick", LogTypes.Camera);
+				//LogDateMsg("Force Topdown Camera Tick", LogTypes.Camera);
 				Addresses.CameraPitch.writeValue(CameraMaxPitch);
 			}
 		}
 
-		/// <summary>
-		/// Timer tick for delayed camera yaw event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void CameraYawTimer_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked || !_timedCameraYaw)
 				return;
 
-			LogDateMsg("Timed Camera Yaw Tick: " + _currentYawIndex, LogTypes.Camera);
-			_currentYawIndex++;		
-			_sim.Mouse.VerticalScroll(-1);
+			float waveform = (float) ((Math.PI / 1.1) * Math.Sin(0.25 * _yawCounter));
+			Addresses.CameraYaw.writeValue(waveform);
+			_yawCounter += 0.05;
 
-			if (_currentYawIndex >= _cameraYawRotations.Length)
+			_rightClickCounter++;
+
+			if (_rightClickCounter > 50)
 			{
-				_currentYawIndex = 0;
+				System.Console.WriteLine("Right Clicking ... ");
+				_rightClickCounter = 0;
+				_sim.Mouse.VerticalScroll(-1);
 			}
-
-			Addresses.CameraYaw.writeValue(_cameraYawRotations[_currentYawIndex]);
-			_currentYawIndex++;		
 		}
 
 		#endregion

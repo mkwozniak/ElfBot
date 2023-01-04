@@ -41,6 +41,7 @@
 
 			StartTimer(InterfaceTimer, _interfaceUpdateTime);
 			StartTimer(CameraTimer, _cameraTickTime);
+			StartTimer(CameraYawTimer, _cameraYawTickTime);
 
 			PrepareElfBot();
 		}
@@ -265,11 +266,6 @@
 			TryFloatFromInputBox(EatKeyDelayInputBox, ref _mpKeyDelay);
 		}
 
-		private void CameraYawDelayInputBox_InputChanged(object sender, EventArgs e)
-		{
-			TryFloatFromInputBox(CameraYawDelayInputBox, ref _timedCameraYawDelay);
-		}
-
 		#endregion
 
 		#region Checkbox Events
@@ -395,21 +391,14 @@
 		/// <param name="e"></param>
 		private void TimedCameraYawCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			//StopTimer(CameraYawTimer);
-
 			if (TimedCameraYawCheckBox.Checked)
 			{
 				LogDateMsg("Enabled Timed Camera Yaw.", LogTypes.System);
-				if(!CameraYawTimer.Enabled)
-				{
-					StartTimer(CameraYawTimer, (int)(_timedCameraYawDelay * 1000));
-					_timedCameraYaw = true;
-				}
+				_timedCameraYaw = true;
 				return;
 			}
 
 			LogDateMsg("Disabled Timed Camera Yaw.", LogTypes.System);
-			StopTimer(CameraYawTimer);
 			_timedCameraYaw = false;
 		}
 

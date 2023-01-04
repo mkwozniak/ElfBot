@@ -149,8 +149,6 @@ namespace ElfBot
 			this.CameraOptionsPanel = new System.Windows.Forms.Panel();
 			this.TimedCameraYawCheckBox = new System.Windows.Forms.CheckBox();
 			this.ForceTopdownCheckBox = new System.Windows.Forms.CheckBox();
-			this.CameraYawDelayLabel = new System.Windows.Forms.Label();
-			this.CameraYawDelayInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.CameraYawTimer = new System.Windows.Forms.Timer(this.components);
 			this.ZHackPanel = new System.Windows.Forms.Panel();
 			this.TimedZHackAmountInputbox = new System.Windows.Forms.MaskedTextBox();
@@ -1423,8 +1421,6 @@ namespace ElfBot
 			this.CameraOptionsPanel.Controls.Add(this.TimedCameraYawCheckBox);
 			this.CameraOptionsPanel.Controls.Add(this.ForceTopdownCheckBox);
 			this.CameraOptionsPanel.Controls.Add(this.ForceMaxZoomCheckBox);
-			this.CameraOptionsPanel.Controls.Add(this.CameraYawDelayLabel);
-			this.CameraOptionsPanel.Controls.Add(this.CameraYawDelayInputBox);
 			this.CameraOptionsPanel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.CameraOptionsPanel.Location = new System.Drawing.Point(9, 109);
 			this.CameraOptionsPanel.Name = "CameraOptionsPanel";
@@ -1434,11 +1430,11 @@ namespace ElfBot
 			// TimedCameraYawCheckBox
 			// 
 			this.TimedCameraYawCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TimedCameraYawCheckBox.Location = new System.Drawing.Point(4, 94);
+			this.TimedCameraYawCheckBox.Location = new System.Drawing.Point(4, 90);
 			this.TimedCameraYawCheckBox.Name = "TimedCameraYawCheckBox";
 			this.TimedCameraYawCheckBox.Size = new System.Drawing.Size(74, 40);
 			this.TimedCameraYawCheckBox.TabIndex = 41;
-			this.TimedCameraYawCheckBox.Text = "Timed Camera Yaw";
+			this.TimedCameraYawCheckBox.Text = "Camera Yaw Wave";
 			this.TimedCameraYawCheckBox.UseVisualStyleBackColor = true;
 			this.TimedCameraYawCheckBox.CheckedChanged += new System.EventHandler(this.TimedCameraYawCheckBox_CheckedChanged);
 			// 
@@ -1452,25 +1448,6 @@ namespace ElfBot
 			this.ForceTopdownCheckBox.Text = "Force Camera Top Down";
 			this.ForceTopdownCheckBox.UseVisualStyleBackColor = true;
 			this.ForceTopdownCheckBox.CheckedChanged += new System.EventHandler(this.ForceTopdownCheckbox_CheckedChanged);
-			// 
-			// CameraYawDelayLabel
-			// 
-			this.CameraYawDelayLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CameraYawDelayLabel.Location = new System.Drawing.Point(5, 137);
-			this.CameraYawDelayLabel.Name = "CameraYawDelayLabel";
-			this.CameraYawDelayLabel.Size = new System.Drawing.Size(73, 23);
-			this.CameraYawDelayLabel.TabIndex = 44;
-			this.CameraYawDelayLabel.Text = "Camera Yaw Delay";
-			// 
-			// CameraYawDelayInputBox
-			// 
-			this.CameraYawDelayInputBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CameraYawDelayInputBox.Location = new System.Drawing.Point(7, 163);
-			this.CameraYawDelayInputBox.Name = "CameraYawDelayInputBox";
-			this.CameraYawDelayInputBox.Size = new System.Drawing.Size(65, 18);
-			this.CameraYawDelayInputBox.TabIndex = 43;
-			this.CameraYawDelayInputBox.Text = "8";
-			this.CameraYawDelayInputBox.TextChanged += new System.EventHandler(this.CameraYawDelayInputBox_InputChanged);
 			// 
 			// ZHackPanel
 			// 
@@ -1574,7 +1551,6 @@ namespace ElfBot
 			this.panel2.PerformLayout();
 			this.panel3.ResumeLayout(false);
 			this.CameraOptionsPanel.ResumeLayout(false);
-			this.CameraOptionsPanel.PerformLayout();
 			this.ZHackPanel.ResumeLayout(false);
 			this.ZHackPanel.PerformLayout();
 			this.ResumeLayout(false);
@@ -1700,8 +1676,6 @@ namespace ElfBot
 		private System.Windows.Forms.Label TimedZHackAmountLabel;
 		private System.Windows.Forms.Label TimedZHackDelayLabel;
 		private System.Windows.Forms.CheckBox TimedCameraYawCheckBox;
-		private System.Windows.Forms.Label CameraYawDelayLabel;
-		private System.Windows.Forms.MaskedTextBox CameraYawDelayInputBox;
         private System.Windows.Forms.Label CameraHeaderLabel;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Panel panel3;
