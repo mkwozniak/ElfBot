@@ -258,7 +258,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include=".gitignore" />
     <Content Include="elfbot-icon.ico" />
     <EmbeddedResource Include="Resources\elfbot-icon-large.png" />
     <EmbeddedResource Include="Resources\elfbot-icon.png" />
