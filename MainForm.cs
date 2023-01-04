@@ -1,8 +1,6 @@
 ﻿namespace ElfBot
 {
 	using System;
-	using System.Linq;
-	using System.ComponentModel;
 	using System.Windows.Forms;
 	using Memory;
 	using WindowsInput;
@@ -26,28 +24,6 @@
 		}
 
 		#region Members
-
-		private AddressDict Addresses = new AddressDict()
-		{
-			{ "PlayerName" , "trose.exe+10C1918" },
-			{ "PlayerLevel" , "trose.exe+10BE100,0x3AD8" },
-			{ "Zuly" , "trose.exe+10BE100,0x3D38" },
-			{ "MapID" , "trose.exe+10C4AE4" },
-			{ "CurrentTarget" , "trose.exe+10D8C10" },
-			{ "CurrentXP" , "trose.exe+10BE100,0x3AD4" },
-			{ "TargetUID" , "trose.exe+10C0458,0x8"},
-			{ "PlayerXPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1B8"},
-			{ "PlayerYPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1BC"},
-			{ "PlayerZPos", "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1C0" },
-			{ "PlayerHP" , "trose.exe+10BE100,0x3acc"},
-			{ "PlayerMaxHP" , "trose.exe+10BE100,0x4600"},
-			{ "PlayerMP" , "trose.exe+10BE100,0x3AD0"},
-			{ "PlayerMaxMP" , "trose.exe+10BE100,0x4604"},
-			{ "TargetDefeatedMsg" , "trose.exe+10C5950"},
-			{ "CameraZoom", "trose.exe+010D2520,0xD70,0x6C4" },
-			{ "CameraPitch", "trose.exe+010D2520,0xD70,0x6C0" },
-			{ "CameraYaw", "trose.exe+010D2520,0xD70,0x6BC" },
-		};
 
 		private PercentageDict Percentages = new PercentageDict()
 		{
@@ -83,11 +59,9 @@
 		private MonsterHashTable MonsterTable;
 
 		private CombatStates _combatState;
-		private Mem _mem;
 		private InputSimulator _sim;
 		private System.Random _ran = new System.Random();
 
-		private bool _hooked = false;
 		private bool _dualClient = true;
 		private bool _pressedTargetting = false;
 		private bool _eatHPFood = true;
@@ -121,9 +95,9 @@
 
 		private string _currentTarget = "";
 		private string _targetDefeatedMsg = "";
-		private string _cameraMaxZoom = "100";
-		private string _cameraMaxPitch = "1";
-		private string[] _cameraYawRotations = new string[] { "1.5", "-1.5", "0", "3" };
+		private const float CameraMaxZoom = 100f;
+		private const float CameraMaxPitch = 1f;
+		private float[] _cameraYawRotations = { 1.5f, -1.5f, 0f, 3f };
 
 		#endregion
 
@@ -131,7 +105,6 @@
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			_mem = new Mem();
 			_sim = new InputSimulator();
 
 			ListenToTimer(combatTimer, attacking_Tick);
@@ -215,11 +188,11 @@
 
 			if (pID > 0)
 			{
-				_mem.OpenProcess(pID);
+				Globals.TargetApplicationMemory.OpenProcess(pID);
 				ProcessHookLabel.Text = "Process Hooked!";
 				ProcessHookLabel.ForeColor = System.Drawing.Color.LimeGreen;
 				AutoCombatBox.Enabled = true;
-				_hooked = true;
+				Globals.Hooked = true;
 				return true;
 			}
 
@@ -317,7 +290,7 @@
 			// if current xp is greater than our xp while targetting
 			if (_currentXP > _xpBeforeKill)
 			{
-				_targetDefeatedMsg = _mem.ReadString(Addresses["TargetDefeatedMsg"]);
+				_targetDefeatedMsg = Addresses.TargetDefeatedMessage.GetValue();
 				LogDateMsg("Target Defeat: " + _targetDefeatedMsg);
 				StopTimer(attackTimeoutTimer);
 
@@ -399,7 +372,7 @@
 
 		private void AutoCombatBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (!AutoCombatBox.Checked)
@@ -602,7 +575,7 @@
 
 		private void hpFoodCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (hpFoodCheckbox.Checked)
@@ -618,7 +591,7 @@
 
 		private void mpFoodCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (mpFoodCheckbox.Checked)

@@ -3,11 +3,9 @@
 	using System;
 	using System.Windows.Forms;
 	using WindowsInput.Native;
-	using WindowsInput;
 
 	public sealed partial class MainForm : Form
 	{
-
 		private void targetting_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
@@ -17,8 +15,8 @@
 
 			if (_currentTargetUID != -1)
 			{
-				_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
-				_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
+				_currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
+				_currentTargetUID = Addresses.TargetId.GetValue();
 			}
 
 			// if current target isnt in monstertable or there is no unique target id
@@ -32,7 +30,7 @@
 
 				// go into checking target mode to make sure the tab target was OK
 				// update labels
-				XPBeforeKillLabel.Text = "XP Before Kill: " + _currentXP.ToString();
+				XPBeforeKillLabel.Text = $@"XP Before Kill: {_currentXP}";
 				StartTimer(checkTimer, (int)(_actionDelay * 1000));
 				_combatState = CombatStates.CheckingTarget;
 				return;
@@ -46,8 +44,8 @@
 			AutoCombatState.Text = _combatState.ToString();
 
 			// get target memory
-			_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]);
-			_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
+			_currentTarget = Addresses.Target.GetValue();
+			_currentTargetUID = Addresses.TargetId.GetValue();
 
 			LogDateMsg("Checking Target Tick");
 
@@ -62,13 +60,13 @@
 				StopTimer(combatTimer);
 
 				// keep track of last position before going into attack mode 
-				_lastXPos = _mem.ReadFloat(Addresses["PlayerXPos"]);
-				_lastYPos = _mem.ReadFloat(Addresses["PlayerYPos"]);
+				_lastXPos = Addresses.PositionX.GetValue();
+				_lastYPos = Addresses.PositionY.GetValue();
 
 				_targetDefeatedMsg = "";
 				_combatState = CombatStates.Attacking;
 
-				if(!combatTimer.Enabled)
+				if (!combatTimer.Enabled)
 				{
 					StartTimer(combatTimer, (int)(_combatKeyDelay * 1000));
 				}
@@ -83,10 +81,10 @@
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
-			_currentXP = _mem.ReadInt(Addresses["CurrentXP"]); // get current xp
-			_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
-			_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
-			_playerMaxMP = _mem.ReadInt(Addresses["PlayerMaxMP"]);
+			_currentXP = Addresses.Xp.GetValue(); // get current xp
+			_currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
+			_currentTargetUID = Addresses.TargetId.GetValue();
+			_playerMaxMP = Addresses.MaxMp.GetValue();
 
 			if (MonsterTable.Contains(_currentTarget))
 			{
@@ -118,7 +116,7 @@
 
 		private void interface_Tick(object sender, EventArgs e)
 		{
-			if(!_hooked)
+			if (!Globals.Hooked)
 			{
 				return;
 			}
@@ -127,38 +125,38 @@
 			AutoCombatState.Text = _combatState.ToString();
 
 			// Character information
-			String name = _mem.ReadString(Addresses["PlayerName"]);
-			int level = _mem.Read2Byte(Addresses["PlayerLevel"]);
-			_currentXP = _mem.ReadInt(Addresses["CurrentXP"]);
-			int zuly = _mem.ReadInt(Addresses["Zuly"]);
-			PlayerNameLabel.Text = "Name: " + name.ToString();
-			PlayerLevelLabel.Text = "Level: " + level.ToString();
-			CurrentXPLabel.Text = "XP: " + $"{_currentXP:n0}";
-			PlayerZulyLabel.Text = "Zuly: " + $"{zuly:n0}";
+			String name = Addresses.CharacterName.GetValue();
+			int level = Addresses.Level.GetValue();
+			_currentXP = Addresses.Xp.GetValue();
+			int zuly = Addresses.Zuly.GetValue();
+			PlayerNameLabel.Text = $@"Name: {name}";
+			PlayerLevelLabel.Text = $@"Level: {level}";
+			CurrentXPLabel.Text = $@"XP: {_currentXP:n0}";
+			PlayerZulyLabel.Text = $@"Zuly: {zuly:n0}";
 
 			// Location information
-			float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
-			float y = _mem.ReadFloat(Addresses["PlayerYPos"]);
-			float z = _mem.ReadFloat(Addresses["PlayerZPos"]);
-			int mapId = _mem.ReadInt(Addresses["MapID"]);
-			PlayerPosXLabel.Text = "X: " + x.ToString();
-			PlayerPosYLabel.Text = "Y: " + y.ToString();
-			PlayerPosZLabel.Text = "Z: " + z.ToString();
-			PlayerMapIdLabel.Text = "Map ID: " + mapId.ToString();
+			float x = Addresses.PositionX.GetValue();
+			float y = Addresses.PositionY.GetValue();
+			float z = Addresses.PositionZ.GetValue();
+			int mapId = Addresses.MapId.GetValue();
+			PlayerPosXLabel.Text = $@"X: {x}";
+			PlayerPosYLabel.Text = $@"Y: {y}";
+			PlayerPosZLabel.Text = $@"Z: {z}";
+			PlayerMapIdLabel.Text = $@"Map ID: {mapId}";
 
 			// Status information
-			int hp = _mem.ReadInt(Addresses["PlayerHP"]);
-			int maxHp = _mem.ReadInt(Addresses["PlayerMaxHP"]);
-			int mp = _mem.ReadInt(Addresses["PlayerMP"]);
-			int maxMp = _mem.ReadInt(Addresses["PlayerMaxMP"]);
-			PlayerHPLabel.Text = "HP: " + hp.ToString() + " / " + maxHp.ToString();
-			PlayerMPLabel.Text = "MP: " + mp.ToString() + " / " + maxMp.ToString();
+			int hp = Addresses.Hp.GetValue();
+			int maxHp = Addresses.MaxHp.GetValue();
+			int mp = Addresses.Mp.GetValue();
+			int maxMp = Addresses.MaxMp.GetValue();
+			PlayerHPLabel.Text = $@"HP: {hp} / {maxHp}";
+			PlayerMPLabel.Text = $@"MP: {mp} / {maxMp}";
 
 			// Misc information
-			_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
-			_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
-			TargetLabel.Text = "Target: " + _currentTarget;
-			TargetUIDLabel.Text = "Target UID: " + _currentTargetUID.ToString();
+			_currentTarget = Addresses.Target.GetValue();
+			_currentTargetUID = Addresses.TargetId.GetValue();
+			TargetLabel.Text = $@"Target: {_currentTarget}";
+			TargetUIDLabel.Text = $@"Target UID: {_currentTargetUID}";
 		}
 
 		private void loot_Tick(object sender, EventArgs e)
@@ -189,8 +187,8 @@
 			if (ActiveHPKeys.Count == 0)
 				return;
 
-			_playerHP = _mem.ReadInt(Addresses["PlayerHP"]);
-			_playerMaxHP = _mem.ReadInt(Addresses["PlayerMaxHP"]);
+			_playerHP = Addresses.Hp.GetValue();
+			_playerMaxHP = Addresses.MaxHp.GetValue();
 
 			if (_playerHP == 0 || _playerMaxHP == 0)
 				return;
@@ -198,10 +196,9 @@
 			float hpPercent = ((float)(_playerHP) / (float)(_playerMaxHP));
 			string desiredHP = hpComboBox.Text;
 
-			LogDateMsg("Checking Food Tick HP: " + _playerHP.ToString() + "/" + _playerMaxHP.ToString() 
-				+ "(" + ((int)(hpPercent * 100f)).ToString() + "%)");
+			LogDateMsg($"Checking Food Tick HP: {_playerHP}/{_playerMaxHP}({(int)(hpPercent * 100f)}%)");
 
-			if(hpPercent < Percentages[desiredHP] && _eatHPFood)
+			if (hpPercent < Percentages[desiredHP] && _eatHPFood)
 			{
 				int ranFood = _ran.Next(0, ActiveHPKeys.Count);
 				LogDateMsg("Eat HP Food: " + ActiveHPKeys[ranFood].ToString());
@@ -217,8 +214,8 @@
 			if (ActiveMPKeys.Count == 0)
 				return;
 
-			_playerMP = _mem.ReadInt(Addresses["PlayerMP"]);
-			_playerMaxMP = _mem.ReadInt(Addresses["PlayerMaxMP"]);
+			_playerHP = Addresses.Hp.GetValue();
+			_playerMaxHP = Addresses.MaxHp.GetValue();
 
 			if (_playerMP == 0 || _playerMaxMP == 0)
 				return;
@@ -227,8 +224,7 @@
 
 			string desiredMP = mpComboBox.Text;
 
-			LogDateMsg("Checking Food Tick MP: " + _playerMP.ToString() + "/" + _playerMaxMP.ToString()
-				+ "(" + ((int)(mpPercent * 100f)).ToString() + "%)");
+			LogDateMsg($"Checking Food Tick MP: {_playerMP}/{_playerMaxMP}({(int)(mpPercent * 100f)}%)");
 
 			if (mpPercent < Percentages[desiredMP] && _eatMPFood)
 			{
@@ -255,9 +251,9 @@
 
 		private void retargetTimeout_Tick(object sender, EventArgs e)
 		{
-			_currentXP = _mem.ReadInt(Addresses["CurrentXP"]); // get current xp
-			float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
-			float y = _mem.ReadFloat(Addresses["PlayerYPos"]);
+			_currentXP = Addresses.Xp.GetValue();
+			float x = Addresses.PositionX.GetValue();
+			float y = Addresses.PositionY.GetValue();
 
 			StopTimer(attackTimeoutTimer);
 
@@ -271,35 +267,35 @@
 
 		private void cameraTimer_Tick(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
-			CameraZoomLabel.Text = "Camera Zoom: " + _mem.ReadFloat(Addresses["CameraZoom"]).ToString();
-			CameraPitchLabel.Text = "Camera Pitch: " + _mem.ReadFloat(Addresses["CameraPitch"]).ToString();
-			CameraYawLabel.Text = "Camera Yaw: " + _mem.ReadFloat(Addresses["CameraYaw"]).ToString();
+			CameraZoomLabel.Text = $@"Zoom: {Addresses.CameraZoom.GetValue()}";
+			CameraPitchLabel.Text = $@"Pitch: {Addresses.CameraPitch.GetValue()}";
+			CameraYawLabel.Text = $@"Yaw: {Addresses.CameraYaw.GetValue()}";
 
 			if (_forceCameraMaxZoom)
 			{
 				LogDateMsg("Force Zoom Camera Tick");
-				_mem.WriteMemory(Addresses["CameraZoom"], "float", _cameraMaxZoom);
+				Addresses.CameraZoom.writeValue(CameraMaxZoom);
 			}
 
 			if (_forceCameraTopDown)
 			{
 				LogDateMsg("Force Topdown Camera Tick");
-				_mem.WriteMemory(Addresses["CameraPitch"], "float", _cameraMaxPitch);
+				Addresses.CameraPitch.writeValue(CameraMaxPitch);
 			}
 		}
 
 		private void CameraYawTimer_Tick(object sender, EventArgs e)
 		{
-			if (!_hooked || !_timedCameraYaw)
+			if (!Globals.Hooked || !_timedCameraYaw)
 				return;
 
 			LogDateMsg("Timed Camera Yaw Tick");
 			_sim.Mouse.VerticalScroll(-1);
 			int ranRot = _ran.Next(0, 2);
-			_mem.WriteMemory(Addresses["CameraYaw"], "float", _cameraYawRotations[ranRot]);
+			Addresses.CameraYaw.writeValue(_cameraYawRotations[ranRot]);
 		}
 	}
 }
