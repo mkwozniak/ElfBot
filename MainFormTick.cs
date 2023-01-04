@@ -1,17 +1,56 @@
 ﻿namespace ElfBot
 {
-	using System;
-	using System.Windows.Forms;
-	using WindowsInput.Native;
+	using EventArgs = System.EventArgs;
+	using EventHandler = System.EventHandler;
+	using Form = System.Windows.Forms.Form;
+	using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
+	using Timer = System.Windows.Forms.Timer;
 
 	public sealed partial class MainForm : Form
 	{
-		private void targetting_Tick(object sender, EventArgs e)
+		#region Timer Methods
+		private void ListenToTimer(Timer timer, EventHandler del)
+		{
+			timer.Tick += new EventHandler(del);
+		}
+
+		private void StartTimer(Timer timer, int msDelay)
+		{
+			timer.Interval = msDelay;
+			//timer.Enabled = true;
+			timer.Start();
+		}
+
+		private void StopTimer(Timer timer)
+		{
+			timer.Stop();
+			timer.Enabled = false;
+		}
+
+		private void StopAllCombatRelatedTimers()
+		{
+			StopTimer(CombatTimer);
+			StopTimer(TargettingTimer);
+			StopTimer(CheckTimer);
+			StopTimer(LootingEndTimer);
+			StopTimer(LootingTimer);
+			StopTimer(AttackTimeoutTimer);
+		}
+
+		#endregion
+
+		#region Timer Tick Methods
+
+		/// <summary>
+		/// Timer tick for when bot is targetting
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Targetting_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
-			// unassign timer event
-			StopTimer(targettingTimer);
+			StopTimer(TargettingTimer);
 
 			if (_currentTargetUID != -1)
 			{
@@ -20,18 +59,21 @@
 			}
 
 			// if current target isnt in monstertable or there is no unique target id
-			if ((!MonsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
+			if ((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
 			{
 				// press targetting key
 				_sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
 				_pressedTargetting = true;
 
-				LogDateMsg("Target Tab Press Tick");
+				LogDateMsg("Target Tab Press Tick", LogTypes.Combat);
+
+				_currentXP = Addresses.Xp.GetValue();
+				_xpBeforeKill = _currentXP;
 
 				// go into checking target mode to make sure the tab target was OK
 				// update labels
 				XPBeforeKillLabel.Text = $@"XP Before Kill: {_currentXP}";
-				StartTimer(checkTimer, (int)(_actionDelay * 1000));
+				StartTimer(CheckTimer, (int)(_actionDelay * 1000));
 				_combatState = CombatStates.CheckingTarget;
 				return;
 			}
@@ -39,7 +81,12 @@
 			SwitchToTargetting();
 		}
 
-		private void checkingTarget_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for when bot is checking its target
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void CheckingTarget_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
@@ -47,17 +94,17 @@
 			_currentTarget = Addresses.Target.GetValue();
 			_currentTargetUID = Addresses.TargetId.GetValue();
 
-			LogDateMsg("Checking Target Tick");
+			LogDateMsg("Checking Target Tick", LogTypes.Combat);
 
-			StopTimer(checkTimer);
+			StopTimer(CheckTimer);
 
 			// if current target is in monster table
-			if (MonsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
+			if (_monsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
 			{
-				StopTimer(attackTimeoutTimer); // stop timeout timer
+				StopTimer(AttackTimeoutTimer); // stop timeout timer
 
 				// go into attack state
-				StopTimer(combatTimer);
+				StopTimer(CombatTimer);
 
 				// keep track of last position before going into attack mode 
 				_lastXPos = Addresses.PositionX.GetValue();
@@ -66,9 +113,9 @@
 				_targetDefeatedMsg = "";
 				_combatState = CombatStates.Attacking;
 
-				if (!combatTimer.Enabled)
+				if(!CombatTimer.Enabled)
 				{
-					StartTimer(combatTimer, (int)(_combatKeyDelay * 1000));
+					StartTimer(CombatTimer, (int)(_combatKeyDelay * 1000));
 				}
 
 				return;
@@ -77,7 +124,12 @@
 			SwitchToTargetting();
 		}
 
-		private void attacking_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for when bot is attacking its target
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Attacking_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
 
@@ -86,7 +138,7 @@
 			_currentTargetUID = Addresses.TargetId.GetValue();
 			_playerMaxMP = Addresses.MaxMp.GetValue();
 
-			if (MonsterTable.Contains(_currentTarget))
+			if (_monsterTable.Contains(_currentTarget))
 			{
 				CheckTargetKilled();
 				CheckShouldAttackTarget();
@@ -96,25 +148,30 @@
 			if (_currentTargetUID == 0)
 			{
 				// back to targetting
-				StopTimer(combatTimer);
+				StopTimer(CombatTimer);
 				SwitchToTargetting();
 			}
 
 			// if the current XP is less than the xp before the last kill, then the char leveled up
 			if (_currentXP < _xpBeforeKill)
 			{
-				LogDateMsg("Leveled Up. Resetting State.");
+				LogDateMsg("Leveled Up. Resetting State.", LogTypes.System);
 
 				// reset the xp before kill to -1
 				_xpBeforeKill = -1;
-				StopAllTimers();
+				StopAllCombatRelatedTimers();
 
 				// back to targetting
 				SwitchToTargetting(true);
 			}
 		}
 
-		private void interface_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for bot interface values to update
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Interface_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked)
 			{
@@ -125,13 +182,13 @@
 			AutoCombatState.Text = _combatState.ToString();
 
 			// Character information
-			String name = Addresses.CharacterName.GetValue();
+			string name = Addresses.CharacterName.GetValue();
 			int level = Addresses.Level.GetValue();
-			_currentXP = Addresses.Xp.GetValue();
+			int xp = Addresses.Xp.GetValue();
 			int zuly = Addresses.Zuly.GetValue();
 			PlayerNameLabel.Text = $@"Name: {name}";
 			PlayerLevelLabel.Text = $@"Level: {level}";
-			CurrentXPLabel.Text = $@"XP: {_currentXP:n0}";
+			CurrentXPLabel.Text = $@"XP: {xp:n0}";
 			PlayerZulyLabel.Text = $@"Zuly: {zuly:n0}";
 
 			// Location information
@@ -153,38 +210,45 @@
 			PlayerMPLabel.Text = $@"MP: {mp} / {maxMp}";
 
 			// Misc information
-			_currentTarget = Addresses.Target.GetValue();
-			_currentTargetUID = Addresses.TargetId.GetValue();
-			TargetLabel.Text = $@"Target: {_currentTarget}";
+			TargetLabel.Text = $@"Target: {(string.IsNullOrEmpty(_currentTarget) ? "N/A" : _currentTarget)}";
 			TargetUIDLabel.Text = $@"Target UID: {_currentTargetUID}";
 		}
 
-		private void loot_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for looting
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Loot_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
-			LogDateMsg("Looting Tick");
+			LogDateMsg("Looting Tick", LogTypes.Combat);
 			_sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
 		}
 
-		private void lootEnd_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for looting finished
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void LootEnd_Tick(object sender, EventArgs e)
 		{
 			AutoCombatState.Text = _combatState.ToString();
-			StopTimer(lootingEndTimer);
-			StopTimer(lootingTimer);
-			LogDateMsg("End Loot Tick");
+			StopTimer(LootingEndTimer);
+			StopTimer(LootingTimer);
+			LogDateMsg("End Loot Tick", LogTypes.Combat);
 
-			// go back to targetting
-			_currentTarget = "";
-			_pressedTargetting = false;
-			_currentTargetUID = -1;
-			_combatState = CombatStates.Targetting;
 			SwitchToTargetting(true);
-			StartTimer(targettingTimer, (int)(_actionDelay * 1000));
 		}
 
-		private void hpFoodTimer_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for eating hp food
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void HpFoodTimer_Tick(object sender, EventArgs e)
 		{
-			if (ActiveHPKeys.Count == 0)
+			if (_activeHPKeys.Count == 0)
 				return;
 
 			_playerHP = Addresses.Hp.GetValue();
@@ -196,22 +260,27 @@
 			float hpPercent = ((float)(_playerHP) / (float)(_playerMaxHP));
 			string desiredHP = hpComboBox.Text;
 
-			LogDateMsg($"Checking Food Tick HP: {_playerHP}/{_playerMaxHP}({(int)(hpPercent * 100f)}%)");
+			LogDateMsg($"Checking Food Tick HP: {_playerHP}/{_playerMaxHP}({(int)(hpPercent * 100f)}%)", LogTypes.Food);
 
-			if (hpPercent < Percentages[desiredHP] && _eatHPFood)
+			if (hpPercent < _percentages[desiredHP] && _eatHPFood)
 			{
-				int ranFood = _ran.Next(0, ActiveHPKeys.Count);
-				LogDateMsg("Eat HP Food: " + ActiveHPKeys[ranFood].ToString());
-				_sim.Keyboard.KeyPress(ActiveHPKeys[ranFood]); // food press
+				int ranFood = _ran.Next(0, _activeHPKeys.Count);
+				LogDateMsg("Eat HP Food: " + _activeHPKeys[ranFood].ToString(), LogTypes.Food);
+				_sim.Keyboard.KeyPress(_activeHPKeys[ranFood]); // food press
 				_eatHPFood = false;
 				// start the delay timer to press the key again
-				StartTimer(hpFoodKeyTimer, (int)(_hpKeyDelay * 1000));
+				StartTimer(HpFoodKeyTimer, (int)(_hpKeyDelay * 1000));
 			}
 		}
 
-		private void mpFoodTimer_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for eating mp food
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MpFoodTimer_Tick(object sender, EventArgs e)
 		{
-			if (ActiveMPKeys.Count == 0)
+			if (_activeMPKeys.Count == 0)
 				return;
 
 			_playerHP = Addresses.Hp.GetValue();
@@ -224,48 +293,68 @@
 
 			string desiredMP = mpComboBox.Text;
 
-			LogDateMsg($"Checking Food Tick MP: {_playerMP}/{_playerMaxMP}({(int)(mpPercent * 100f)}%)");
+			LogDateMsg($"Checking Food Tick MP: {_playerMP}/{_playerMaxMP}({(int)(mpPercent * 100f)}%)", LogTypes.Food);
 
-			if (mpPercent < Percentages[desiredMP] && _eatMPFood)
+			if (mpPercent < _percentages[desiredMP] && _eatMPFood)
 			{
-				int ranFood = _ran.Next(0, ActiveMPKeys.Count);
-				LogDateMsg("Eat MP Food: " + ActiveMPKeys[ranFood].ToString());
-				_sim.Keyboard.KeyPress(ActiveMPKeys[ranFood]); // food press
+				int ranFood = _ran.Next(0, _activeMPKeys.Count);
+				LogDateMsg("Eat MP Food: " + _activeMPKeys[ranFood].ToString(), LogTypes.Food);
+				_sim.Keyboard.KeyPress(_activeMPKeys[ranFood]); // food press
 				// start the delay timer to press the key again
-				StartTimer(mpFoodKeyTimer, (int)(_mpKeyDelay * 1000));
+				StartTimer(MpFoodKeyTimer, (int)(_mpKeyDelay * 1000));
 				_eatMPFood = false;
 			}
 		}
 
-		private void hpFoodKeyTimer_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick to reset hp food key
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void HpFoodKeyTimer_Tick(object sender, EventArgs e)
 		{
 			_eatHPFood = true;
-			StopTimer(hpFoodKeyTimer);
+			StopTimer(HpFoodKeyTimer);
 		}
 
-		private void mpFoodKeyTimer_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick to reset mp food key
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void MpFoodKeyTimer_Tick(object sender, EventArgs e)
 		{
 			_eatMPFood = true;
-			StopTimer(mpFoodKeyTimer);
+			StopTimer(MpFoodKeyTimer);
 		}
 
-		private void retargetTimeout_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick to timeout retarget
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void RetargetTimeout_Tick(object sender, EventArgs e)
 		{
 			_currentXP = Addresses.Xp.GetValue();
 			float x = Addresses.PositionX.GetValue();
 			float y = Addresses.PositionY.GetValue();
 
-			StopTimer(attackTimeoutTimer);
+			StopTimer(AttackTimeoutTimer);
 
 			if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) || (x == _lastXPos && y == _lastYPos))
 			{
-				LogDateMsg("Attack Timeout Tick");
-				StopAllTimers();
+				LogDateMsg("Attack Timeout Tick", LogTypes.Combat);
+				StopAllCombatRelatedTimers();
 				SwitchToTargetting(true);
 			}
 		}
 
-		private void cameraTimer_Tick(object sender, EventArgs e)
+		/// <summary>
+		/// Timer tick for camera locks
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void CameraTimer_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked)
 				return;
@@ -276,26 +365,40 @@
 
 			if (_forceCameraMaxZoom)
 			{
-				LogDateMsg("Force Zoom Camera Tick");
+				LogDateMsg("Force Zoom Camera Tick", LogTypes.Camera);
 				Addresses.CameraZoom.writeValue(CameraMaxZoom);
 			}
 
 			if (_forceCameraTopDown)
 			{
-				LogDateMsg("Force Topdown Camera Tick");
+				LogDateMsg("Force Topdown Camera Tick", LogTypes.Camera);
 				Addresses.CameraPitch.writeValue(CameraMaxPitch);
 			}
 		}
 
+		/// <summary>
+		/// Timer tick for delayed camera yaw event
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CameraYawTimer_Tick(object sender, EventArgs e)
 		{
 			if (!Globals.Hooked || !_timedCameraYaw)
 				return;
 
-			LogDateMsg("Timed Camera Yaw Tick");
+			LogDateMsg("Timed Camera Yaw Tick: " + _currentYawIndex, LogTypes.Camera);
+			_currentYawIndex++;		
 			_sim.Mouse.VerticalScroll(-1);
-			int ranRot = _ran.Next(0, 2);
-			Addresses.CameraYaw.writeValue(_cameraYawRotations[ranRot]);
+
+			if (_currentYawIndex >= _cameraYawRotations.Length)
+			{
+				_currentYawIndex = 0;
+			}
+
+			Addresses.CameraYaw.writeValue(_cameraYawRotations[_currentYawIndex]);
+			_currentYawIndex++;		
 		}
+
+		#endregion
 	}
 }
