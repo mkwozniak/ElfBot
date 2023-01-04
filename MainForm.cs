@@ -493,9 +493,7 @@
 
 			if (float.TryParse(CameraYawDelayInputbox.Text, out result))
 			{
-				StopTimer(CameraYawTimer);
 				_timedCameraYawDelay = result;
-				StartTimer(CameraYawTimer, (int)(_timedCameraYawDelay * 1000));
 			}
 		}
 

@@ -268,21 +268,17 @@
 				LogDateMsg("Force Topdown Camera Tick");
 				_mem.WriteMemory(Addresses["CameraPitch"], "float", _cameraMaxPitch);
 			}
-
-			if (_timedCameraYaw)
-			{
-				int ranRot = _ran.Next(0, 2);
-				_mem.WriteMemory(Addresses["CameraYaw"], "float", _cameraYawRotations[ranRot]);
-			}
 		}
 
 		private void CameraYawTimer_Tick(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!_hooked || !_timedCameraYaw)
 				return;
 
 			LogDateMsg("Timed Camera Yaw Tick");
 			_sim.Mouse.VerticalScroll(-1);
+			int ranRot = _ran.Next(0, 2);
+			_mem.WriteMemory(Addresses["CameraYaw"], "float", _cameraYawRotations[ranRot]);
 		}
 	}
 }
