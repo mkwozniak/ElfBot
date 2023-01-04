@@ -213,6 +213,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainFormEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainFormMethods.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainFormTick.cs">
       <SubType>Form</SubType>
     </Compile>

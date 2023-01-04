@@ -31,8 +31,8 @@ namespace ElfBot
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			this.AutoCombatBox = new System.Windows.Forms.CheckBox();
-			this.lootingEndTimer = new System.Windows.Forms.Timer(this.components);
+			this.AutoCombatCheckBox = new System.Windows.Forms.CheckBox();
+			this.LootingEndTimer = new System.Windows.Forms.Timer(this.components);
 			this.CurrentXPLabel = new System.Windows.Forms.Label();
 			this.XPBeforeKillLabel = new System.Windows.Forms.Label();
 			this.AutoCombatState = new System.Windows.Forms.Label();
@@ -60,26 +60,26 @@ namespace ElfBot
 			this.label14 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.checkedListBox5 = new System.Windows.Forms.CheckedListBox();
-			this.hpKeys = new System.Windows.Forms.CheckedListBox();
+			this.HpKeys = new System.Windows.Forms.CheckedListBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label17 = new System.Windows.Forms.Label();
 			this.hpComboBox = new System.Windows.Forms.ComboBox();
-			this.hpFoodCheckbox = new System.Windows.Forms.CheckBox();
-			this.mpFoodCheckbox = new System.Windows.Forms.CheckBox();
+			this.HpFoodCheckBox = new System.Windows.Forms.CheckBox();
+			this.MpFoodCheckBox = new System.Windows.Forms.CheckBox();
 			this.mpComboBox = new System.Windows.Forms.ComboBox();
-			this.mpKeys = new System.Windows.Forms.CheckedListBox();
+			this.MpKeys = new System.Windows.Forms.CheckedListBox();
 			this.checkedListBox8 = new System.Windows.Forms.CheckedListBox();
 			this.label18 = new System.Windows.Forms.Label();
 			this.updateCombatKeysBtn = new System.Windows.Forms.Button();
 			this.label25 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
-			this.eatKeyDelayInputBox = new System.Windows.Forms.MaskedTextBox();
+			this.EatKeyDelayInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.label21 = new System.Windows.Forms.Label();
-			this.foodDelayInputBox = new System.Windows.Forms.MaskedTextBox();
-			this.updateFoodKeysBtn = new System.Windows.Forms.Button();
+			this.FoodDelayInputBox = new System.Windows.Forms.MaskedTextBox();
+			this.UpdateFoodKeysBtn = new System.Windows.Forms.Button();
 			this.label24 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.ForceMaxZoomCheckbox = new System.Windows.Forms.CheckBox();
+			this.ForceMaxZoomCheckBox = new System.Windows.Forms.CheckBox();
 			this.loadTableButton = new System.Windows.Forms.Button();
 			this.combatKeyDelayInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.label19 = new System.Windows.Forms.Label();
@@ -88,29 +88,30 @@ namespace ElfBot
 			this.label10 = new System.Windows.Forms.Label();
 			this.comboBox3 = new System.Windows.Forms.ComboBox();
 			this.label11 = new System.Windows.Forms.Label();
-			this.combatTimer = new System.Windows.Forms.Timer(this.components);
-			this.targettingTimer = new System.Windows.Forms.Timer(this.components);
-			this.checkTimer = new System.Windows.Forms.Timer(this.components);
+			this.CombatTimer = new System.Windows.Forms.Timer(this.components);
+			this.TargettingTimer = new System.Windows.Forms.Timer(this.components);
+			this.CheckTimer = new System.Windows.Forms.Timer(this.components);
 			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.label7 = new System.Windows.Forms.Label();
-			this.attackTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-			this.lootingTimer = new System.Windows.Forms.Timer(this.components);
-			this.interfaceTimer = new System.Windows.Forms.Timer(this.components);
+			this.AttackTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+			this.LootingTimer = new System.Windows.Forms.Timer(this.components);
+			this.InterfaceTimer = new System.Windows.Forms.Timer(this.components);
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.resetCombatTimer = new System.Windows.Forms.Timer(this.components);
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.SecondClientCheckbox = new System.Windows.Forms.CheckBox();
+			this.SecondClientCheckBox = new System.Windows.Forms.CheckBox();
 			this.label16 = new System.Windows.Forms.Label();
 			this.checkBox4 = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
+			this.button2 = new System.Windows.Forms.Button();
 			this.SystemMsgLog = new System.Windows.Forms.TextBox();
 			this.label23 = new System.Windows.Forms.Label();
-			this.hpFoodTimer = new System.Windows.Forms.Timer(this.components);
-			this.mpFoodTimer = new System.Windows.Forms.Timer(this.components);
-			this.hpFoodKeyTimer = new System.Windows.Forms.Timer(this.components);
-			this.mpFoodKeyTimer = new System.Windows.Forms.Timer(this.components);
+			this.HpFoodTimer = new System.Windows.Forms.Timer(this.components);
+			this.MpFoodTimer = new System.Windows.Forms.Timer(this.components);
+			this.HpFoodKeyTimer = new System.Windows.Forms.Timer(this.components);
+			this.MpFoodKeyTimer = new System.Windows.Forms.Timer(this.components);
 			this.CombatOptionsBtn = new System.Windows.Forms.Button();
 			this.LootOptionsBtn = new System.Windows.Forms.Button();
 			this.FoodOptionsBtn = new System.Windows.Forms.Button();
@@ -121,6 +122,13 @@ namespace ElfBot
 			this.FoodOptionsPanel = new System.Windows.Forms.Panel();
 			this.MorePanelsBtn = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.checkBox8 = new System.Windows.Forms.CheckBox();
+			this.LogCameraCheckBox = new System.Windows.Forms.CheckBox();
+			this.LogFoodCheckBox = new System.Windows.Forms.CheckBox();
+			this.LogCombatCheckBox = new System.Windows.Forms.CheckBox();
+			this.button1 = new System.Windows.Forms.Button();
+			this.CameraHeaderLabel = new System.Windows.Forms.Label();
 			this.MiscHeaderLabel = new System.Windows.Forms.Label();
 			this.PlayerMPLabel = new System.Windows.Forms.Label();
 			this.PlayerHPLabel = new System.Windows.Forms.Label();
@@ -136,14 +144,13 @@ namespace ElfBot
 			this.CameraYawLabel = new System.Windows.Forms.Label();
 			this.CameraPitchLabel = new System.Windows.Forms.Label();
 			this.CameraZoomLabel = new System.Windows.Forms.Label();
-			this.button2 = new System.Windows.Forms.Button();
-			this.cameraTimer = new System.Windows.Forms.Timer(this.components);
+			this.CameraTimer = new System.Windows.Forms.Timer(this.components);
 			this.CameraOptionsBtn = new System.Windows.Forms.Button();
 			this.CameraOptionsPanel = new System.Windows.Forms.Panel();
-			this.TimedCameraYawCheckbox = new System.Windows.Forms.CheckBox();
-			this.ForceTopdownCheckbox = new System.Windows.Forms.CheckBox();
+			this.TimedCameraYawCheckBox = new System.Windows.Forms.CheckBox();
+			this.ForceTopdownCheckBox = new System.Windows.Forms.CheckBox();
 			this.CameraYawDelayLabel = new System.Windows.Forms.Label();
-			this.CameraYawDelayInputbox = new System.Windows.Forms.MaskedTextBox();
+			this.CameraYawDelayInputBox = new System.Windows.Forms.MaskedTextBox();
 			this.CameraYawTimer = new System.Windows.Forms.Timer(this.components);
 			this.ZHackPanel = new System.Windows.Forms.Panel();
 			this.TimedZHackAmountInputbox = new System.Windows.Forms.MaskedTextBox();
@@ -151,7 +158,6 @@ namespace ElfBot
 			this.TimedZHackDelayLabel = new System.Windows.Forms.Label();
 			this.TimedZHackDelayInputbox = new System.Windows.Forms.MaskedTextBox();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
-			this.CameraHeaderLabel = new System.Windows.Forms.Label();
 			this.monsterTablePanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.panel1.SuspendLayout();
@@ -159,28 +165,30 @@ namespace ElfBot
 			this.LootOptionsPanel.SuspendLayout();
 			this.FoodOptionsPanel.SuspendLayout();
 			this.panel2.SuspendLayout();
+			this.panel3.SuspendLayout();
 			this.CameraOptionsPanel.SuspendLayout();
 			this.ZHackPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// AutoCombatBox
+			// AutoCombatCheckBox
 			// 
-			this.AutoCombatBox.BackColor = System.Drawing.Color.Black;
-			this.AutoCombatBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.AutoCombatBox.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AutoCombatBox.ForeColor = System.Drawing.Color.White;
-			this.AutoCombatBox.Location = new System.Drawing.Point(3, 3);
-			this.AutoCombatBox.Name = "AutoCombatBox";
-			this.AutoCombatBox.Size = new System.Drawing.Size(80, 40);
-			this.AutoCombatBox.TabIndex = 3;
-			this.AutoCombatBox.Text = "Auto Combat";
-			this.AutoCombatBox.UseVisualStyleBackColor = false;
-			this.AutoCombatBox.CheckedChanged += new System.EventHandler(this.AutoCombatBox_CheckedChanged);
+			this.AutoCombatCheckBox.BackColor = System.Drawing.Color.Black;
+			this.AutoCombatCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.AutoCombatCheckBox.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.AutoCombatCheckBox.ForeColor = System.Drawing.Color.White;
+			this.AutoCombatCheckBox.Location = new System.Drawing.Point(3, 3);
+			this.AutoCombatCheckBox.Name = "AutoCombatCheckBox";
+			this.AutoCombatCheckBox.Size = new System.Drawing.Size(80, 40);
+			this.AutoCombatCheckBox.TabIndex = 3;
+			this.AutoCombatCheckBox.Text = "Auto Combat";
+			this.AutoCombatCheckBox.UseVisualStyleBackColor = false;
+			this.AutoCombatCheckBox.CheckedChanged += new System.EventHandler(this.AutoCombatCheckBox_CheckedChanged);
 			// 
 			// CurrentXPLabel
 			// 
 			this.CurrentXPLabel.AutoSize = true;
 			this.CurrentXPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CurrentXPLabel.ForeColor = System.Drawing.Color.White;
 			this.CurrentXPLabel.Location = new System.Drawing.Point(12, 67);
 			this.CurrentXPLabel.Name = "CurrentXPLabel";
 			this.CurrentXPLabel.Size = new System.Drawing.Size(47, 11);
@@ -191,6 +199,7 @@ namespace ElfBot
 			// 
 			this.XPBeforeKillLabel.AutoSize = true;
 			this.XPBeforeKillLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.XPBeforeKillLabel.ForeColor = System.Drawing.Color.White;
 			this.XPBeforeKillLabel.Location = new System.Drawing.Point(12, 362);
 			this.XPBeforeKillLabel.Name = "XPBeforeKillLabel";
 			this.XPBeforeKillLabel.Size = new System.Drawing.Size(119, 11);
@@ -206,13 +215,14 @@ namespace ElfBot
 			this.AutoCombatState.Name = "AutoCombatState";
 			this.AutoCombatState.Size = new System.Drawing.Size(80, 20);
 			this.AutoCombatState.TabIndex = 7;
-			this.AutoCombatState.Text = "-";
+			this.AutoCombatState.Text = "Inactive";
 			this.AutoCombatState.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// TargetLabel
 			// 
 			this.TargetLabel.AutoSize = true;
 			this.TargetLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TargetLabel.ForeColor = System.Drawing.Color.White;
 			this.TargetLabel.Location = new System.Drawing.Point(12, 379);
 			this.TargetLabel.Name = "TargetLabel";
 			this.TargetLabel.Size = new System.Drawing.Size(71, 11);
@@ -223,6 +233,7 @@ namespace ElfBot
 			// 
 			this.TargetUIDLabel.AutoSize = true;
 			this.TargetUIDLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TargetUIDLabel.ForeColor = System.Drawing.Color.White;
 			this.TargetUIDLabel.Location = new System.Drawing.Point(12, 396);
 			this.TargetUIDLabel.Name = "TargetUIDLabel";
 			this.TargetUIDLabel.Size = new System.Drawing.Size(95, 11);
@@ -239,16 +250,18 @@ namespace ElfBot
 			this.label1.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.label1.Size = new System.Drawing.Size(42, 13);
 			this.label1.TabIndex = 10;
-			this.label1.Text = "0.0.5";
+			this.label1.Text = "0.0.6";
 			// 
 			// ProcessHookLabel
 			// 
-			this.ProcessHookLabel.BackColor = System.Drawing.Color.Gray;
+			this.ProcessHookLabel.BackColor = System.Drawing.Color.Black;
 			this.ProcessHookLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.ProcessHookLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.ProcessHookLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.ProcessHookLabel.ForeColor = System.Drawing.Color.White;
 			this.ProcessHookLabel.Location = new System.Drawing.Point(318, 414);
 			this.ProcessHookLabel.Name = "ProcessHookLabel";
-			this.ProcessHookLabel.Size = new System.Drawing.Size(123, 30);
+			this.ProcessHookLabel.Size = new System.Drawing.Size(127, 30);
 			this.ProcessHookLabel.TabIndex = 11;
 			this.ProcessHookLabel.Text = "Process Not Hooked";
 			this.ProcessHookLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -299,24 +312,25 @@ namespace ElfBot
 			// 
 			// hookButton
 			// 
-			this.hookButton.BackColor = System.Drawing.Color.DimGray;
-			this.hookButton.FlatAppearance.BorderSize = 0;
-			this.hookButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.hookButton.BackColor = System.Drawing.Color.Black;
+			this.hookButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.hookButton.Font = new System.Drawing.Font("MS Gothic", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.hookButton.Location = new System.Drawing.Point(318, 447);
+			this.hookButton.ForeColor = System.Drawing.Color.White;
+			this.hookButton.Location = new System.Drawing.Point(317, 447);
 			this.hookButton.Margin = new System.Windows.Forms.Padding(0);
 			this.hookButton.Name = "hookButton";
 			this.hookButton.Padding = new System.Windows.Forms.Padding(4, 0, 0, 0);
-			this.hookButton.Size = new System.Drawing.Size(123, 41);
+			this.hookButton.Size = new System.Drawing.Size(128, 41);
 			this.hookButton.TabIndex = 13;
 			this.hookButton.Text = "H O O K";
 			this.hookButton.UseVisualStyleBackColor = false;
-			this.hookButton.Click += new System.EventHandler(this.hookButton_Click);
+			this.hookButton.Click += new System.EventHandler(this.HookBtn_Click);
 			// 
 			// CharacterHeaderLabel
 			// 
 			this.CharacterHeaderLabel.AutoSize = true;
 			this.CharacterHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CharacterHeaderLabel.ForeColor = System.Drawing.Color.White;
 			this.CharacterHeaderLabel.Location = new System.Drawing.Point(2, 11);
 			this.CharacterHeaderLabel.Name = "CharacterHeaderLabel";
 			this.CharacterHeaderLabel.Size = new System.Drawing.Size(70, 13);
@@ -330,7 +344,7 @@ namespace ElfBot
 			this.lootTimeInputBox.Size = new System.Drawing.Size(58, 18);
 			this.lootTimeInputBox.TabIndex = 14;
 			this.lootTimeInputBox.Text = "4";
-			this.lootTimeInputBox.TextChanged += new System.EventHandler(this.lootTimeInputBox_InputChanged);
+			this.lootTimeInputBox.TextChanged += new System.EventHandler(this.LootTimeInputBox_InputChanged);
 			// 
 			// label5
 			// 
@@ -349,7 +363,7 @@ namespace ElfBot
 			this.actionDelayInputBox.Size = new System.Drawing.Size(58, 18);
 			this.actionDelayInputBox.TabIndex = 14;
 			this.actionDelayInputBox.Text = "0.5";
-			this.actionDelayInputBox.TextChanged += new System.EventHandler(this.actionDelayInputBox_InputChanged);
+			this.actionDelayInputBox.TextChanged += new System.EventHandler(this.ActionDelayInputBox_InputChanged);
 			// 
 			// label6
 			// 
@@ -520,12 +534,12 @@ namespace ElfBot
 			this.checkedListBox5.Size = new System.Drawing.Size(33, 154);
 			this.checkedListBox5.TabIndex = 29;
 			// 
-			// hpKeys
+			// HpKeys
 			// 
-			this.hpKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.hpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.hpKeys.FormattingEnabled = true;
-			this.hpKeys.Items.AddRange(new object[] {
+			this.HpKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.HpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.HpKeys.FormattingEnabled = true;
+			this.HpKeys.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -536,10 +550,10 @@ namespace ElfBot
             "8",
             "9",
             "0"});
-			this.hpKeys.Location = new System.Drawing.Point(16, 262);
-			this.hpKeys.Name = "hpKeys";
-			this.hpKeys.Size = new System.Drawing.Size(33, 154);
-			this.hpKeys.TabIndex = 28;
+			this.HpKeys.Location = new System.Drawing.Point(16, 262);
+			this.HpKeys.Name = "HpKeys";
+			this.HpKeys.Size = new System.Drawing.Size(33, 154);
+			this.HpKeys.TabIndex = 28;
 			// 
 			// label8
 			// 
@@ -585,31 +599,31 @@ namespace ElfBot
 			this.hpComboBox.TabIndex = 0;
 			this.hpComboBox.Text = "40%";
 			// 
-			// hpFoodCheckbox
+			// HpFoodCheckBox
 			// 
-			this.hpFoodCheckbox.AutoSize = true;
-			this.hpFoodCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.hpFoodCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.hpFoodCheckbox.Location = new System.Drawing.Point(6, 12);
-			this.hpFoodCheckbox.Name = "hpFoodCheckbox";
-			this.hpFoodCheckbox.Size = new System.Drawing.Size(63, 15);
-			this.hpFoodCheckbox.TabIndex = 22;
-			this.hpFoodCheckbox.Text = "Auto HP";
-			this.hpFoodCheckbox.UseVisualStyleBackColor = true;
-			this.hpFoodCheckbox.CheckedChanged += new System.EventHandler(this.hpFoodCheckbox_CheckedChanged);
+			this.HpFoodCheckBox.AutoSize = true;
+			this.HpFoodCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.HpFoodCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.HpFoodCheckBox.Location = new System.Drawing.Point(6, 12);
+			this.HpFoodCheckBox.Name = "HpFoodCheckBox";
+			this.HpFoodCheckBox.Size = new System.Drawing.Size(63, 15);
+			this.HpFoodCheckBox.TabIndex = 22;
+			this.HpFoodCheckBox.Text = "Auto HP";
+			this.HpFoodCheckBox.UseVisualStyleBackColor = true;
+			this.HpFoodCheckBox.CheckedChanged += new System.EventHandler(this.HpFoodCheckBox_CheckedChanged);
 			// 
-			// mpFoodCheckbox
+			// MpFoodCheckBox
 			// 
-			this.mpFoodCheckbox.AutoSize = true;
-			this.mpFoodCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.mpFoodCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.mpFoodCheckbox.Location = new System.Drawing.Point(133, 12);
-			this.mpFoodCheckbox.Name = "mpFoodCheckbox";
-			this.mpFoodCheckbox.Size = new System.Drawing.Size(63, 15);
-			this.mpFoodCheckbox.TabIndex = 23;
-			this.mpFoodCheckbox.Text = "Auto MP";
-			this.mpFoodCheckbox.UseVisualStyleBackColor = true;
-			this.mpFoodCheckbox.CheckedChanged += new System.EventHandler(this.mpFoodCheckbox_CheckedChanged);
+			this.MpFoodCheckBox.AutoSize = true;
+			this.MpFoodCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.MpFoodCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MpFoodCheckBox.Location = new System.Drawing.Point(133, 12);
+			this.MpFoodCheckBox.Name = "MpFoodCheckBox";
+			this.MpFoodCheckBox.Size = new System.Drawing.Size(63, 15);
+			this.MpFoodCheckBox.TabIndex = 23;
+			this.MpFoodCheckBox.Text = "Auto MP";
+			this.MpFoodCheckBox.UseVisualStyleBackColor = true;
+			this.MpFoodCheckBox.CheckedChanged += new System.EventHandler(this.MpFoodCheckBox_CheckedChanged);
 			// 
 			// mpComboBox
 			// 
@@ -634,12 +648,12 @@ namespace ElfBot
 			this.mpComboBox.TabIndex = 24;
 			this.mpComboBox.Text = "40%";
 			// 
-			// mpKeys
+			// MpKeys
 			// 
-			this.mpKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.mpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.mpKeys.FormattingEnabled = true;
-			this.mpKeys.Items.AddRange(new object[] {
+			this.MpKeys.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.MpKeys.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MpKeys.FormattingEnabled = true;
+			this.MpKeys.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -650,10 +664,10 @@ namespace ElfBot
             "8",
             "9",
             "0"});
-			this.mpKeys.Location = new System.Drawing.Point(94, 262);
-			this.mpKeys.Name = "mpKeys";
-			this.mpKeys.Size = new System.Drawing.Size(33, 154);
-			this.mpKeys.TabIndex = 31;
+			this.MpKeys.Location = new System.Drawing.Point(94, 262);
+			this.MpKeys.Name = "MpKeys";
+			this.MpKeys.Size = new System.Drawing.Size(33, 154);
+			this.MpKeys.TabIndex = 31;
 			// 
 			// checkedListBox8
 			// 
@@ -698,7 +712,7 @@ namespace ElfBot
 			this.updateCombatKeysBtn.TabIndex = 33;
 			this.updateCombatKeysBtn.Text = "UPDATE KEYS";
 			this.updateCombatKeysBtn.UseVisualStyleBackColor = false;
-			this.updateCombatKeysBtn.Click += new System.EventHandler(this.updateCombatKeysBtn_Click);
+			this.updateCombatKeysBtn.Click += new System.EventHandler(this.UpdateCombatKeysBtn_Click);
 			// 
 			// label25
 			// 
@@ -719,14 +733,14 @@ namespace ElfBot
 			this.label22.TabIndex = 40;
 			this.label22.Text = "Eat Key Delay";
 			// 
-			// eatKeyDelayInputBox
+			// EatKeyDelayInputBox
 			// 
-			this.eatKeyDelayInputBox.Location = new System.Drawing.Point(138, 81);
-			this.eatKeyDelayInputBox.Name = "eatKeyDelayInputBox";
-			this.eatKeyDelayInputBox.Size = new System.Drawing.Size(58, 18);
-			this.eatKeyDelayInputBox.TabIndex = 39;
-			this.eatKeyDelayInputBox.Text = "10";
-			this.eatKeyDelayInputBox.TextChanged += new System.EventHandler(this.eatKeyDelayInputBox_InputChanged);
+			this.EatKeyDelayInputBox.Location = new System.Drawing.Point(138, 81);
+			this.EatKeyDelayInputBox.Name = "EatKeyDelayInputBox";
+			this.EatKeyDelayInputBox.Size = new System.Drawing.Size(58, 18);
+			this.EatKeyDelayInputBox.TabIndex = 39;
+			this.EatKeyDelayInputBox.Text = "10";
+			this.EatKeyDelayInputBox.TextChanged += new System.EventHandler(this.EatKeyDelayInputBox_InputChanged);
 			// 
 			// label21
 			// 
@@ -738,27 +752,27 @@ namespace ElfBot
 			this.label21.TabIndex = 38;
 			this.label21.Text = "Check Food Delay";
 			// 
-			// foodDelayInputBox
+			// FoodDelayInputBox
 			// 
-			this.foodDelayInputBox.Location = new System.Drawing.Point(6, 81);
-			this.foodDelayInputBox.Name = "foodDelayInputBox";
-			this.foodDelayInputBox.Size = new System.Drawing.Size(58, 18);
-			this.foodDelayInputBox.TabIndex = 37;
-			this.foodDelayInputBox.Text = "1";
-			this.foodDelayInputBox.TextChanged += new System.EventHandler(this.foodDelayInputBox_InputChanged);
+			this.FoodDelayInputBox.Location = new System.Drawing.Point(6, 81);
+			this.FoodDelayInputBox.Name = "FoodDelayInputBox";
+			this.FoodDelayInputBox.Size = new System.Drawing.Size(58, 18);
+			this.FoodDelayInputBox.TabIndex = 37;
+			this.FoodDelayInputBox.Text = "1";
+			this.FoodDelayInputBox.TextChanged += new System.EventHandler(this.FoodDelayInputBox_InputChanged);
 			// 
-			// updateFoodKeysBtn
+			// UpdateFoodKeysBtn
 			// 
-			this.updateFoodKeysBtn.BackColor = System.Drawing.Color.Gray;
-			this.updateFoodKeysBtn.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.updateFoodKeysBtn.Location = new System.Drawing.Point(12, 213);
-			this.updateFoodKeysBtn.Name = "updateFoodKeysBtn";
-			this.updateFoodKeysBtn.Padding = new System.Windows.Forms.Padding(4, 3, 0, 0);
-			this.updateFoodKeysBtn.Size = new System.Drawing.Size(153, 23);
-			this.updateFoodKeysBtn.TabIndex = 36;
-			this.updateFoodKeysBtn.Text = "UPDATE KEYS";
-			this.updateFoodKeysBtn.UseVisualStyleBackColor = false;
-			this.updateFoodKeysBtn.Click += new System.EventHandler(this.updateFoodKeysBtn_Click);
+			this.UpdateFoodKeysBtn.BackColor = System.Drawing.Color.Gray;
+			this.UpdateFoodKeysBtn.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.UpdateFoodKeysBtn.Location = new System.Drawing.Point(12, 213);
+			this.UpdateFoodKeysBtn.Name = "UpdateFoodKeysBtn";
+			this.UpdateFoodKeysBtn.Padding = new System.Windows.Forms.Padding(4, 3, 0, 0);
+			this.UpdateFoodKeysBtn.Size = new System.Drawing.Size(153, 23);
+			this.UpdateFoodKeysBtn.TabIndex = 36;
+			this.UpdateFoodKeysBtn.Text = "UPDATE KEYS";
+			this.UpdateFoodKeysBtn.UseVisualStyleBackColor = false;
+			this.UpdateFoodKeysBtn.Click += new System.EventHandler(this.UpdateFoodKeysBtn_Click);
 			// 
 			// label24
 			// 
@@ -780,16 +794,16 @@ namespace ElfBot
 			this.label3.TabIndex = 34;
 			this.label3.Text = "SHIFT";
 			// 
-			// ForceMaxZoomCheckbox
+			// ForceMaxZoomCheckBox
 			// 
-			this.ForceMaxZoomCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ForceMaxZoomCheckbox.Location = new System.Drawing.Point(4, 7);
-			this.ForceMaxZoomCheckbox.Name = "ForceMaxZoomCheckbox";
-			this.ForceMaxZoomCheckbox.Size = new System.Drawing.Size(74, 40);
-			this.ForceMaxZoomCheckbox.TabIndex = 39;
-			this.ForceMaxZoomCheckbox.Text = "Force Camera Max Zoom";
-			this.ForceMaxZoomCheckbox.UseVisualStyleBackColor = true;
-			this.ForceMaxZoomCheckbox.CheckedChanged += new System.EventHandler(this.ForceMaxZoomCheckbox_CheckedChanged);
+			this.ForceMaxZoomCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.ForceMaxZoomCheckBox.Location = new System.Drawing.Point(4, 7);
+			this.ForceMaxZoomCheckBox.Name = "ForceMaxZoomCheckBox";
+			this.ForceMaxZoomCheckBox.Size = new System.Drawing.Size(74, 40);
+			this.ForceMaxZoomCheckBox.TabIndex = 39;
+			this.ForceMaxZoomCheckBox.Text = "Force Camera Max Zoom";
+			this.ForceMaxZoomCheckBox.UseVisualStyleBackColor = true;
+			this.ForceMaxZoomCheckBox.CheckedChanged += new System.EventHandler(this.ForceMaxZoomCheckbox_CheckedChanged);
 			// 
 			// loadTableButton
 			// 
@@ -800,7 +814,7 @@ namespace ElfBot
 			this.loadTableButton.TabIndex = 38;
 			this.loadTableButton.Text = "LOAD TABLE";
 			this.loadTableButton.UseVisualStyleBackColor = true;
-			this.loadTableButton.Click += new System.EventHandler(this.loadTableButton_Click);
+			this.loadTableButton.Click += new System.EventHandler(this.LoadTableButton_Click);
 			// 
 			// combatKeyDelayInputBox
 			// 
@@ -809,7 +823,7 @@ namespace ElfBot
 			this.combatKeyDelayInputBox.Size = new System.Drawing.Size(58, 18);
 			this.combatKeyDelayInputBox.TabIndex = 34;
 			this.combatKeyDelayInputBox.Text = "1";
-			this.combatKeyDelayInputBox.TextChanged += new System.EventHandler(this.combatKeyDelayInputBox_InputChanged);
+			this.combatKeyDelayInputBox.TextChanged += new System.EventHandler(this.CombatKeyDelayInputBox_InputChanged);
 			// 
 			// label19
 			// 
@@ -838,7 +852,7 @@ namespace ElfBot
 			this.retargetTimeoutInputBox.Size = new System.Drawing.Size(58, 18);
 			this.retargetTimeoutInputBox.TabIndex = 31;
 			this.retargetTimeoutInputBox.Text = "15";
-			this.retargetTimeoutInputBox.TextChanged += new System.EventHandler(this.retargetTimeoutInputBox_InputChanged);
+			this.retargetTimeoutInputBox.TextChanged += new System.EventHandler(this.RetargetTimeoutInputBox_InputChanged);
 			// 
 			// label10
 			// 
@@ -874,9 +888,9 @@ namespace ElfBot
 			this.label11.TabIndex = 30;
 			this.label11.Text = "Disable Auto Combat before making any changes";
 			// 
-			// combatTimer
+			// CombatTimer
 			// 
-			this.combatTimer.Interval = 1000;
+			this.CombatTimer.Interval = 1000;
 			// 
 			// checkBox2
 			// 
@@ -924,35 +938,36 @@ namespace ElfBot
 			this.panel1.AutoSize = true;
 			this.panel1.BackColor = System.Drawing.Color.Black;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.SecondClientCheckbox);
+			this.panel1.Controls.Add(this.SecondClientCheckBox);
 			this.panel1.Controls.Add(this.label16);
 			this.panel1.Controls.Add(this.checkBox4);
 			this.panel1.Controls.Add(this.label4);
 			this.panel1.Controls.Add(this.checkBox3);
-			this.panel1.Controls.Add(this.AutoCombatBox);
+			this.panel1.Controls.Add(this.AutoCombatCheckBox);
 			this.panel1.Controls.Add(this.label7);
 			this.panel1.Controls.Add(this.AutoCombatState);
 			this.panel1.Controls.Add(this.checkBox2);
 			this.panel1.Controls.Add(this.label17);
+			this.panel1.Controls.Add(this.button2);
 			this.panel1.Location = new System.Drawing.Point(9, 9);
 			this.panel1.Margin = new System.Windows.Forms.Padding(0);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(436, 75);
 			this.panel1.TabIndex = 30;
 			// 
-			// SecondClientCheckbox
+			// SecondClientCheckBox
 			// 
-			this.SecondClientCheckbox.AutoSize = true;
-			this.SecondClientCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.SecondClientCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.SecondClientCheckbox.ForeColor = System.Drawing.Color.White;
-			this.SecondClientCheckbox.Location = new System.Drawing.Point(347, 55);
-			this.SecondClientCheckbox.Name = "SecondClientCheckbox";
-			this.SecondClientCheckbox.Size = new System.Drawing.Size(81, 15);
-			this.SecondClientCheckbox.TabIndex = 19;
-			this.SecondClientCheckbox.Text = "2nd Client";
-			this.SecondClientCheckbox.UseVisualStyleBackColor = true;
-			this.SecondClientCheckbox.CheckedChanged += new System.EventHandler(this.SecondClientCheckbox_CheckedChanged);
+			this.SecondClientCheckBox.AutoSize = true;
+			this.SecondClientCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.SecondClientCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.SecondClientCheckBox.ForeColor = System.Drawing.Color.White;
+			this.SecondClientCheckBox.Location = new System.Drawing.Point(347, 55);
+			this.SecondClientCheckBox.Name = "SecondClientCheckBox";
+			this.SecondClientCheckBox.Size = new System.Drawing.Size(81, 15);
+			this.SecondClientCheckBox.TabIndex = 19;
+			this.SecondClientCheckBox.Text = "2nd Client";
+			this.SecondClientCheckBox.UseVisualStyleBackColor = true;
+			this.SecondClientCheckBox.CheckedChanged += new System.EventHandler(this.SecondClientCheckBox_CheckedChanged);
 			// 
 			// label16
 			// 
@@ -1004,6 +1019,16 @@ namespace ElfBot
 			this.checkBox3.Text = "Auto Buff";
 			this.checkBox3.UseVisualStyleBackColor = false;
 			// 
+			// button2
+			// 
+			this.button2.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.button2.Location = new System.Drawing.Point(346, 3);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(83, 20);
+			this.button2.TabIndex = 18;
+			this.button2.Text = "FLY UP";
+			this.button2.UseVisualStyleBackColor = true;
+			// 
 			// SystemMsgLog
 			// 
 			this.SystemMsgLog.AcceptsReturn = true;
@@ -1012,16 +1037,15 @@ namespace ElfBot
 			this.SystemMsgLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.SystemMsgLog.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.SystemMsgLog.ForeColor = System.Drawing.Color.White;
-			this.SystemMsgLog.Location = new System.Drawing.Point(315, 109);
-			this.SystemMsgLog.MaximumSize = new System.Drawing.Size(130, 302);
-			this.SystemMsgLog.MinimumSize = new System.Drawing.Size(130, 302);
+			this.SystemMsgLog.Location = new System.Drawing.Point(317, 109);
+			this.SystemMsgLog.MaximumSize = new System.Drawing.Size(128, 302);
+			this.SystemMsgLog.MinimumSize = new System.Drawing.Size(128, 302);
 			this.SystemMsgLog.Multiline = true;
 			this.SystemMsgLog.Name = "SystemMsgLog";
 			this.SystemMsgLog.ReadOnly = true;
-			this.SystemMsgLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.SystemMsgLog.Size = new System.Drawing.Size(130, 302);
+			this.SystemMsgLog.Size = new System.Drawing.Size(128, 302);
 			this.SystemMsgLog.TabIndex = 40;
-			this.SystemMsgLog.Text = "Have fun!";
+			this.SystemMsgLog.Text = "System Log";
 			// 
 			// label23
 			// 
@@ -1034,14 +1058,6 @@ namespace ElfBot
 			this.label23.Size = new System.Drawing.Size(125, 12);
 			this.label23.TabIndex = 42;
 			this.label23.Text = "ELFBOT - ROSE ONLINE";
-			// 
-			// hpFoodKeyTimer
-			// 
-			this.hpFoodKeyTimer.Tick += new System.EventHandler(this.hpFoodKeyTimer_Tick);
-			// 
-			// mpFoodKeyTimer
-			// 
-			this.mpFoodKeyTimer.Tick += new System.EventHandler(this.mpFoodKeyTimer_Tick);
 			// 
 			// CombatOptionsBtn
 			// 
@@ -1158,25 +1174,25 @@ namespace ElfBot
 			// FoodOptionsPanel
 			// 
 			this.FoodOptionsPanel.BackColor = System.Drawing.Color.Gray;
-			this.FoodOptionsPanel.Controls.Add(this.updateFoodKeysBtn);
+			this.FoodOptionsPanel.Controls.Add(this.UpdateFoodKeysBtn);
 			this.FoodOptionsPanel.Controls.Add(this.label24);
 			this.FoodOptionsPanel.Controls.Add(this.label25);
 			this.FoodOptionsPanel.Controls.Add(this.label3);
-			this.FoodOptionsPanel.Controls.Add(this.hpFoodCheckbox);
+			this.FoodOptionsPanel.Controls.Add(this.HpFoodCheckBox);
 			this.FoodOptionsPanel.Controls.Add(this.label18);
 			this.FoodOptionsPanel.Controls.Add(this.label22);
 			this.FoodOptionsPanel.Controls.Add(this.checkedListBox8);
-			this.FoodOptionsPanel.Controls.Add(this.mpFoodCheckbox);
-			this.FoodOptionsPanel.Controls.Add(this.mpKeys);
-			this.FoodOptionsPanel.Controls.Add(this.eatKeyDelayInputBox);
+			this.FoodOptionsPanel.Controls.Add(this.MpFoodCheckBox);
+			this.FoodOptionsPanel.Controls.Add(this.MpKeys);
+			this.FoodOptionsPanel.Controls.Add(this.EatKeyDelayInputBox);
 			this.FoodOptionsPanel.Controls.Add(this.label8);
 			this.FoodOptionsPanel.Controls.Add(this.label11);
 			this.FoodOptionsPanel.Controls.Add(this.mpComboBox);
-			this.FoodOptionsPanel.Controls.Add(this.hpKeys);
+			this.FoodOptionsPanel.Controls.Add(this.HpKeys);
 			this.FoodOptionsPanel.Controls.Add(this.label21);
 			this.FoodOptionsPanel.Controls.Add(this.checkedListBox5);
 			this.FoodOptionsPanel.Controls.Add(this.hpComboBox);
-			this.FoodOptionsPanel.Controls.Add(this.foodDelayInputBox);
+			this.FoodOptionsPanel.Controls.Add(this.FoodDelayInputBox);
 			this.FoodOptionsPanel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FoodOptionsPanel.Location = new System.Drawing.Point(9, 109);
 			this.FoodOptionsPanel.Name = "FoodOptionsPanel";
@@ -1201,7 +1217,10 @@ namespace ElfBot
 			// 
 			// panel2
 			// 
-			this.panel2.BackColor = System.Drawing.Color.DimGray;
+			this.panel2.BackColor = System.Drawing.Color.Black;
+			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel2.Controls.Add(this.panel3);
+			this.panel2.Controls.Add(this.button1);
 			this.panel2.Controls.Add(this.CameraHeaderLabel);
 			this.panel2.Controls.Add(this.MiscHeaderLabel);
 			this.panel2.Controls.Add(this.PlayerMPLabel);
@@ -1218,7 +1237,6 @@ namespace ElfBot
 			this.panel2.Controls.Add(this.CameraYawLabel);
 			this.panel2.Controls.Add(this.CameraPitchLabel);
 			this.panel2.Controls.Add(this.CameraZoomLabel);
-			this.panel2.Controls.Add(this.button2);
 			this.panel2.Controls.Add(this.CharacterHeaderLabel);
 			this.panel2.Controls.Add(this.TargetUIDLabel);
 			this.panel2.Controls.Add(this.TargetLabel);
@@ -1228,23 +1246,115 @@ namespace ElfBot
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(158, 543);
 			this.panel2.TabIndex = 51;
-			this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+			// 
+			// panel3
+			// 
+			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel3.Controls.Add(this.checkBox8);
+			this.panel3.Controls.Add(this.LogCameraCheckBox);
+			this.panel3.Controls.Add(this.LogFoodCheckBox);
+			this.panel3.Controls.Add(this.LogCombatCheckBox);
+			this.panel3.Location = new System.Drawing.Point(4, 419);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(148, 98);
+			this.panel3.TabIndex = 33;
+			// 
+			// checkBox8
+			// 
+			this.checkBox8.BackColor = System.Drawing.Color.Black;
+			this.checkBox8.Enabled = false;
+			this.checkBox8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.checkBox8.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.checkBox8.ForeColor = System.Drawing.Color.White;
+			this.checkBox8.Location = new System.Drawing.Point(69, 45);
+			this.checkBox8.Name = "checkBox8";
+			this.checkBox8.Size = new System.Drawing.Size(60, 34);
+			this.checkBox8.TabIndex = 47;
+			this.checkBox8.Text = "Log ZHack";
+			this.checkBox8.UseVisualStyleBackColor = false;
+			// 
+			// LogCameraCheckBox
+			// 
+			this.LogCameraCheckBox.BackColor = System.Drawing.Color.Black;
+			this.LogCameraCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LogCameraCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LogCameraCheckBox.ForeColor = System.Drawing.Color.White;
+			this.LogCameraCheckBox.Location = new System.Drawing.Point(3, 43);
+			this.LogCameraCheckBox.Name = "LogCameraCheckBox";
+			this.LogCameraCheckBox.Size = new System.Drawing.Size(60, 34);
+			this.LogCameraCheckBox.TabIndex = 46;
+			this.LogCameraCheckBox.Text = "Log Camera";
+			this.LogCameraCheckBox.UseVisualStyleBackColor = false;
+			this.LogCameraCheckBox.CheckedChanged += new System.EventHandler(this.LogCameraCheckBox_CheckedChanged);
+			// 
+			// LogFoodCheckBox
+			// 
+			this.LogFoodCheckBox.BackColor = System.Drawing.Color.Black;
+			this.LogFoodCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LogFoodCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LogFoodCheckBox.ForeColor = System.Drawing.Color.White;
+			this.LogFoodCheckBox.Location = new System.Drawing.Point(69, 5);
+			this.LogFoodCheckBox.Name = "LogFoodCheckBox";
+			this.LogFoodCheckBox.Size = new System.Drawing.Size(60, 34);
+			this.LogFoodCheckBox.TabIndex = 45;
+			this.LogFoodCheckBox.Text = "Log Food";
+			this.LogFoodCheckBox.UseVisualStyleBackColor = false;
+			this.LogFoodCheckBox.CheckedChanged += new System.EventHandler(this.LogFoodCheckBox_CheckedChanged);
+			// 
+			// LogCombatCheckBox
+			// 
+			this.LogCombatCheckBox.BackColor = System.Drawing.Color.Black;
+			this.LogCombatCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.LogCombatCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LogCombatCheckBox.ForeColor = System.Drawing.Color.White;
+			this.LogCombatCheckBox.Location = new System.Drawing.Point(3, 3);
+			this.LogCombatCheckBox.Name = "LogCombatCheckBox";
+			this.LogCombatCheckBox.Size = new System.Drawing.Size(60, 34);
+			this.LogCombatCheckBox.TabIndex = 44;
+			this.LogCombatCheckBox.Text = "Log Combat";
+			this.LogCombatCheckBox.UseVisualStyleBackColor = false;
+			this.LogCombatCheckBox.CheckedChanged += new System.EventHandler(this.LogCombatCheckBox_CheckedChanged);
+			// 
+			// button1
+			// 
+			this.button1.Enabled = false;
+			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button1.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.button1.ForeColor = System.Drawing.Color.White;
+			this.button1.Location = new System.Drawing.Point(3, 517);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(150, 20);
+			this.button1.TabIndex = 32;
+			this.button1.Text = "More >";
+			this.button1.UseVisualStyleBackColor = true;
+			// 
+			// CameraHeaderLabel
+			// 
+			this.CameraHeaderLabel.AutoSize = true;
+			this.CameraHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CameraHeaderLabel.ForeColor = System.Drawing.Color.White;
+			this.CameraHeaderLabel.Location = new System.Drawing.Point(2, 262);
+			this.CameraHeaderLabel.Name = "CameraHeaderLabel";
+			this.CameraHeaderLabel.Size = new System.Drawing.Size(49, 13);
+			this.CameraHeaderLabel.TabIndex = 31;
+			this.CameraHeaderLabel.Text = "Camera";
 			// 
 			// MiscHeaderLabel
 			// 
 			this.MiscHeaderLabel.AutoSize = true;
 			this.MiscHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MiscHeaderLabel.ForeColor = System.Drawing.Color.White;
 			this.MiscHeaderLabel.Location = new System.Drawing.Point(2, 340);
 			this.MiscHeaderLabel.Name = "MiscHeaderLabel";
 			this.MiscHeaderLabel.Size = new System.Drawing.Size(35, 13);
 			this.MiscHeaderLabel.TabIndex = 30;
 			this.MiscHeaderLabel.Text = "Misc";
-			this.MiscHeaderLabel.Click += new System.EventHandler(this.label27_Click);
 			// 
 			// PlayerMPLabel
 			// 
 			this.PlayerMPLabel.AutoSize = true;
 			this.PlayerMPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerMPLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerMPLabel.Location = new System.Drawing.Point(12, 240);
 			this.PlayerMPLabel.Name = "PlayerMPLabel";
 			this.PlayerMPLabel.Size = new System.Drawing.Size(59, 11);
@@ -1255,6 +1365,7 @@ namespace ElfBot
 			// 
 			this.PlayerHPLabel.AutoSize = true;
 			this.PlayerHPLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerHPLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerHPLabel.Location = new System.Drawing.Point(12, 223);
 			this.PlayerHPLabel.Name = "PlayerHPLabel";
 			this.PlayerHPLabel.Size = new System.Drawing.Size(59, 11);
@@ -1265,6 +1376,7 @@ namespace ElfBot
 			// 
 			this.PlayerStatusHeaderLabel.AutoSize = true;
 			this.PlayerStatusHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerStatusHeaderLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerStatusHeaderLabel.Location = new System.Drawing.Point(2, 201);
 			this.PlayerStatusHeaderLabel.Name = "PlayerStatusHeaderLabel";
 			this.PlayerStatusHeaderLabel.Size = new System.Drawing.Size(49, 13);
@@ -1275,6 +1387,7 @@ namespace ElfBot
 			// 
 			this.PlayerMapIdLabel.AutoSize = true;
 			this.PlayerMapIdLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerMapIdLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerMapIdLabel.Location = new System.Drawing.Point(12, 179);
 			this.PlayerMapIdLabel.Name = "PlayerMapIdLabel";
 			this.PlayerMapIdLabel.Size = new System.Drawing.Size(71, 11);
@@ -1285,6 +1398,7 @@ namespace ElfBot
 			// 
 			this.PlayerPosZLabel.AutoSize = true;
 			this.PlayerPosZLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosZLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerPosZLabel.Location = new System.Drawing.Point(12, 162);
 			this.PlayerPosZLabel.Name = "PlayerPosZLabel";
 			this.PlayerPosZLabel.Size = new System.Drawing.Size(41, 11);
@@ -1295,6 +1409,7 @@ namespace ElfBot
 			// 
 			this.PlayerPosYLabel.AutoSize = true;
 			this.PlayerPosYLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosYLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerPosYLabel.Location = new System.Drawing.Point(12, 145);
 			this.PlayerPosYLabel.Name = "PlayerPosYLabel";
 			this.PlayerPosYLabel.Size = new System.Drawing.Size(41, 11);
@@ -1305,6 +1420,7 @@ namespace ElfBot
 			// 
 			this.PlayerPosXLabel.AutoSize = true;
 			this.PlayerPosXLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerPosXLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerPosXLabel.Location = new System.Drawing.Point(12, 128);
 			this.PlayerPosXLabel.Name = "PlayerPosXLabel";
 			this.PlayerPosXLabel.Size = new System.Drawing.Size(41, 11);
@@ -1315,6 +1431,7 @@ namespace ElfBot
 			// 
 			this.LocationHeaderLabel.AutoSize = true;
 			this.LocationHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LocationHeaderLabel.ForeColor = System.Drawing.Color.White;
 			this.LocationHeaderLabel.Location = new System.Drawing.Point(2, 106);
 			this.LocationHeaderLabel.Name = "LocationHeaderLabel";
 			this.LocationHeaderLabel.Size = new System.Drawing.Size(63, 13);
@@ -1325,6 +1442,7 @@ namespace ElfBot
 			// 
 			this.PlayerZulyLabel.AutoSize = true;
 			this.PlayerZulyLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerZulyLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerZulyLabel.Location = new System.Drawing.Point(12, 84);
 			this.PlayerZulyLabel.Name = "PlayerZulyLabel";
 			this.PlayerZulyLabel.Size = new System.Drawing.Size(59, 11);
@@ -1335,6 +1453,7 @@ namespace ElfBot
 			// 
 			this.PlayerLevelLabel.AutoSize = true;
 			this.PlayerLevelLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerLevelLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerLevelLabel.Location = new System.Drawing.Point(12, 50);
 			this.PlayerLevelLabel.Name = "PlayerLevelLabel";
 			this.PlayerLevelLabel.Size = new System.Drawing.Size(65, 11);
@@ -1345,18 +1464,19 @@ namespace ElfBot
 			// 
 			this.PlayerNameLabel.AutoSize = true;
 			this.PlayerNameLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PlayerNameLabel.ForeColor = System.Drawing.Color.White;
 			this.PlayerNameLabel.Location = new System.Drawing.Point(12, 33);
 			this.PlayerNameLabel.Name = "PlayerNameLabel";
 			this.PlayerNameLabel.Size = new System.Drawing.Size(59, 11);
 			this.PlayerNameLabel.TabIndex = 19;
 			this.PlayerNameLabel.Text = "Name: N/A";
-			this.PlayerNameLabel.Click += new System.EventHandler(this.PlayerNameLabel_Click);
 			// 
 			// CameraYawLabel
 			// 
 			this.CameraYawLabel.AutoSize = true;
 			this.CameraYawLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.CameraYawLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CameraYawLabel.ForeColor = System.Drawing.Color.White;
 			this.CameraYawLabel.Location = new System.Drawing.Point(12, 318);
 			this.CameraYawLabel.Name = "CameraYawLabel";
 			this.CameraYawLabel.Size = new System.Drawing.Size(31, 13);
@@ -1368,6 +1488,7 @@ namespace ElfBot
 			this.CameraPitchLabel.AutoSize = true;
 			this.CameraPitchLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.CameraPitchLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CameraPitchLabel.ForeColor = System.Drawing.Color.White;
 			this.CameraPitchLabel.Location = new System.Drawing.Point(12, 301);
 			this.CameraPitchLabel.Name = "CameraPitchLabel";
 			this.CameraPitchLabel.Size = new System.Drawing.Size(43, 13);
@@ -1379,25 +1500,12 @@ namespace ElfBot
 			this.CameraZoomLabel.AutoSize = true;
 			this.CameraZoomLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.CameraZoomLabel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CameraZoomLabel.ForeColor = System.Drawing.Color.White;
 			this.CameraZoomLabel.Location = new System.Drawing.Point(12, 284);
 			this.CameraZoomLabel.Name = "CameraZoomLabel";
 			this.CameraZoomLabel.Size = new System.Drawing.Size(37, 13);
 			this.CameraZoomLabel.TabIndex = 20;
 			this.CameraZoomLabel.Text = "Zoom:";
-			// 
-			// button2
-			// 
-			this.button2.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button2.Location = new System.Drawing.Point(0, 523);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(83, 20);
-			this.button2.TabIndex = 18;
-			this.button2.Text = "FLY UP";
-			this.button2.UseVisualStyleBackColor = true;
-			// 
-			// cameraTimer
-			// 
-			this.cameraTimer.Tick += new System.EventHandler(this.cameraTimer_Tick);
 			// 
 			// CameraOptionsBtn
 			// 
@@ -1417,38 +1525,38 @@ namespace ElfBot
 			// CameraOptionsPanel
 			// 
 			this.CameraOptionsPanel.BackColor = System.Drawing.Color.DimGray;
-			this.CameraOptionsPanel.Controls.Add(this.TimedCameraYawCheckbox);
-			this.CameraOptionsPanel.Controls.Add(this.ForceTopdownCheckbox);
-			this.CameraOptionsPanel.Controls.Add(this.ForceMaxZoomCheckbox);
+			this.CameraOptionsPanel.Controls.Add(this.TimedCameraYawCheckBox);
+			this.CameraOptionsPanel.Controls.Add(this.ForceTopdownCheckBox);
+			this.CameraOptionsPanel.Controls.Add(this.ForceMaxZoomCheckBox);
 			this.CameraOptionsPanel.Controls.Add(this.CameraYawDelayLabel);
-			this.CameraOptionsPanel.Controls.Add(this.CameraYawDelayInputbox);
+			this.CameraOptionsPanel.Controls.Add(this.CameraYawDelayInputBox);
 			this.CameraOptionsPanel.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.CameraOptionsPanel.Location = new System.Drawing.Point(9, 109);
 			this.CameraOptionsPanel.Name = "CameraOptionsPanel";
 			this.CameraOptionsPanel.Size = new System.Drawing.Size(103, 0);
 			this.CameraOptionsPanel.TabIndex = 53;
 			// 
-			// TimedCameraYawCheckbox
+			// TimedCameraYawCheckBox
 			// 
-			this.TimedCameraYawCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TimedCameraYawCheckbox.Location = new System.Drawing.Point(4, 94);
-			this.TimedCameraYawCheckbox.Name = "TimedCameraYawCheckbox";
-			this.TimedCameraYawCheckbox.Size = new System.Drawing.Size(74, 40);
-			this.TimedCameraYawCheckbox.TabIndex = 41;
-			this.TimedCameraYawCheckbox.Text = "Timed Camera Yaw";
-			this.TimedCameraYawCheckbox.UseVisualStyleBackColor = true;
-			this.TimedCameraYawCheckbox.CheckedChanged += new System.EventHandler(this.TimedCameraYawCheckbox_CheckedChanged);
+			this.TimedCameraYawCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TimedCameraYawCheckBox.Location = new System.Drawing.Point(4, 94);
+			this.TimedCameraYawCheckBox.Name = "TimedCameraYawCheckBox";
+			this.TimedCameraYawCheckBox.Size = new System.Drawing.Size(74, 40);
+			this.TimedCameraYawCheckBox.TabIndex = 41;
+			this.TimedCameraYawCheckBox.Text = "Timed Camera Yaw";
+			this.TimedCameraYawCheckBox.UseVisualStyleBackColor = true;
+			this.TimedCameraYawCheckBox.CheckedChanged += new System.EventHandler(this.TimedCameraYawCheckBox_CheckedChanged);
 			// 
-			// ForceTopdownCheckbox
+			// ForceTopdownCheckBox
 			// 
-			this.ForceTopdownCheckbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ForceTopdownCheckbox.Location = new System.Drawing.Point(4, 49);
-			this.ForceTopdownCheckbox.Name = "ForceTopdownCheckbox";
-			this.ForceTopdownCheckbox.Size = new System.Drawing.Size(74, 40);
-			this.ForceTopdownCheckbox.TabIndex = 40;
-			this.ForceTopdownCheckbox.Text = "Force Camera Top Down";
-			this.ForceTopdownCheckbox.UseVisualStyleBackColor = true;
-			this.ForceTopdownCheckbox.CheckedChanged += new System.EventHandler(this.ForceTopdownCheckbox_CheckedChanged);
+			this.ForceTopdownCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.ForceTopdownCheckBox.Location = new System.Drawing.Point(4, 49);
+			this.ForceTopdownCheckBox.Name = "ForceTopdownCheckBox";
+			this.ForceTopdownCheckBox.Size = new System.Drawing.Size(74, 40);
+			this.ForceTopdownCheckBox.TabIndex = 40;
+			this.ForceTopdownCheckBox.Text = "Force Camera Top Down";
+			this.ForceTopdownCheckBox.UseVisualStyleBackColor = true;
+			this.ForceTopdownCheckBox.CheckedChanged += new System.EventHandler(this.ForceTopdownCheckbox_CheckedChanged);
 			// 
 			// CameraYawDelayLabel
 			// 
@@ -1459,19 +1567,15 @@ namespace ElfBot
 			this.CameraYawDelayLabel.TabIndex = 44;
 			this.CameraYawDelayLabel.Text = "Camera Yaw Delay";
 			// 
-			// CameraYawDelayInputbox
+			// CameraYawDelayInputBox
 			// 
-			this.CameraYawDelayInputbox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CameraYawDelayInputbox.Location = new System.Drawing.Point(7, 163);
-			this.CameraYawDelayInputbox.Name = "CameraYawDelayInputbox";
-			this.CameraYawDelayInputbox.Size = new System.Drawing.Size(65, 18);
-			this.CameraYawDelayInputbox.TabIndex = 43;
-			this.CameraYawDelayInputbox.Text = "8";
-			this.CameraYawDelayInputbox.TextChanged += new System.EventHandler(this.CameraYawDelayInputbox_InputChanged);
-			// 
-			// CameraYawTimer
-			// 
-			this.CameraYawTimer.Tick += new System.EventHandler(this.CameraYawTimer_Tick);
+			this.CameraYawDelayInputBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CameraYawDelayInputBox.Location = new System.Drawing.Point(7, 163);
+			this.CameraYawDelayInputBox.Name = "CameraYawDelayInputBox";
+			this.CameraYawDelayInputBox.Size = new System.Drawing.Size(65, 18);
+			this.CameraYawDelayInputBox.TabIndex = 43;
+			this.CameraYawDelayInputBox.Text = "8";
+			this.CameraYawDelayInputBox.TextChanged += new System.EventHandler(this.CameraYawDelayInputBox_InputChanged);
 			// 
 			// ZHackPanel
 			// 
@@ -1531,16 +1635,6 @@ namespace ElfBot
 			this.checkBox1.Text = "Timed ZHack";
 			this.checkBox1.UseVisualStyleBackColor = true;
 			// 
-			// CameraHeaderLabel
-			// 
-			this.CameraHeaderLabel.AutoSize = true;
-			this.CameraHeaderLabel.Font = new System.Drawing.Font("MS Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CameraHeaderLabel.Location = new System.Drawing.Point(2, 262);
-			this.CameraHeaderLabel.Name = "CameraHeaderLabel";
-			this.CameraHeaderLabel.Size = new System.Drawing.Size(49, 13);
-			this.CameraHeaderLabel.TabIndex = 31;
-			this.CameraHeaderLabel.Text = "Camera";
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1583,6 +1677,7 @@ namespace ElfBot
 			this.FoodOptionsPanel.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
+			this.panel3.ResumeLayout(false);
 			this.CameraOptionsPanel.ResumeLayout(false);
 			this.CameraOptionsPanel.PerformLayout();
 			this.ZHackPanel.ResumeLayout(false);
@@ -1593,8 +1688,8 @@ namespace ElfBot
 		}
 
 		#endregion
-		private System.Windows.Forms.CheckBox AutoCombatBox;
-		private System.Windows.Forms.Timer lootingEndTimer;
+		private System.Windows.Forms.CheckBox AutoCombatCheckBox;
+		private System.Windows.Forms.Timer LootingEndTimer;
 		private System.Windows.Forms.Label CurrentXPLabel;
 		private System.Windows.Forms.Label XPBeforeKillLabel;
 		private System.Windows.Forms.Label AutoCombatState;
@@ -1619,7 +1714,7 @@ namespace ElfBot
 		private System.Windows.Forms.CheckedListBox combatShiftKeys;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.CheckedListBox checkedListBox5;
-		private System.Windows.Forms.CheckedListBox hpKeys;
+		private System.Windows.Forms.CheckedListBox HpKeys;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckedListBox checkedListBox3;
@@ -1627,14 +1722,14 @@ namespace ElfBot
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.Label label18;
 		private System.Windows.Forms.CheckedListBox checkedListBox8;
-		private System.Windows.Forms.CheckedListBox mpKeys;
+		private System.Windows.Forms.CheckedListBox MpKeys;
 		private System.Windows.Forms.ComboBox mpComboBox;
-		private System.Windows.Forms.CheckBox mpFoodCheckbox;
-		private System.Windows.Forms.CheckBox hpFoodCheckbox;
+		private System.Windows.Forms.CheckBox MpFoodCheckBox;
+		private System.Windows.Forms.CheckBox HpFoodCheckBox;
 		private System.Windows.Forms.ComboBox hpComboBox;
-		private System.Windows.Forms.Timer combatTimer;
-		private System.Windows.Forms.Timer targettingTimer;
-		private System.Windows.Forms.Timer checkTimer;
+		private System.Windows.Forms.Timer CombatTimer;
+		private System.Windows.Forms.Timer TargettingTimer;
+		private System.Windows.Forms.Timer CheckTimer;
 		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label10;
@@ -1645,9 +1740,9 @@ namespace ElfBot
 		private System.Windows.Forms.Button updateCombatKeysBtn;
 		private System.Windows.Forms.MaskedTextBox combatKeyDelayInputBox;
 		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.Timer attackTimeoutTimer;
-		private System.Windows.Forms.Timer lootingTimer;
-		private System.Windows.Forms.Timer interfaceTimer;
+		private System.Windows.Forms.Timer AttackTimeoutTimer;
+		private System.Windows.Forms.Timer LootingTimer;
+		private System.Windows.Forms.Timer InterfaceTimer;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Timer resetCombatTimer;
 		private System.Windows.Forms.Button loadTableButton;
@@ -1658,18 +1753,18 @@ namespace ElfBot
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label24;
-		private System.Windows.Forms.CheckBox ForceMaxZoomCheckbox;
+		private System.Windows.Forms.CheckBox ForceMaxZoomCheckBox;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Button updateFoodKeysBtn;
+		private System.Windows.Forms.Button UpdateFoodKeysBtn;
 		private System.Windows.Forms.Label label21;
-		private System.Windows.Forms.MaskedTextBox foodDelayInputBox;
-		private System.Windows.Forms.Timer hpFoodTimer;
-		private System.Windows.Forms.Timer mpFoodTimer;
-		private System.Windows.Forms.Timer hpFoodKeyTimer;
-		private System.Windows.Forms.Timer mpFoodKeyTimer;
+		private System.Windows.Forms.MaskedTextBox FoodDelayInputBox;
+		private System.Windows.Forms.Timer HpFoodTimer;
+		private System.Windows.Forms.Timer MpFoodTimer;
+		private System.Windows.Forms.Timer HpFoodKeyTimer;
+		private System.Windows.Forms.Timer MpFoodKeyTimer;
 		private System.Windows.Forms.Label label25;
 		private System.Windows.Forms.Label label22;
-		private System.Windows.Forms.MaskedTextBox eatKeyDelayInputBox;
+		private System.Windows.Forms.MaskedTextBox EatKeyDelayInputBox;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.CheckBox checkBox4;
 		private System.Windows.Forms.Button CombatOptionsBtn;
@@ -1695,12 +1790,12 @@ namespace ElfBot
 		private System.Windows.Forms.Label LocationHeaderLabel;
 		private System.Windows.Forms.Label PlayerZulyLabel;
 		private System.Windows.Forms.Label MiscHeaderLabel;
-		private System.Windows.Forms.Timer cameraTimer;
+		private System.Windows.Forms.Timer CameraTimer;
 		private System.Windows.Forms.Button CameraOptionsBtn;
 		private System.Windows.Forms.Panel CameraOptionsPanel;
-		private System.Windows.Forms.CheckBox ForceTopdownCheckbox;
+		private System.Windows.Forms.CheckBox ForceTopdownCheckBox;
 		private System.Windows.Forms.Timer CameraYawTimer;
-		private System.Windows.Forms.CheckBox SecondClientCheckbox;
+		private System.Windows.Forms.CheckBox SecondClientCheckBox;
 		private System.Windows.Forms.Label CameraYawLabel;
 		private System.Windows.Forms.Label CameraPitchLabel;
 		private System.Windows.Forms.Label CameraZoomLabel;
@@ -1710,10 +1805,16 @@ namespace ElfBot
 		private System.Windows.Forms.MaskedTextBox TimedZHackAmountInputbox;
 		private System.Windows.Forms.Label TimedZHackAmountLabel;
 		private System.Windows.Forms.Label TimedZHackDelayLabel;
-		private System.Windows.Forms.CheckBox TimedCameraYawCheckbox;
+		private System.Windows.Forms.CheckBox TimedCameraYawCheckBox;
 		private System.Windows.Forms.Label CameraYawDelayLabel;
-		private System.Windows.Forms.MaskedTextBox CameraYawDelayInputbox;
+		private System.Windows.Forms.MaskedTextBox CameraYawDelayInputBox;
         private System.Windows.Forms.Label CameraHeaderLabel;
-    }
+		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Panel panel3;
+		private System.Windows.Forms.CheckBox LogCameraCheckBox;
+		private System.Windows.Forms.CheckBox LogFoodCheckBox;
+		private System.Windows.Forms.CheckBox LogCombatCheckBox;
+		private System.Windows.Forms.CheckBox checkBox8;
+	}
 }
 
