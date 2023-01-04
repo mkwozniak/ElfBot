@@ -1,4 +1,4 @@
-﻿// TODO: shift key support + auto buff + zhack
+// TODO: shift key support + auto buff + zhack
 
 /* 
  * tested working example for shift combo key
@@ -25,28 +25,6 @@ namespace ElfBot
 	{
 		private FinishedHooking OnFinishedHooking;
 		
-		private AddressDict _addresses = new AddressDict()
-		{
-			{ "PlayerName" , "trose.exe+10C1918" },
-			{ "PlayerLevel" , "trose.exe+10BE100,0x3AD8" },
-			{ "Zuly" , "trose.exe+10BE100,0x3D38" },
-			{ "MapID" , "trose.exe+10C4AE4" },
-			{ "CurrentTarget" , "trose.exe+10D8C10" },
-			{ "CurrentXP" , "trose.exe+10BE100,0x3AD4" },
-			{ "TargetUID" , "trose.exe+10C0458,0x8"},
-			{ "PlayerXPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1B8"},
-			{ "PlayerYPos" , "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1BC"},
-			{ "PlayerZPos", "trose.exe+010BE100,0x258,0x370,0xA0,0x380,0x1C0" },
-			{ "PlayerHP" , "trose.exe+10BE100,0x3acc"},
-			{ "PlayerMaxHP" , "trose.exe+10BE100,0x4600"},
-			{ "PlayerMP" , "trose.exe+10BE100,0x3AD0"},
-			{ "PlayerMaxMP" , "trose.exe+10BE100,0x4604"},
-			{ "TargetDefeatedMsg" , "trose.exe+10C5950"},
-			{ "CameraZoom", "trose.exe+010D2520,0xD70,0x6C4" },
-			{ "CameraPitch", "trose.exe+010D2520,0xD70,0x6C0" },
-			{ "CameraYaw", "trose.exe+010D2520,0xD70,0x6BC" },
-		};
-
 		private PercentageDict _percentages = new PercentageDict()
 		{
 			{ "10%" , 0.1f },
@@ -82,11 +60,9 @@ namespace ElfBot
 		private MonsterHashTable _monsterTable;
 
 		private CombatStates _combatState;
-		private Mem _mem;
 		private InputSimulator _sim;
 		private Random _ran = new Random();
 
-		private bool _hooked = false;
 		private bool _dualClient = true;
 		private bool _pressedTargetting = false;
 		private bool _eatHPFood = true;
@@ -124,7 +100,8 @@ namespace ElfBot
 
 		private string _currentTarget = "";
 		private string _targetDefeatedMsg = "";
-		private string _cameraMaxZoom = "100";
-		private string _cameraMaxPitch = "1";
+		private const float CameraMaxZoom = 100f;
+		private const float CameraMaxPitch = 1f;
+		private float[] _cameraYawRotations = { 1.5f, -1.5f, 0f, 3f };
 	}
 }

@@ -67,10 +67,10 @@
 
 			if (pID > 0)
 			{
-				_mem.OpenProcess(pID);
+				Globals.TargetApplicationMemory.OpenProcess(pID);
 				LogDateMsg("Process ID: " + pID.ToString() + " Hooked Successfully.", LogTypes.System);
 				OnFinishedHooking.Invoke();
-				_hooked = true;
+				Globals.Hooked = true;
 				return true;
 			}
 
@@ -172,7 +172,7 @@
 			// if current xp is greater than our xp while targetting
 			if (_currentXP > _xpBeforeKill)
 			{
-				_targetDefeatedMsg = _mem.ReadString(_addresses["TargetDefeatedMsg"]);
+				_targetDefeatedMsg = Addresses.TargetDefeatedMessage.GetValue();
 				LogDateMsg("Target Defeat: " + _targetDefeatedMsg, LogTypes.Combat);
 				StopTimer(AttackTimeoutTimer);
 				_pressedTargetting = false;

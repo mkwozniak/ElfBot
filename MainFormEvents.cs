@@ -23,7 +23,6 @@
 		/// <param name="e"></param>
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			_mem = new Mem();
 			_sim = new InputSimulator();
 
 			ListenToTimer(CombatTimer, Attacking_Tick);
@@ -267,11 +266,6 @@
 			TryFloatFromInputBox(EatKeyDelayInputBox, ref _mpKeyDelay);
 		}
 
-		private void CameraYawDelayInputBox_InputChanged(object sender, EventArgs e)
-		{
-			TryFloatFromInputBox(CameraYawDelayInputBox, ref _timedCameraYawDelay);
-		}
-
 		#endregion
 
 		#region Checkbox Events
@@ -281,7 +275,7 @@
 		/// <param name="e"></param>
 		private void AutoCombatCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (!AutoCombatCheckBox.Checked)
@@ -311,7 +305,7 @@
 		/// <param name="e"></param>
 		private void HpFoodCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (HpFoodCheckBox.Checked)
@@ -330,7 +324,7 @@
 		/// <param name="e"></param>
 		private void MpFoodCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_hooked)
+			if (!Globals.Hooked)
 				return;
 
 			if (MpFoodCheckBox.Checked)
