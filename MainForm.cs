@@ -105,8 +105,9 @@ namespace ElfBot
 		private int _xpBeforeKill = -1;
 		private int _interfaceUpdateTime = 60;
 		private int _cameraTickTime = 500;
+		private int _cameraYawTickTime = 50;
 		private int _panelButtonHeight = 26;
-		private int _currentYawIndex = 0;
+		private int _rightClickCounter = 0;
 
 		private float _lootForSeconds = 4f;
 		private float _actionDelay = 0.5f;
@@ -119,10 +120,11 @@ namespace ElfBot
 		private float _lastXPos = 0f;
 		private float _lastYPos = 0f;
 
+		private double _yawCounter = 0;
+
 		private string _currentTarget = "";
 		private string _targetDefeatedMsg = "";
 		private string _cameraMaxZoom = "100";
 		private string _cameraMaxPitch = "1";
-		private string[] _cameraYawRotations = new string[] { "1.5", "-1.5", "0", "3" };
 	}
 }
