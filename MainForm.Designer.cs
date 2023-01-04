@@ -1535,7 +1535,7 @@ namespace ElfBot
 			// TimedCameraYawCheckBox
 			// 
 			this.TimedCameraYawCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.TimedCameraYawCheckBox.Location = new System.Drawing.Point(4, 94);
+			this.TimedCameraYawCheckBox.Location = new System.Drawing.Point(4, 90);
 			this.TimedCameraYawCheckBox.Name = "TimedCameraYawCheckBox";
 			this.TimedCameraYawCheckBox.Size = new System.Drawing.Size(74, 40);
 			this.TimedCameraYawCheckBox.TabIndex = 41;
