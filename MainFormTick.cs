@@ -30,18 +30,15 @@
 
 				LogDateMsg("Target Tab Press Tick");
 
-				// go into checking target mode to make sure the tab target was OK
-
 				// update XP values
 				_currentXP = _mem.ReadInt(Addresses["CurrentXP"]);
 				_xpBeforeKill = _currentXP;
-
-				// update labels
 				CurrentXPLabel.Text = "Current XP: " + _currentXP.ToString();
 				CurrentXPLabel.Text = "XP Before Kill: " + _xpBeforeKill.ToString();
+
+				// go into checking target mode to make sure the tab target was OK
 				StartTimer(checkTimer, (int)(_actionDelay * 1000));
 				_combatState = CombatStates.CheckingTarget;
-
 				return;
 			}
 
@@ -98,18 +95,7 @@
 			if (MonsterTable.Contains(_currentTarget))
 			{
 				CheckTargetKilled();
-
-				if (_currentTargetUID != 0 && ActiveCombatKeys.Count > 0 && _targetDefeatedMsg.Length == 0)
-				{
-					int ranSkill = _ran.Next(0, ActiveCombatKeys.Count);
-					LogDateMsg("Attack Tick: " + ActiveCombatKeys[ranSkill].ToString());
-					_sim.Keyboard.KeyPress(ActiveCombatKeys[ranSkill]); // attack press
-
-					if (!attackTimeoutTimer.Enabled)
-					{
-						StartTimer(attackTimeoutTimer, (int)(_retargetTimeout * 1000));
-					}
-				}
+				CheckShouldAttackTarget();
 			}
 
 			// no proper target while attacking
@@ -148,9 +134,10 @@
 			TargetLabel.Text = _currentTarget;
 			TargetUIDLabel.Text = _currentTargetUID.ToString();
 			AutoCombatState.Text = _combatState.ToString();
-			CurrentXPLabel.Text = _currentXP.ToString();
-			PlayerPosLabel.Text = "X: " + x.ToString() + " | Y: " + y.ToString() + " |Z: " + z.ToString();
-			maxManaLabel.Text = "Max Mana: " + _playerMaxMP.ToString();
+			CurrentXPLabel.Text = "Current XP: " + _currentXP.ToString();
+			PlayerPosLabel.Text = "X: " + x.ToString("0") + "| Y: " + y.ToString("0") + "| Z: " + z.ToString("0");
+			HPLabel.Text = "HP: " + _playerHP.ToString() + "/" + _playerMaxHP.ToString();
+			MPLabel.Text = "MP: " + _playerMP.ToString() + "/" + _playerMaxMP.ToString();
 		}
 
 		private void loot_Tick(object sender, EventArgs e)
@@ -259,6 +246,43 @@
 				StopAllTimers();
 				SwitchToTargetting(true);
 			}
+		}
+
+		private void cameraTimer_Tick(object sender, EventArgs e)
+		{
+			if (!_hooked)
+				return;
+
+			CameraZoomLabel.Text = "Camera Zoom: " + _mem.ReadFloat(Addresses["CameraZoom"]).ToString();
+			CameraPitchLabel.Text = "Camera Pitch: " + _mem.ReadFloat(Addresses["CameraPitch"]).ToString();
+			CameraYawLabel.Text = "Camera Yaw: " + _mem.ReadFloat(Addresses["CameraYaw"]).ToString();
+
+			if (_forceCameraMaxZoom)
+			{
+				LogDateMsg("Force Zoom Camera Tick");
+				_mem.WriteMemory(Addresses["CameraZoom"], "float", _cameraMaxZoom);
+			}
+
+			if (_forceCameraTopDown)
+			{
+				LogDateMsg("Force Topdown Camera Tick");
+				_mem.WriteMemory(Addresses["CameraPitch"], "float", _cameraMaxPitch);
+			}
+
+			if (_timedCameraYaw)
+			{
+				int ranRot = _ran.Next(0, 2);
+				_mem.WriteMemory(Addresses["CameraYaw"], "float", _cameraYawRotations[ranRot]);
+			}
+		}
+
+		private void CameraYawTimer_Tick(object sender, EventArgs e)
+		{
+			if (!_hooked)
+				return;
+
+			LogDateMsg("Timed Camera Yaw Tick");
+			_sim.Mouse.VerticalScroll(-1);
 		}
 	}
 }
