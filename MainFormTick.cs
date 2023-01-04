@@ -30,13 +30,9 @@
 
 				LogDateMsg("Target Tab Press Tick");
 
-				// update XP values
-				_currentXP = _mem.ReadInt(Addresses["CurrentXP"]);
-				_xpBeforeKill = _currentXP;
-				CurrentXPLabel.Text = "Current XP: " + _currentXP.ToString();
-				CurrentXPLabel.Text = "XP Before Kill: " + _xpBeforeKill.ToString();
-
 				// go into checking target mode to make sure the tab target was OK
+				// update labels
+				XPBeforeKillLabel.Text = "XP Before Kill: " + _currentXP.ToString();
 				StartTimer(checkTimer, (int)(_actionDelay * 1000));
 				_combatState = CombatStates.CheckingTarget;
 				return;
@@ -127,17 +123,42 @@
 				return;
 			}
 
+			// Primary window
+			AutoCombatState.Text = _combatState.ToString();
+
+			// Character information
+			String name = _mem.ReadString(Addresses["PlayerName"]);
+			int level = _mem.Read2Byte(Addresses["PlayerLevel"]);
+			_currentXP = _mem.ReadInt(Addresses["CurrentXP"]);
+			int zuly = _mem.ReadInt(Addresses["Zuly"]);
+			PlayerNameLabel.Text = "Name: " + name.ToString();
+			PlayerLevelLabel.Text = "Level: " + level.ToString();
+			CurrentXPLabel.Text = "XP: " + $"{_currentXP:n0}";
+			PlayerZulyLabel.Text = "Zuly: " + $"{zuly:n0}";
+
+			// Location information
 			float x = _mem.ReadFloat(Addresses["PlayerXPos"]);
 			float y = _mem.ReadFloat(Addresses["PlayerYPos"]);
 			float z = _mem.ReadFloat(Addresses["PlayerZPos"]);
+			int mapId = _mem.ReadInt(Addresses["MapID"]);
+			PlayerPosXLabel.Text = "X: " + x.ToString();
+			PlayerPosYLabel.Text = "Y: " + y.ToString();
+			PlayerPosZLabel.Text = "Z: " + z.ToString();
+			PlayerMapIdLabel.Text = "Map ID: " + mapId.ToString();
 
-			TargetLabel.Text = _currentTarget;
-			TargetUIDLabel.Text = _currentTargetUID.ToString();
-			AutoCombatState.Text = _combatState.ToString();
-			CurrentXPLabel.Text = "Current XP: " + _currentXP.ToString();
-			PlayerPosLabel.Text = "X: " + x.ToString("0") + "| Y: " + y.ToString("0") + "| Z: " + z.ToString("0");
-			HPLabel.Text = "HP: " + _playerHP.ToString() + "/" + _playerMaxHP.ToString();
-			MPLabel.Text = "MP: " + _playerMP.ToString() + "/" + _playerMaxMP.ToString();
+			// Status information
+			int hp = _mem.ReadInt(Addresses["PlayerHP"]);
+			int maxHp = _mem.ReadInt(Addresses["PlayerMaxHP"]);
+			int mp = _mem.ReadInt(Addresses["PlayerMP"]);
+			int maxMp = _mem.ReadInt(Addresses["PlayerMaxMP"]);
+			PlayerHPLabel.Text = "HP: " + hp.ToString() + " / " + maxHp.ToString();
+			PlayerMPLabel.Text = "MP: " + mp.ToString() + " / " + maxMp.ToString();
+
+			// Misc information
+			_currentTarget = _mem.ReadString(Addresses["CurrentTarget"]); // make sure we are on the target we want.
+			_currentTargetUID = _mem.ReadInt(Addresses["TargetUID"]);
+			TargetLabel.Text = "Target: " + _currentTarget;
+			TargetUIDLabel.Text = "Target UID: " + _currentTargetUID.ToString();
 		}
 
 		private void loot_Tick(object sender, EventArgs e)
