@@ -131,9 +131,6 @@
         /// <summary> Prepares the bot for starting </summary>
         public void PrepareElfBot(object sender, RoutedEventArgs e)
         {
-			Trace.WriteLine("test");
-			//Closed += StopWindowBehavior;
-
 			_sim = new InputSimulator();
             _openMonsterTableDialog = new Microsoft.Win32.OpenFileDialog();
             _monsterTable = new MonsterHashTable();

@@ -21,7 +21,6 @@
 
         private void StartTimer(Timer timer, int msDelay)
         {
-			Trace.WriteLine("hi?");
             timer.Interval = new System.TimeSpan(0, 0, 0, 0, msDelay);
             timer.Start();
         }
