@@ -72,7 +72,7 @@
 				{
 					if (!_activeCombatKeys.Contains(_keyMap[key]))
 					{
-						LogDateMsg("Added Active Key: " + _keyMap[key].ToString(), LogTypes.System);
+						Globals.Logger.Debug($"Added active combat key {_keyMap[key].ToString()}", LogEntryTag.System);
 						_activeCombatKeys.Add(_keyMap[key]);
 					}
 					continue;
@@ -94,7 +94,7 @@
 				{
 					if (!_activeHPKeys.Contains(_keyMap[key]))
 					{
-						LogDateMsg("Added Active HP Key: " + _keyMap[key].ToString(), LogTypes.System);
+						Globals.Logger.Debug($"Added active HP key {_keyMap[key].ToString()}", LogEntryTag.System);
 						_activeHPKeys.Add(_keyMap[key]);
 					}
 					continue;
@@ -110,7 +110,7 @@
 				{
 					if (!_activeMPKeys.Contains(_keyMap[key]))
 					{
-						LogDateMsg("Added Active MP Key: " + _keyMap[key].ToString(), LogTypes.System);
+						Globals.Logger.Debug($"Added active MP key {_keyMap[key].ToString()}", LogEntryTag.System);
 						_activeMPKeys.Add(_keyMap[key]);
 					}
 					continue;
@@ -229,6 +229,12 @@
 			FoodOptionsPanel.Size = FoodOptionsPanel.Visible ? new System.Drawing.Size(306, 443) : new System.Drawing.Size(309, 0);
 			FoodOptionsBtn.ForeColor = FoodOptionsPanel.Visible ? System.Drawing.Color.Green : System.Drawing.Color.Black;
 		}
+		
+		private void OpenLogsButton_Click(object sender, EventArgs e)
+		{
+			LogViewerWindow window = new LogViewerWindow();
+			window.Show();
+		}
 
 		#endregion
 
@@ -283,18 +289,19 @@
 			{
 				StopAllCombatRelatedTimers();
 				AutoCombatState.Text = "INACTIVE";
-				LogDateMsg("Disabled AutoCombat", LogTypes.System);
+				Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.System);
 				return;
 			}
 
 			if (_monsterTable.Count == 0)
 			{
-				LogDateMsg("Error: Empty Monstertable", LogTypes.System);
+				Globals.Logger.Error("Could not enable auto-combat due to empty monster table",
+					LogEntryTag.System);
 				AutoCombatCheckBox.Checked = false;
 				return;
 			}
 
-			LogDateMsg("Enabled AutoCombat", LogTypes.System);
+			Globals.Logger.Info("Enabled auto-combat", LogEntryTag.System);
 			HpFoodCheckBox.Enabled = true;
 			MpFoodCheckBox.Enabled = true;
 			_xpBeforeKill = -1;
@@ -311,12 +318,12 @@
 
 			if (HpFoodCheckBox.Checked)
 			{
-				LogDateMsg("Enabled Auto Food HP", LogTypes.System);
+				Globals.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.System);
 				StartTimer(HpFoodTimer, (int)(_foodDelay * 1000));
 				return;
 			}
 
-			LogDateMsg("Disabled Auto Food HP", LogTypes.System);
+			Globals.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.System);
 			StopTimer(HpFoodTimer);
 		}
 
@@ -330,12 +337,12 @@
 
 			if (MpFoodCheckBox.Checked)
 			{
-				LogDateMsg("Enabled Auto Food MP", LogTypes.System);
+				Globals.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.System);
 				StartTimer(MpFoodTimer, (int)(_foodDelay * 1000));
 				return;
 			}
 
-			LogDateMsg("Disabled Auto Food MP", LogTypes.System);
+			Globals.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.System);
 			StopTimer(MpFoodTimer);
 		}
 
@@ -346,12 +353,12 @@
 		{
 			if (CombatCameraCheckBox.Checked)
 			{
-				LogDateMsg("Enabled Combat Camera", LogTypes.System);
+				Globals.Logger.Info("Enabled combat camera", LogEntryTag.System);
 				_combatCamera = true;
 				return;
 			}
 
-			LogDateMsg("Disabled Combat Camera", LogTypes.System);
+			Globals.Logger.Info("Disabled combat camera", LogEntryTag.System);
 			_combatCamera = false;
 		}
 
@@ -362,12 +369,12 @@
 		{
 			if (SecondClientCheckBox.Checked)
 			{
-				LogDateMsg("Enabled 2nd Client Mode.", LogTypes.System);
+				Globals.Logger.Info("Enabled 2nd client mode", LogEntryTag.System);
 				_dualClient = true;
 				return;
 			}
 
-			LogDateMsg("Disabled 2nd Client Mode.", LogTypes.System);
+			Globals.Logger.Info("Disabled 2nd client mode", LogEntryTag.System);
 			_dualClient = false;
 		}
 
@@ -378,53 +385,16 @@
 		{
 			if (TimedCameraYawCheckBox.Checked)
 			{
-				LogDateMsg("Enabled Timed Camera Yaw.", LogTypes.System);
+				Globals.Logger.Info("Enabled timed camera yaw", LogEntryTag.System);
 				_timedCameraYaw = true;
 				return;
 			}
 
-			LogDateMsg("Disabled Timed Camera Yaw.", LogTypes.System);
+			Globals.Logger.Info("Disabled timed camera yaw", LogEntryTag.System);
 			_timedCameraYaw = false;
 		}
 
-		/// <summary> Enables/disables combat logging </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void LogCombatCheckBox_CheckedChanged(object sender, System.EventArgs e)
-		{
-			if (LogCombatCheckBox.Checked)
-			{
-				IgnoredLogTypes.Add(LogTypes.Combat);
-				return;
-			}
-			IgnoredLogTypes.Remove(LogTypes.Combat);
-		}
 
-		/// <summary> Enables/disables food logging </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void LogFoodCheckBox_CheckedChanged(object sender, System.EventArgs e)
-		{
-			if (LogFoodCheckBox.Checked)
-			{
-				IgnoredLogTypes.Add(LogTypes.Food);
-				return;
-			}
-			IgnoredLogTypes.Remove(LogTypes.Food);
-		}
-
-		/// <summary> Enables/disables camera logging </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void LogCameraCheckBox_CheckedChanged(object sender, System.EventArgs e)
-		{
-			if (LogCameraCheckBox.Checked)
-			{
-				IgnoredLogTypes.Add(LogTypes.Camera);
-				return;
-			}
-			IgnoredLogTypes.Remove(LogTypes.Camera);
-		}
 
 		#endregion
 

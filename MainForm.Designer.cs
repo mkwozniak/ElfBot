@@ -104,7 +104,6 @@ namespace ElfBot
 			this.label4 = new System.Windows.Forms.Label();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
 			this.button2 = new System.Windows.Forms.Button();
-			this.SystemMsgLog = new System.Windows.Forms.TextBox();
 			this.label23 = new System.Windows.Forms.Label();
 			this.HpFoodTimer = new System.Windows.Forms.Timer(this.components);
 			this.MpFoodTimer = new System.Windows.Forms.Timer(this.components);
@@ -125,12 +124,7 @@ namespace ElfBot
 			this.FoodOptionsPanel = new System.Windows.Forms.Panel();
 			this.MorePanelsBtn = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.panel3 = new System.Windows.Forms.Panel();
-			this.checkBox8 = new System.Windows.Forms.CheckBox();
-			this.LogCameraCheckBox = new System.Windows.Forms.CheckBox();
-			this.LogFoodCheckBox = new System.Windows.Forms.CheckBox();
-			this.LogCombatCheckBox = new System.Windows.Forms.CheckBox();
-			this.button1 = new System.Windows.Forms.Button();
+			this.OpenLogsButton = new System.Windows.Forms.Button();
 			this.CameraHeaderLabel = new System.Windows.Forms.Label();
 			this.MiscHeaderLabel = new System.Windows.Forms.Label();
 			this.PlayerMPLabel = new System.Windows.Forms.Label();
@@ -165,7 +159,6 @@ namespace ElfBot
 			this.LootOptionsPanel.SuspendLayout();
 			this.FoodOptionsPanel.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.panel3.SuspendLayout();
 			this.MonsterTablePanel.SuspendLayout();
 			this.ZHackPanel.SuspendLayout();
 			this.SuspendLayout();
@@ -785,11 +778,11 @@ namespace ElfBot
 			this.label3.TabIndex = 34;
 			this.label3.Text = "SHIFT";
 			// 
-			// ForceMaxZoomCheckBox
+			// CombatCameraCheckBox
 			// 
 			this.CombatCameraCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.CombatCameraCheckBox.Location = new System.Drawing.Point(217, 7);
-			this.CombatCameraCheckBox.Name = "ForceMaxZoomCheckBox";
+			this.CombatCameraCheckBox.Name = "CombatCameraCheckBox";
 			this.CombatCameraCheckBox.Size = new System.Drawing.Size(85, 40);
 			this.CombatCameraCheckBox.TabIndex = 39;
 			this.CombatCameraCheckBox.Text = "Combat Camera Mode";
@@ -906,7 +899,7 @@ namespace ElfBot
 			this.pictureBox1.TabIndex = 29;
 			this.pictureBox1.TabStop = false;
 			// 
-			// openFileDialog1
+			// OpenMonsterTableDialog
 			// 
 			this.OpenMonsterTableDialog.FileName = "openFileDialog1";
 			this.OpenMonsterTableDialog.Filter = "Text files (*.txt)|*.txt";
@@ -1007,24 +1000,6 @@ namespace ElfBot
 			this.button2.TabIndex = 18;
 			this.button2.Text = "FLY UP";
 			this.button2.UseVisualStyleBackColor = true;
-			// 
-			// SystemMsgLog
-			// 
-			this.SystemMsgLog.AcceptsReturn = true;
-			this.SystemMsgLog.AcceptsTab = true;
-			this.SystemMsgLog.BackColor = System.Drawing.Color.Black;
-			this.SystemMsgLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.SystemMsgLog.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.SystemMsgLog.ForeColor = System.Drawing.Color.White;
-			this.SystemMsgLog.Location = new System.Drawing.Point(317, 109);
-			this.SystemMsgLog.MaximumSize = new System.Drawing.Size(128, 302);
-			this.SystemMsgLog.MinimumSize = new System.Drawing.Size(128, 302);
-			this.SystemMsgLog.Multiline = true;
-			this.SystemMsgLog.Name = "SystemMsgLog";
-			this.SystemMsgLog.ReadOnly = true;
-			this.SystemMsgLog.Size = new System.Drawing.Size(128, 302);
-			this.SystemMsgLog.TabIndex = 40;
-			this.SystemMsgLog.Text = "System Log";
 			// 
 			// label23
 			// 
@@ -1244,8 +1219,7 @@ namespace ElfBot
 			// 
 			this.panel2.BackColor = System.Drawing.Color.Black;
 			this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel2.Controls.Add(this.panel3);
-			this.panel2.Controls.Add(this.button1);
+			this.panel2.Controls.Add(this.OpenLogsButton);
 			this.panel2.Controls.Add(this.CameraHeaderLabel);
 			this.panel2.Controls.Add(this.MiscHeaderLabel);
 			this.panel2.Controls.Add(this.PlayerMPLabel);
@@ -1272,86 +1246,18 @@ namespace ElfBot
 			this.panel2.Size = new System.Drawing.Size(158, 543);
 			this.panel2.TabIndex = 51;
 			// 
-			// panel3
+			// OpenLogsButton
 			// 
-			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel3.Controls.Add(this.checkBox8);
-			this.panel3.Controls.Add(this.LogCameraCheckBox);
-			this.panel3.Controls.Add(this.LogFoodCheckBox);
-			this.panel3.Controls.Add(this.LogCombatCheckBox);
-			this.panel3.Location = new System.Drawing.Point(4, 419);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(148, 98);
-			this.panel3.TabIndex = 33;
-			// 
-			// checkBox8
-			// 
-			this.checkBox8.BackColor = System.Drawing.Color.Black;
-			this.checkBox8.Enabled = false;
-			this.checkBox8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.checkBox8.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.checkBox8.ForeColor = System.Drawing.Color.White;
-			this.checkBox8.Location = new System.Drawing.Point(69, 45);
-			this.checkBox8.Name = "checkBox8";
-			this.checkBox8.Size = new System.Drawing.Size(60, 34);
-			this.checkBox8.TabIndex = 47;
-			this.checkBox8.Text = "Log ZHack";
-			this.checkBox8.UseVisualStyleBackColor = false;
-			// 
-			// LogCameraCheckBox
-			// 
-			this.LogCameraCheckBox.BackColor = System.Drawing.Color.Black;
-			this.LogCameraCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.LogCameraCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LogCameraCheckBox.ForeColor = System.Drawing.Color.White;
-			this.LogCameraCheckBox.Location = new System.Drawing.Point(3, 43);
-			this.LogCameraCheckBox.Name = "LogCameraCheckBox";
-			this.LogCameraCheckBox.Size = new System.Drawing.Size(60, 34);
-			this.LogCameraCheckBox.TabIndex = 46;
-			this.LogCameraCheckBox.Text = "Log Camera";
-			this.LogCameraCheckBox.UseVisualStyleBackColor = false;
-			this.LogCameraCheckBox.CheckedChanged += new System.EventHandler(this.LogCameraCheckBox_CheckedChanged);
-			// 
-			// LogFoodCheckBox
-			// 
-			this.LogFoodCheckBox.BackColor = System.Drawing.Color.Black;
-			this.LogFoodCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.LogFoodCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LogFoodCheckBox.ForeColor = System.Drawing.Color.White;
-			this.LogFoodCheckBox.Location = new System.Drawing.Point(69, 5);
-			this.LogFoodCheckBox.Name = "LogFoodCheckBox";
-			this.LogFoodCheckBox.Size = new System.Drawing.Size(60, 34);
-			this.LogFoodCheckBox.TabIndex = 45;
-			this.LogFoodCheckBox.Text = "Log Food";
-			this.LogFoodCheckBox.UseVisualStyleBackColor = false;
-			this.LogFoodCheckBox.CheckedChanged += new System.EventHandler(this.LogFoodCheckBox_CheckedChanged);
-			// 
-			// LogCombatCheckBox
-			// 
-			this.LogCombatCheckBox.BackColor = System.Drawing.Color.Black;
-			this.LogCombatCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.LogCombatCheckBox.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LogCombatCheckBox.ForeColor = System.Drawing.Color.White;
-			this.LogCombatCheckBox.Location = new System.Drawing.Point(3, 3);
-			this.LogCombatCheckBox.Name = "LogCombatCheckBox";
-			this.LogCombatCheckBox.Size = new System.Drawing.Size(60, 34);
-			this.LogCombatCheckBox.TabIndex = 44;
-			this.LogCombatCheckBox.Text = "Log Combat";
-			this.LogCombatCheckBox.UseVisualStyleBackColor = false;
-			this.LogCombatCheckBox.CheckedChanged += new System.EventHandler(this.LogCombatCheckBox_CheckedChanged);
-			// 
-			// button1
-			// 
-			this.button1.Enabled = false;
-			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button1.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.ForeColor = System.Drawing.Color.White;
-			this.button1.Location = new System.Drawing.Point(3, 517);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(150, 20);
-			this.button1.TabIndex = 32;
-			this.button1.Text = "More >";
-			this.button1.UseVisualStyleBackColor = true;
+			this.OpenLogsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.OpenLogsButton.Font = new System.Drawing.Font("MS Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.OpenLogsButton.ForeColor = System.Drawing.Color.White;
+			this.OpenLogsButton.Location = new System.Drawing.Point(3, 517);
+			this.OpenLogsButton.Name = "OpenLogsButton";
+			this.OpenLogsButton.Size = new System.Drawing.Size(150, 20);
+			this.OpenLogsButton.TabIndex = 32;
+			this.OpenLogsButton.Text = "System Log";
+			this.OpenLogsButton.UseVisualStyleBackColor = true;
+			this.OpenLogsButton.Click += new System.EventHandler(this.OpenLogsButton_Click);
 			// 
 			// CameraHeaderLabel
 			// 
@@ -1632,7 +1538,6 @@ namespace ElfBot
 			this.Controls.Add(this.LootOptionsBtn);
 			this.Controls.Add(this.CombatOptionsBtn);
 			this.Controls.Add(this.label23);
-			this.Controls.Add(this.SystemMsgLog);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.ProcessHookLabel);
@@ -1656,7 +1561,6 @@ namespace ElfBot
 			this.FoodOptionsPanel.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			this.panel3.ResumeLayout(false);
 			this.MonsterTablePanel.ResumeLayout(false);
 			this.MonsterTablePanel.PerformLayout();
 			this.ZHackPanel.ResumeLayout(false);
@@ -1725,7 +1629,6 @@ namespace ElfBot
 		private System.Windows.Forms.OpenFileDialog OpenMonsterTableDialog;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.CheckBox checkBox3;
-		private System.Windows.Forms.TextBox SystemMsgLog;
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label24;
@@ -1782,12 +1685,7 @@ namespace ElfBot
 		private System.Windows.Forms.Label TimedZHackDelayLabel;
 		private System.Windows.Forms.CheckBox TimedCameraYawCheckBox;
         private System.Windows.Forms.Label CameraHeaderLabel;
-		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.CheckBox LogCameraCheckBox;
-		private System.Windows.Forms.CheckBox LogFoodCheckBox;
-		private System.Windows.Forms.CheckBox LogCombatCheckBox;
-		private System.Windows.Forms.CheckBox checkBox8;
+		private System.Windows.Forms.Button OpenLogsButton;
 		private System.Windows.Forms.MaskedTextBox maskedTextBox3;
 		private System.Windows.Forms.MaskedTextBox maskedTextBox1;
 		private System.Windows.Forms.Label YawWaveIntervalLabel;

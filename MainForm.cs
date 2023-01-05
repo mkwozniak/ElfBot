@@ -7,12 +7,13 @@
  * _sim.Keyboard.KeyUp(VirtualKeyCode.SHIFT); // let go of shift
 */
 
+using System;
+
 namespace ElfBot
 {
 	using Random = System.Random;
 	using Form = System.Windows.Forms.Form;
 	using PercentageDict = System.Collections.Generic.Dictionary<string, float>;
-	using LogSet = System.Collections.Generic.HashSet<LogTypes>;
 	using KeyDict = System.Collections.Generic.Dictionary<string, WindowsInput.Native.VirtualKeyCode>;
 	using MonsterHashTable = System.Collections.Generic.HashSet<string>;
 	using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
@@ -51,8 +52,6 @@ namespace ElfBot
 			{ "9" , VirtualKeyCode.VK_9 },
 		};
 
-		private LogSet IgnoredLogTypes = new LogSet()
-		{ LogTypes.Camera};
 		private KeyList _activeCombatKeys = new KeyList();
 		private KeyList _activeHPKeys = new KeyList();
 		private KeyList _activeMPKeys = new KeyList();
