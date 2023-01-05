@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ElfBot"
         mc:Ignorable="d"
-        Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black" Icon="/elfbot-icon.png" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black"  ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
-        <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="/elfbot-icon-large.png"/>
+        <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="Assets/elfbot-icon-large.png"/>
         <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="#FF333333" Foreground="White">
             <Button x:Name="CombatOptionsBtn" Background="Black" Content="Combat" Foreground="White" Height="16" Width="128" Click="CombatOptionsBtn_Click"/>
             <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="16" Width="128" Click="MonsterTableOptionsBtn_Click"/>
