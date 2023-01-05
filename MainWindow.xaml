@@ -1,0 +1,156 @@
+﻿<Window x:Name="Elfbot" x:Class="ElfBot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ElfBot"
+        mc:Ignorable="d"
+        Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black" Icon="/elfbot-icon.png" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
+        <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="/elfbot-icon-large.png"/>
+        <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="#FF333333" Foreground="White">
+            <Button x:Name="CombatOptionsBtn" Background="Black" Content="Combat" Foreground="White" Height="16" Width="128" Click="CombatOptionsBtn_Click"/>
+            <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="16" Width="128" Click="MonsterTableOptionsBtn_Click"/>
+            <Button x:Name="LootOptionsBtn" Background="Black" Content="Loot" Foreground="White" Height="16" Width="128" Click="LootOptionsBtn_Click"/>
+            <Button x:Name="FoodOptionsBtn" Background="Black" Content="Food" Foreground="White" Height="16" Width="128" Click="FoodOptionsBtn_Click"/>
+            <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="16" Width="128"/>
+            <Button x:Name="KeybindsOptionBtn" Background="Black" Content="Keybinds" Foreground="White" Height="16" Width="128" Click="KeybindsOptionBtn_Click"/>
+            <Button Background="Black" Content="ZHack" Foreground="#FF656565" Height="16" Width="128"/>
+            <Button x:Name="LoggingOptionsBtn" Background="Black" Content="Logging" Foreground="White" Height="20" Width="128" Click="LoggingOptionsBtn_Click"/>
+            <CheckBox x:Name="AutoCombatCheckBox" Content="Auto Combat" Foreground="White" FontSize="16" Checked="AutoCombatCheckBox_Checked" Unchecked="AutoCombatCheckBox_Checked" Height="19" Width="120"/>
+            <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White" Checked="SecondClientCheckBox_Checked" Unchecked="SecondClientCheckBox_Checked" Height="15"/>
+            <Label x:Name="AutoCombatState" Content="Inactive" Foreground="White" Height="25" Width="125"/>
+        </ListBox>
+        <ScrollViewer Margin="10,218,627,10" Background="#FF1D1D1D" BorderBrush="Red" BorderThickness="2,2,2,2" Content="System Log" Foreground="White" Visibility="Collapsed"/>
+        <Button x:Name="HookBtn" Content="H O O K" HorizontalAlignment="Left" Margin="62,21,0,0" VerticalAlignment="Top" Width="91" Background="Black" Foreground="White" Height="24" Click="HookBtn_Click"/>
+        <Label Content="ELF BOT 0.0.6" HorizontalAlignment="Left" Margin="62,0,0,0" VerticalAlignment="Top" Foreground="White" FontSize="11" Width="91"/>
+        <GroupBox x:Name="CombatOptionsPanel" Header="Combat Options" Margin="158,0,182,10" Foreground="White">
+            <Grid>
+                <Label Content="Action Timer Delay" HorizontalAlignment="Left" Margin="14,10,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <TextBox x:Name="actionDelayInputBox" HorizontalAlignment="Left" Margin="14,39,0,0" TextWrapping="Wrap" Text="0.5" VerticalAlignment="Top" Width="90" Background="Black" Foreground="White" FontSize="10" TextChanged="actionDelayInputBox_TextChanged"/>
+                <Label Content="Retarget Timeout" HorizontalAlignment="Left" Margin="14,60,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <TextBox x:Name="retargetTimeoutInputBox" HorizontalAlignment="Left" Margin="14,89,0,0" TextWrapping="Wrap" Text="15" VerticalAlignment="Top" Width="90" Background="Black" Foreground="White" FontSize="10" TextChanged="RetargetTimeoutInputBox_TextChanged"/>
+                <CheckBox x:Name="CombatCameraCheckBox" Content="Combat Camera" HorizontalAlignment="Left" Margin="14,110,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" Checked="CombatCameraCheckBox_Checked" Unchecked="CombatCameraCheckBox_Checked"/>
+                <CheckBox x:Name="TimedCameraYawCheckBox" Content="Camera Yaw Wave" HorizontalAlignment="Left" Margin="14,130,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" Checked="TimedCameraYawCheckBox_Checked" Unchecked="TimedCameraYawCheckBox_Checked"/>
+                <Label Content="Combat Key Delay" HorizontalAlignment="Left" Margin="134,10,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <TextBox x:Name="combatKeyDelayInputBox" HorizontalAlignment="Left" Margin="134,39,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="90" Background="Black" Foreground="White" FontSize="10" TextChanged="CombatKeyDelayInputBox_TextChanged"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
+            <Grid>
+                <Label x:Name="PlayerNameLabel" Content="Name:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerLevelLabel" Content="Level:" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CurrentXPLabel" Content="Current XP:" HorizontalAlignment="Left" Margin="9,30,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerZulyLabel" Content="Zuly:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosXLabel" Content="X:" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosYLabel" Content="Y:" HorizontalAlignment="Left" Margin="59,54,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosZLabel" Content="Z:" HorizontalAlignment="Left" Margin="111,54,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerMapIdLabel" Content="Map ID:" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerHPLabel" Content="HP:" HorizontalAlignment="Left" Margin="11,79,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerMPLabel" Content="MP:" HorizontalAlignment="Left" Margin="11,91,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="TargetLabel" Content="Target:" HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="TargetUIDLabel" Content="Target UID:" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraZoomLabel" Content="Zoom:" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraPitchLabel" Content="Pitch:" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraYawLabel" Content="Yaw:" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="XPBeforeKillLabel" Content="XP Before Kill:" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Foreground="White"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <Grid>
+                <Label Content="Monster Table" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" Foreground="White" Width="109"/>
+                <Button x:Name="LoadTableBtn" Content="LOAD TABLE" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="105" Background="Black" Foreground="White" Click="LoadTableBtn_Click"/>
+                <ScrollViewer x:Name="monsterTableText" Margin="10,62,224,10" BorderBrush="#FF00FFB3" BorderThickness="1,1,1,1" Background="#FF171717" Content="Empty" FontSize="14"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="LootOptionsPanel" Header="Loot Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <Grid>
+                <Label Content="Loot Time" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <TextBox x:Name="lootTimeInputBox" HorizontalAlignment="Left" Margin="10,59,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="90" Background="Black" Foreground="White" FontSize="10" TextChanged="lootTimeInputBox_TextChanged"/>
+                <CheckBox x:Name="combatLootCheckbox" Content="Loot After Combat" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <Grid>
+                <Label Content="%" HorizontalAlignment="Left" Margin="41,24,0,0" VerticalAlignment="Top" Foreground="White" Height="25" FontSize="16"/>
+                <TextBox x:Name="FoodHpPercentInputBox" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="31" Background="Black" Foreground="White" FontSize="10" Opacity="0.985" TextAlignment="Center" TextChanged="FoodHpPercentInputBox_TextChanged"/>
+                <CheckBox x:Name="HpFoodCheckBox" Content="Auto HP" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" Checked="HpFoodCheckBox_Checked" Unchecked="HpFoodCheckBox_Checked"/>
+                <TextBox x:Name="FoodMpPercentInputBox" HorizontalAlignment="Left" Margin="77,30,0,0" TextWrapping="Wrap" Text="50" VerticalAlignment="Top" Width="31" Background="Black" Foreground="White" FontSize="10" Opacity="0.985" TextAlignment="Center" TextChanged="FoodMpPercentInputBox_TextChanged"/>
+                <CheckBox x:Name="MpFoodCheckBox" Content="Auto MP" HorizontalAlignment="Left" Margin="77,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" Checked="MpFoodCheckBox_Checked" Unchecked="MpFoodCheckBox_Checked"/>
+                <Label Content="%" HorizontalAlignment="Left" Margin="108,25,0,0" VerticalAlignment="Top" Foreground="White" Height="25" FontSize="16"/>
+                <TextBox x:Name="FoodDelayInputBox" HorizontalAlignment="Left" Margin="10,79,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="98" Background="Black" Foreground="White" FontSize="10" Opacity="0.985" TextChanged="FoodDelayInputBox_TextChanged"/>
+                <TextBox x:Name="EatKeyDelayInputBox" HorizontalAlignment="Left" Margin="10,116,0,0" TextWrapping="Wrap" Text="7" VerticalAlignment="Top" Width="98" Background="Black" Foreground="White" FontSize="10" Opacity="0.985" TextChanged="EatKeyDelayInputBox_TextChanged"/>
+                <Label Content="Check Food Delay" HorizontalAlignment="Left" Margin="11,54,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label Content="Eat Key Delay" HorizontalAlignment="Left" Margin="11,92,0,0" VerticalAlignment="Top" Foreground="White"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="KeybindOptionsPanel" Header="Keybind Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <Grid>
+                <Label Content="Combat Keys" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <ComboBox x:Name="CombatKeys" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True" IsSynchronizedWithCurrentItem="True">
+                    <CheckBox Content="KEY 1"/>
+                    <CheckBox Content="KEY 2"/>
+                    <CheckBox Content="KEY 3"/>
+                    <CheckBox Content="KEY 4"/>
+                    <CheckBox Content="KEY 5"/>
+                    <CheckBox Content="KEY 6"/>
+                    <CheckBox Content="KEY 7"/>
+                    <CheckBox Content="KEY 8"/>
+                    <CheckBox Content="KEY 9"/>
+                    <CheckBox Content="KEY 0"/>
+                </ComboBox>
+                <Label Content="Loot Keys" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <ComboBox x:Name="LootKeys" HorizontalAlignment="Left" Margin="130,39,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
+                    <CheckBox Content="KEY 1"/>
+                    <CheckBox Content="KEY 2"/>
+                    <CheckBox Content="KEY 3"/>
+                    <CheckBox Content="KEY 4"/>
+                    <CheckBox Content="KEY 5"/>
+                    <CheckBox Content="KEY 6"/>
+                    <CheckBox Content="KEY 7"/>
+                    <CheckBox Content="KEY 8"/>
+                    <CheckBox Content="KEY 9"/>
+                    <CheckBox Content="KEY 0"/>
+                </ComboBox>
+                <ComboBox x:Name="MpKeys" HorizontalAlignment="Left" Margin="130,93,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
+                    <CheckBox Content="KEY 1"/>
+                    <CheckBox Content="KEY 2"/>
+                    <CheckBox Content="KEY 3"/>
+                    <CheckBox Content="KEY 4"/>
+                    <CheckBox Content="KEY 5"/>
+                    <CheckBox Content="KEY 6"/>
+                    <CheckBox Content="KEY 7"/>
+                    <CheckBox Content="KEY 8"/>
+                    <CheckBox Content="KEY 9"/>
+                    <CheckBox Content="KEY 0"/>
+                </ComboBox>
+                <Label Content="MP Food Keys" HorizontalAlignment="Left" Margin="132,65,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <ComboBox x:Name="HpKeys" HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
+                    <CheckBox Content="KEY 1"/>
+                    <CheckBox Content="KEY 2"/>
+                    <CheckBox Content="KEY 3"/>
+                    <CheckBox Content="KEY 4"/>
+                    <CheckBox Content="KEY 5"/>
+                    <CheckBox Content="KEY 6"/>
+                    <CheckBox Content="KEY 7"/>
+                    <CheckBox Content="KEY 8"/>
+                    <CheckBox Content="KEY 9"/>
+                    <CheckBox Content="KEY 0"/>
+                </ComboBox>
+                <Label Content="HP Food Keys" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Button x:Name="UpdateFoodKeysBtn" Content="APPLY" HorizontalAlignment="Left" Margin="110,119,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF10C333" Width="40" Click="UpdateFoodKeysBtn_Click"/>
+                <Button Content="APPLY" HorizontalAlignment="Left" Margin="210,13,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF3D403E" Width="40"/>
+                <Button x:Name="UpdateCombatKeysBtn" Content="APPLY" HorizontalAlignment="Left" Margin="90,13,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF10C333" Width="40" Click="UpdateCombatKeysBtn_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="LoggingOptionsPanel" Header="Logging Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <Grid>
+                <CheckBox x:Name="LogCameraCheckBox" Content="Log Camera" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" Checked="LogCameraCheckBox_Checked" Unchecked="LogCameraCheckBox_Checked"/>
+                <CheckBox x:Name="LogCombatCheckBox" Content="Log Combat" HorizontalAlignment="Left" Margin="92,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" IsChecked="True" Checked="LogCombatCheckBox_Checked" Unchecked="LogCombatCheckBox_Checked"/>
+                <CheckBox x:Name="LogFoodCheckBox" Content="Log Food" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" BorderBrush="Black" Foreground="White" IsChecked="True" Checked="LogFoodCheckBox_Checked" Unchecked="LogFoodCheckBox_Checked"/>
+                <ScrollViewer x:Name="SystemMsgLog" Margin="10,30,0,0" Background="#FF212121" Content="System Log"/>
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Window>
