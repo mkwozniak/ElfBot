@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace ElfBot;
 
-public class Logger
+public sealed class Logger
 {
 	private readonly Queue<LogEntry> _entries = new();
 	public ReadOnlyCollection<LogEntry> Entries => Array.AsReadOnly<LogEntry>(_entries.ToArray());
