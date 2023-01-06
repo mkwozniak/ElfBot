@@ -18,7 +18,7 @@
     
     <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
         <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="/Assets/elfbot-icon-large.png"/>
-        <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="{x:Null}" Foreground="White">
+        <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="Black" Foreground="White">
             <Button x:Name="CombatOptionsBtn" Background="Black" Content="Combat" Foreground="White" Height="20" Width="128" Click="CombatOptionsBtn_Click"/>
             <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="22" Width="128" Click="MonsterTableOptionsBtn_Click"/>
             <Button x:Name="LootOptionsBtn" Background="Black" Content="Loot" Foreground="White" Height="19" Width="128" Click="LootOptionsBtn_Click"/>
@@ -93,14 +93,14 @@
                         <TextBox x:Name="CombatKeyDelayInputBox" Text="1"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
                                  Background="Black" Foreground="White"
-                                 TextChanged="actionDelayInputBox_TextChanged" />
+                                 TextChanged="CombatKeyDelayInputBox_TextChanged" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Retarget Timeout" FontWeight="Bold" Foreground="White" />
                         <TextBox x:Name="RetargetTimeoutInputBox" Text="15"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
                                  Background="Black" Foreground="White"
-                                 TextChanged="actionDelayInputBox_TextChanged" />
+                                 TextChanged="RetargetTimeoutInputBox_TextChanged" />
                     </StackPanel>
                     <CheckBox x:Name="CombatCameraCheckBox" Content="Combat Camera"
                               Margin="5 5 0 0 " Foreground="White"
