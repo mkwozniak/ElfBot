@@ -252,7 +252,7 @@ namespace ElfBot
         {
             AutoCombatState.Content = _combatState.ToString();
             Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
-            _sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
+            _sim.Keyboard.KeyPress(VirtualKeyCode.VK_T);
         }
 
         /// <summary> Timer tick for looting finished </summary>
