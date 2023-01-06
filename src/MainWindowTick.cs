@@ -282,11 +282,9 @@ public sealed partial class MainWindow : Window
     {
 		if (_sim == null)
 			return;
-
         var activeHpKeys = Settings.Keybindings
             .FindAll(kb => kb.Type is KeybindType.HpFood or KeybindType.HpInstant)
             .ToArray();
-
         if (activeHpKeys.Length == 0)
         {
 	        Trace.WriteLine("No active HP keys!");
