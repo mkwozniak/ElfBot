@@ -1,4 +1,6 @@
-﻿namespace ElfBot
+﻿using System.Linq;
+
+namespace ElfBot
 {
     using System.Windows;
     using EventArgs = System.EventArgs;
@@ -66,7 +68,7 @@
                 _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
                 _pressedTargetting = true;
 
-                LogDateMsg("Target Tab Press Tick", LogTypes.Combat);
+                Globals.Logger.Debug("Pressed tab key to select next target",  LogEntryTag.Combat);
 
                 _currentXP = Addresses.Xp.GetValue();
                 _xpBeforeKill = _currentXP;
@@ -93,7 +95,7 @@
             _currentTarget = Addresses.Target.GetValue();
             _currentTargetUID = Addresses.TargetId.GetValue();
 
-            LogDateMsg("Checking Target Tick", LogTypes.Combat);
+            Globals.Logger.Debug("Checking active target...", LogEntryTag.Combat);
 
             StopTimer(CheckTimer);
 
@@ -154,7 +156,7 @@
             // if the current XP is less than the xp before the last kill, then the char leveled up
             if (_currentXP < _xpBeforeKill)
             {
-                LogDateMsg("Leveled Up. Resetting State.", LogTypes.System);
+                Globals.Logger.Debug("Level up detected, resetting state", LogEntryTag.Combat);
 
                 // reset the xp before kill to -1
                 _xpBeforeKill = -1;
@@ -172,6 +174,11 @@
         /// <param name="e"></param>
         private void Interface_Tick(object sender, EventArgs e)
         {
+            // Handle logging view
+            if (LoggingOptionsPanel.Visibility == Visibility.Visible)
+            {
+                RefreshLogs();
+            }
             if (!Globals.Hooked)
             {
                 return;
@@ -213,13 +220,37 @@
             TargetUIDLabel.Content = $@"Target UID: {_currentTargetUID}";
         }
 
+        private void RefreshLogs()
+        {
+            var logEntries = Globals.Logger.Entries;
+
+            var displayedLog = SystemMsgLog.Content;
+            if (displayedLog is not string)
+            {
+                SystemMsgLog.Content = "";
+            }
+
+            if (logEntries.Count == 0)
+            {
+                SystemMsgLog.Content = "";
+                return;
+            }
+
+            var lines = logEntries.Select(entry =>
+            {
+                var date = entry.TimeStamp.ToString("hh:mm:ss tt");
+                return $"({date}) {entry.Level}: {entry.Text}";
+            }).ToArray();
+            SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
+        }
+
         /// <summary> Timer tick for looting </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Loot_Tick(object sender, EventArgs e)
         {
             AutoCombatState.Content = _combatState.ToString();
-            LogDateMsg("Looting Tick", LogTypes.Combat);
+            Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
             _sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
         }
 
@@ -231,7 +262,7 @@
             AutoCombatState.Content = _combatState.ToString();
             StopTimer(LootingEndTimer);
             StopTimer(LootingTimer);
-            LogDateMsg("End Loot Tick", LogTypes.Combat);
+            Globals.Logger.Debug("Finished looting items", LogEntryTag.Combat);
 
             SwitchToTargetting(true);
         }
@@ -244,10 +275,9 @@
             if (_activeHPKeys.Count == 0)
             {
 				Trace.WriteLine("No active HP keys!");
-				LogDateMsg("No active HP keys!", LogTypes.System);
+                Globals.Logger.Warn("No active HP keys are set", LogEntryTag.System);
 				return;
 			}
-
 
             _playerHP = Addresses.Hp.GetValue();
             _playerMaxHP = Addresses.MaxHp.GetValue();
@@ -258,13 +288,13 @@
             float hpPercent = ((float)(_playerHP) / (float)(_playerMaxHP));
 
 			Trace.WriteLine("Check HP Food Tick");
-			LogDateMsg($"Checking Food Tick HP: {_playerHP}/{_playerMaxHP}({(int)(hpPercent * 100f)}%)", LogTypes.Food);
-
+            Globals.Logger.Debug("Checking health...", LogEntryTag.Food);
+            
             if (hpPercent < (_currentFoodHPThreshold / 100) && _eatHPFood)
             {
                 int ranFood = _ran.Next(0, _activeHPKeys.Count);
 				Trace.WriteLine("Eat HP Food Tick");
-				LogDateMsg("Eat HP Food: " + _activeHPKeys[ranFood].ToString(), LogTypes.Food);
+                Globals.Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
                 _sim.Keyboard.KeyPress(_activeHPKeys[ranFood]); // food press
                 _eatHPFood = false;
                 // start the delay timer to press the key again
@@ -280,7 +310,7 @@
             if (_activeMPKeys.Count == 0)
             {
 				Trace.WriteLine("No active MP keys!");
-				LogDateMsg("No active MP keys!", LogTypes.System);
+                Globals.Logger.Warn("No active MP keys are set", LogEntryTag.System);
 				return;
 			}
 
@@ -293,13 +323,13 @@
             float mpPercent = ((float)(_playerMP) / (float)(_playerMaxMP));
 
 			Trace.WriteLine("Check MP Food Tick");
-			LogDateMsg($"Checking Food Tick MP: {_playerMP}/{_playerMaxMP}({(int)(mpPercent * 100f)}%)", LogTypes.Food);
+            Globals.Logger.Debug("Checking mana...", LogEntryTag.Food);
 
             if (mpPercent < (_currentFoodMPThreshold / 100) && _eatMPFood)
             {
                 int ranFood = _ran.Next(0, _activeMPKeys.Count);
 				Trace.WriteLine("Eat MP Food Tick");
-				LogDateMsg("Eat MP Food: " + _activeMPKeys[ranFood].ToString(), LogTypes.Food);
+                Globals.Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
                 _sim.Keyboard.KeyPress(_activeMPKeys[ranFood]); // food press
                                                                 // start the delay timer to press the key again
                 StartTimer(MpFoodKeyTimer, (int)(_mpKeyDelay * 1000));
@@ -338,7 +368,7 @@
 
             if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) || (x == _lastXPos && y == _lastYPos))
             {
-                LogDateMsg("Attack Timeout Tick", LogTypes.Combat);
+                Globals.Logger.Debug($"Attack timed out", LogEntryTag.Combat);
                 StopAllCombatRelatedTimers();
                 SwitchToTargetting(true);
             }

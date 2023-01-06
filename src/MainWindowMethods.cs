@@ -80,7 +80,7 @@
                     if (_dualClient && foundClient)
                     {
                         mainID = theprocess.Id;
-                        LogDateMsg("Hooking to second ROSE client.", LogTypes.System);
+                        Globals.Logger.Debug($"Hooking to second ROSE client with PID {mainID}", LogEntryTag.System);
                         return mainID;
                     }
                 }
@@ -103,25 +103,15 @@
             if (pID > 0)
             {
                 Globals.TargetApplicationMemory.OpenProcess(pID);
-                LogDateMsg("Process ID: " + pID.ToString() + " Hooked Successfully.", LogTypes.System);
+                Globals.Logger.Info($"Successfully hooked ROSE process with PID {pID}", LogEntryTag.System);
                 OnFinishedHooking?.Invoke();
                 Globals.Hooked = true;
                 return true;
             }
-
+            
+            Globals.Logger.Warn($"Process PID {pID} was invalid and could not be hooked", LogEntryTag.System);
             HookBtn.Content = "Hook Failed :(";
             return false;
-        }
-
-        /// <summary> Logs a message to console and to form log. </summary>
-        /// <param name="msg"> The message </param>
-        private void LogDateMsg(string msg, LogTypes logType)
-        {
-            if (IgnoredLogTypes.Contains(logType))
-                return;
-
-            Trace.WriteLine(System.DateTime.Now.ToString() + ": " + msg);
-            LogMsgToFormLog(msg);
         }
 
         #endregion
@@ -163,10 +153,6 @@
             TimedCameraYawCheckBox.IsEnabled = false;
 
             CombatOptionsPanel.Visibility = Visibility.Visible;
-
-            IgnoredLogTypes.Add(LogTypes.Camera);
-            IgnoredLogTypes.Add(LogTypes.Food);
-            IgnoredLogTypes.Add(LogTypes.Combat);
 
             _openMonsterTableDialog.Filter = "Text files(*.txt)| *.txt";
 
@@ -211,7 +197,7 @@
             {
                 if (monsters[i].Length > 0)
                 {
-                    LogDateMsg("Added monster to table from file: " + monsters[i], LogTypes.System);
+                    Globals.Logger.Info($"Added monster {monsters[i]} to monster table", LogEntryTag.Combat);
                     _monsterTable.Add(monsters[i]);
                 }
             }
@@ -225,7 +211,8 @@
             if (_currentXP > _xpBeforeKill)
             {
                 _targetDefeatedMsg = Addresses.TargetDefeatedMessage.GetValue();
-                LogDateMsg("Target Defeat: " + _targetDefeatedMsg, LogTypes.Combat);
+                Globals.Logger.Debug($"Defeated target and received message \"{_targetDefeatedMsg}\"",
+                    LogEntryTag.Combat);
                 StopTimer(AttackTimeoutTimer);
                 _pressedTargetting = false;
 
@@ -257,7 +244,7 @@
                 int ranSkill = _ran.Next(0, _activeCombatKeys.Count);
                 _sim?.Keyboard.KeyPress(_activeCombatKeys[ranSkill]);
 
-                LogDateMsg("Attack Tick: " + _activeCombatKeys[ranSkill].ToString(), LogTypes.Combat);
+                Globals.Logger.Debug($"Attack tick: {_activeCombatKeys[ranSkill]}", LogEntryTag.Combat);
 
                 if (!AttackTimeoutTimer.IsEnabled)
                 {

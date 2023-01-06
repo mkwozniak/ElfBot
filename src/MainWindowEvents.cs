@@ -37,7 +37,7 @@
                 {
                     if (!_activeCombatKeys.Contains(_keyMap[i]))
                     {
-                        LogDateMsg("Added Active Key: " + _keyMap[i].ToString(), LogTypes.System);
+                        Globals.Logger.Debug($"Added active combat key {_keyMap[i].ToString()}", LogEntryTag.System);
                         _activeCombatKeys.Add(_keyMap[i]);
                     }
                     continue;
@@ -64,7 +64,7 @@
                 {
                     if (!_activeHPKeys.Contains(_keyMap[i]))
                     {
-                        LogDateMsg("Added Active HP Key: " + _keyMap[i].ToString(), LogTypes.System);
+                        Globals.Logger.Debug($"Added active HP key {_keyMap[i].ToString()}", LogEntryTag.System);
                         _activeHPKeys.Add(_keyMap[i]);
                     }
                     continue;
@@ -85,7 +85,7 @@
                 {
                     if (!_activeMPKeys.Contains(_keyMap[i]))
                     {
-                        LogDateMsg("Added Active MP Key: " + _keyMap[i].ToString(), LogTypes.System);
+                        Globals.Logger.Debug($"Added active MP key {_keyMap[i].ToString()}", LogEntryTag.System);
                         _activeMPKeys.Add(_keyMap[i]);
                     }
                     continue;
@@ -237,18 +237,19 @@
             {
                 StopAllCombatRelatedTimers();
                 AutoCombatState.Content = "INACTIVE";
-                LogDateMsg("Disabled AutoCombat", LogTypes.System);
+                Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
                 return;
             }
 
             if (_monsterTable?.Count == 0)
             {
-                LogDateMsg("Error: Empty Monstertable", LogTypes.System);
+                Globals.Logger.Error("Could not enable auto-combat due to empty monster table",
+                    LogEntryTag.System);
                 AutoCombatCheckBox.IsChecked = false;
                 return;
             }
 
-            LogDateMsg("Enabled AutoCombat", LogTypes.System);
+            Globals.Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
             HpFoodCheckBox.IsEnabled = true;
             MpFoodCheckBox.IsEnabled = true;
             _xpBeforeKill = -1;
@@ -265,12 +266,12 @@
 
             if (HpFoodCheckBox.IsChecked == true)
             {
-                LogDateMsg("Enabled Auto Food HP", LogTypes.System);
+                Globals.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
                 StartTimer(HpFoodTimer, (int)(_foodDelay * 1000));
                 return;
             }
 
-            LogDateMsg("Disabled Auto Food HP", LogTypes.System);
+            Globals.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
             StopTimer(HpFoodTimer);
         }
 
@@ -284,12 +285,12 @@
 
             if (MpFoodCheckBox.IsChecked == true)
             {
-                LogDateMsg("Enabled Auto Food MP", LogTypes.System);
+                Globals.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
                 StartTimer(MpFoodTimer, (int)(_foodDelay * 1000));
                 return;
             }
 
-            LogDateMsg("Disabled Auto Food MP", LogTypes.System);
+            Globals.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
             StopTimer(MpFoodTimer);
         }
 
@@ -300,12 +301,12 @@
 		{
 			if (CombatCameraCheckBox.IsChecked == true)
 			{
-				LogDateMsg("Enabled Combat Camera", LogTypes.System);
+                Globals.Logger.Info("Enabled combat camera", LogEntryTag.Camera);
 				_combatCamera = true;
 				return;
 			}
 
-			LogDateMsg("Disabled Combat Camera", LogTypes.System);
+            Globals.Logger.Info("Disabled combat camera", LogEntryTag.Camera);
 			_combatCamera = false;
 		}
 
@@ -316,12 +317,12 @@
         {
             if (SecondClientCheckBox.IsChecked == true)
             {
-                LogDateMsg("Enabled 2nd Client Mode.", LogTypes.System);
+                Globals.Logger.Info("Enabled 2nd client mode", LogEntryTag.System);
                 _dualClient = true;
                 return;
             }
 
-            LogDateMsg("Disabled 2nd Client Mode.", LogTypes.System);
+            Globals.Logger.Info("Disabled 2nd client mode", LogEntryTag.System);
             _dualClient = false;
         }
 
@@ -332,53 +333,20 @@
 		{
 			if (TimedCameraYawCheckBox.IsChecked == true)
 			{
-				LogDateMsg("Enabled Timed Camera Yaw.", LogTypes.System);
+                Globals.Logger.Info("Enabled timed camera yaw", LogEntryTag.System);
 				_timedCameraYaw = true;
 				return;
 			}
 
-			LogDateMsg("Disabled Timed Camera Yaw.", LogTypes.System);
-			_timedCameraYaw = false;
+            Globals.Logger.Info("Disabled timed camera yaw", LogEntryTag.System);
+            _timedCameraYaw = false;
 		}
-
-		/// <summary> Enables/disables combat logging </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void LogCombatCheckBox_Checked(object sender, RoutedEventArgs e)
-		{
-			if (LogCombatCheckBox.IsChecked == true)
-			{
-				IgnoredLogTypes.Remove(LogTypes.Combat);
-				return;
-			}
-			IgnoredLogTypes.Add(LogTypes.Combat);
-		}
-
-		/// <summary> Enables/disables food logging </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void LogFoodCheckBox_Checked(object sender, RoutedEventArgs e)
+        
+        private void ClearLogsButton_Click(object sender, EventArgs e)
         {
-            if (LogFoodCheckBox.IsChecked == true && IgnoredLogTypes.Contains(LogTypes.Food))
-            {
-				IgnoredLogTypes.Remove(LogTypes.Food);
-				return;
-            }
-			IgnoredLogTypes.Add(LogTypes.Food);
+            Globals.Logger.Clear();
+            SystemMsgLog.Content = "";
         }
-
-        /// <summary> Enables/disables camera logging </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LogCameraCheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (LogCameraCheckBox.IsChecked == true)
-            {
-				IgnoredLogTypes.Remove(LogTypes.Camera);
-                return;
-            }
-			IgnoredLogTypes.Add(LogTypes.Camera);
-		}
 
         #endregion
 

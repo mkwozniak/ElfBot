@@ -34,7 +34,6 @@
             { VirtualKeyCode.VK_0 },
         };
 
-        private LogSet IgnoredLogTypes = new LogSet() { LogTypes.Camera };
         private KeyList _activeCombatKeys = new KeyList();
         private KeyList _activeHPKeys = new KeyList();
         private KeyList _activeMPKeys = new KeyList();
