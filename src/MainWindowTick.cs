@@ -222,8 +222,9 @@ namespace ElfBot
 
         private void RefreshLogs()
         {
-            var logEntries = Globals.Logger.Entries;
-
+            Level level = (Level) Enum.Parse(typeof(Level), LogLevelSelection.Text, true);
+            var logEntries = Globals.Logger.Entries.Where(e => e.Level >= level).ToList();
+            
             var displayedLog = SystemMsgLog.Content;
             if (displayedLog is not string)
             {
