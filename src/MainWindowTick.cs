@@ -54,7 +54,7 @@ public sealed partial class MainWindow : Window
         if (_monsterTable == null || _sim == null)
             return;
 
-        AutoCombatState.Content = _combatState.ToString();
+        AutoCombatState.Content = $"Combat State: {_combatState}";
 
         StopTimer(TargettingTimer);
 
@@ -95,7 +95,7 @@ public sealed partial class MainWindow : Window
 		if (_monsterTable == null)
 			return;
 
-		AutoCombatState.Content = _combatState.ToString();
+		AutoCombatState.Content = $"Combat State: {_combatState}";
 
         // get target memory
         _currentTarget = Addresses.Target.GetValue();
@@ -139,7 +139,7 @@ public sealed partial class MainWindow : Window
 		if (_monsterTable == null)
 			return;
 
-		AutoCombatState.Content = _combatState.ToString();
+		AutoCombatState.Content = $"Combat State: {_combatState}";
 
         _currentXP = Addresses.Xp.GetValue(); // get current xp
         _currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
@@ -191,7 +191,7 @@ public sealed partial class MainWindow : Window
         }
 
         // Primary window
-        AutoCombatState.Content = _combatState.ToString();
+        AutoCombatState.Content = $"Combat State: {_combatState}";
 
         // Character information
         string name = Addresses.CharacterName.GetValue();
@@ -257,7 +257,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void Loot_Tick(object sender, EventArgs e)
     {
-        AutoCombatState.Content = _combatState.ToString();
+        AutoCombatState.Content = $"Combat State: {_combatState}";
         Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
         _sim.Keyboard.KeyPress(VirtualKeyCode.VK_T);
     }
@@ -267,7 +267,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void LootEnd_Tick(object? sender, EventArgs e)
     {
-        AutoCombatState.Content = _combatState.ToString();
+        AutoCombatState.Content = $"Combat State: {_combatState}";
         StopTimer(LootingEndTimer);
         StopTimer(LootingTimer);
         Globals.Logger.Debug("Finished looting items", LogEntryTag.Combat);

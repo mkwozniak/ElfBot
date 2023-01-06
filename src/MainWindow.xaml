@@ -10,6 +10,10 @@
 
     <Window.Resources>
         <local:ApplicationContext x:Key="ApplicationContext" />
+        
+        <ControlTemplate x:Key="InformationLabel" TargetType="ContentControl">
+            <Label Content="{TemplateBinding Content}" Padding="0" Foreground="White" />
+        </ControlTemplate>
     </Window.Resources>
     
     <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
@@ -41,31 +45,49 @@
         </GroupBox>
         <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
             <Grid>
-                <!-- char -->
-                <Label Content="Character" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,2,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerNameLabel" Content="Name: N/A" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerLevelLabel" Content="Level: N/A" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CurrentXpLabel" Content="XP: N/A" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerZulyLabel" Content="Zuly: N/A" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerHpLabel" Content="HP: - / -" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerMpLabel" Content="MP: - / -" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <!-- location -->
-                <Label Content="Location" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,117,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosXLabel" Content="X:  N/A" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosYLabel" Content="Y: N/A" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosZLabel" Content="Z: N/A" HorizontalAlignment="Left" Margin="10,162,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerMapIdLabel" Content="Map ID: N/A" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <!-- camera -->
-                <Label Content="Camera" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,202,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraZoomLabel" Content="Zoom: N/A" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraPitchLabel" Content="Pitch: N/A" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraYawLabel" Content="Yaw: N/A" HorizontalAlignment="Left" Margin="10,247,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <!-- misc -->
-                <Label Content="Misc" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,272,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="TargetLabel" Content="Target: N/A" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="TargetIdLabel" Content="Target UID: N/A" HorizontalAlignment="Left" Margin="10,302,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="XpBeforeKillLabel" Content="XP Before Kill: N/A" HorizontalAlignment="Left" Margin="10,317,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="AutoCombatState" Content="Combat Inactive" HorizontalAlignment="Left" Margin="10,346,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <StackPanel>
+                    <!-- char -->
+                    <StackPanel Margin="5">
+                        <Label Content="Character" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                        <StackPanel Margin="10 0 0 0">
+                            <ContentControl Content="Name: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerNameLabel" />
+                            <ContentControl Content="Level: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerLevelLabel" />
+                            <ContentControl Content="XP: N/A" Template="{StaticResource InformationLabel}" x:Name="CurrentXpLabel" />
+                            <ContentControl Content="Zuly: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerZulyLabel" />
+                            <ContentControl Content="HP: - / -" Template="{StaticResource InformationLabel}" x:Name="PlayerHpLabel" />
+                            <ContentControl Content="MP: - / -" Template="{StaticResource InformationLabel}" x:Name="PlayerMpLabel" />
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- location -->
+                    <StackPanel Margin="5">
+                        <Label Content="Location" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                        <StackPanel Margin="10 0 0 0">
+                            <ContentControl Content="X:  N/A" x:Name="PlayerPosXLabel" Template="{StaticResource InformationLabel}" />
+                            <ContentControl Content="Y: N/A" x:Name="PlayerPosYLabel" Template="{StaticResource InformationLabel}" />
+                            <ContentControl Content="Z: N/A" x:Name="PlayerPosZLabel" Template="{StaticResource InformationLabel}" />
+                            <ContentControl Content="Map ID: N/A" x:Name="PlayerMapIdLabel" Template="{StaticResource InformationLabel}" />
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- camera -->
+                    <StackPanel Margin="5">
+                        <Label Content="Camera" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                        <StackPanel Margin="10 0 0 0">
+                            <ContentControl Content="Zoom: N/A" x:Name="CameraZoomLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Content="Pitch: N/A" x:Name="CameraPitchLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Content="Yaw: N/A" x:Name="CameraYawLabel" Template="{StaticResource InformationLabel}"  />
+                        </StackPanel>
+                    </StackPanel>
+                    <!-- misc -->
+                    <StackPanel Margin="5">
+                        <Label Content="Misc" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                        <StackPanel Margin="10 0 0 0">
+                            <ContentControl Content="Target: N/A" x:Name="TargetLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Content="Target UID: N/A" x:Name="TargetIdLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Content="XP Before Kill: N/A" x:Name="XpBeforeKillLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Content="Combat State: Inactive" x:Name="AutoCombatState" Template="{StaticResource InformationLabel}"  />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">

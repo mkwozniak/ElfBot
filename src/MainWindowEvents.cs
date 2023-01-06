@@ -218,7 +218,7 @@ public sealed partial class MainWindow : Window
         if (!AutoCombatCheckBox.IsChecked == true)
         {
             StopAllCombatRelatedTimers();
-            AutoCombatState.Content = "INACTIVE";
+            AutoCombatState.Content = "Combat State: Inactive";
             Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
             return;
         }
