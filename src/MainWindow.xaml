@@ -51,7 +51,6 @@
                 <Label x:Name="CameraPitchLabel" Content="Pitch:" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Foreground="White"/>
                 <Label x:Name="CameraYawLabel" Content="Yaw:" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Foreground="White"/>
                 <Label x:Name="XPBeforeKillLabel" Content="XP Before Kill:" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="AutoCombatState" Content="Inactive" Foreground="White" Margin="10,10,313,343" BorderBrush="#FF717171" BorderThickness="1,1,1,1" Background="Black"/>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
