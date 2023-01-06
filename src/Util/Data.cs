@@ -24,3 +24,14 @@ public enum CombatStates
     Attacking,
     Looting,
 }
+
+public enum KeybindType
+{
+    None,
+    Attack,
+    Skill,
+    HpFood,
+    HpInstant,
+    MpFood,
+    MpInstant
+}

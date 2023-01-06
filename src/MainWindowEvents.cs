@@ -2,8 +2,6 @@
 
 using System.Windows;
 using EventArgs = System.EventArgs;
-using CheckBox = System.Windows.Controls.CheckBox;
-using System.Diagnostics;
 
 public sealed partial class MainWindow : Window
 {
@@ -17,84 +15,6 @@ public sealed partial class MainWindow : Window
         if (!TryOpenProcess()) 
         { 
             return; 
-        }
-    }
-
-    /// <summary> Updates combat keys </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void UpdateCombatKeysBtn_Click(object sender, RoutedEventArgs e)
-    {
-        for (int i = 0; i < CombatKeys.Items.Count; i++)
-        {
-            CheckBox checkBox = (CheckBox)CombatKeys.Items.GetItemAt(i);
-
-            if (checkBox == null)
-                continue;
-
-            bool? isChecked = checkBox.IsChecked;
-
-            if (isChecked == true)
-            {
-                if (!_activeCombatKeys.Contains(_keyMap[i]))
-                {
-                    Globals.Logger.Debug($"Added active combat key {_keyMap[i].ToString()}", 
-                        LogEntryTag.System);
-                    _activeCombatKeys.Add(_keyMap[i]);
-                }
-                continue;
-            }
-            _activeCombatKeys.Remove(_keyMap[i]);
-        }
-    }
-
-    /// <summary> Updates food keys </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void UpdateFoodKeysBtn_Click(object sender, RoutedEventArgs e)
-    {
-        for (int i = 0; i < HpKeys.Items.Count; i++)
-        {
-            CheckBox checkBox = (CheckBox)HpKeys.Items.GetItemAt(i);
-
-            if (checkBox == null)
-                continue;
-
-            bool? isChecked = checkBox.IsChecked;
-
-            if (isChecked == true)
-            {
-                if (!_activeHPKeys.Contains(_keyMap[i]))
-                {
-                    Globals.Logger.Debug($"Added active HP key {_keyMap[i].ToString()}", 
-                        LogEntryTag.System);
-                    _activeHPKeys.Add(_keyMap[i]);
-                }
-                continue;
-            }
-            _activeHPKeys.Remove(_keyMap[i]);
-        }
-
-        for (int i = 0; i < MpKeys.Items.Count; i++)
-        {
-            CheckBox checkBox = (CheckBox)MpKeys.Items.GetItemAt(i);
-
-            if (checkBox == null)
-                continue;
-
-            bool? isChecked = checkBox.IsChecked;
-
-            if (isChecked == true)
-            {
-                if (!_activeMPKeys.Contains(_keyMap[i]))
-                {
-                    Globals.Logger.Debug($"Added active MP key {_keyMap[i].ToString()}", 
-                        LogEntryTag.System);
-                    _activeMPKeys.Add(_keyMap[i]);
-                }
-                continue;
-            }
-            _activeMPKeys.Remove(_keyMap[i]);
         }
     }
 
@@ -131,6 +51,7 @@ public sealed partial class MainWindow : Window
 	{
 		if (_config == null)
             return;
+		
         _config.TrySaveConfigToFile(GenerateConfigData());
 	}
 

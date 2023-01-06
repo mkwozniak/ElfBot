@@ -5,7 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ElfBot"
         mc:Ignorable="d"
-        Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black"  ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <local:ApplicationContext x:Key="ApplicationContext" />
+    </Window.Resources>
+    
     <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
         <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="/Assets/elfbot-icon-large.png"/>
         <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="{x:Null}" Foreground="White">
@@ -92,61 +98,36 @@
         </GroupBox>
         <GroupBox x:Name="KeybindOptionsPanel" Header="Keybind Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
-                <Label Content="Combat Keys" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <ComboBox x:Name="CombatKeys" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
-                    <CheckBox Content="KEY 1"/>
-                    <CheckBox Content="KEY 2"/>
-                    <CheckBox Content="KEY 3"/>
-                    <CheckBox Content="KEY 4"/>
-                    <CheckBox Content="KEY 5"/>
-                    <CheckBox Content="KEY 6"/>
-                    <CheckBox Content="KEY 7"/>
-                    <CheckBox Content="KEY 8"/>
-                    <CheckBox Content="KEY 9"/>
-                    <CheckBox Content="KEY 0"/>
-                </ComboBox>
-                <Label Content="Loot Keys" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <ComboBox x:Name="LootKeys" HorizontalAlignment="Left" Margin="130,39,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
-                    <CheckBox Content="KEY 1"/>
-                    <CheckBox Content="KEY 2"/>
-                    <CheckBox Content="KEY 3"/>
-                    <CheckBox Content="KEY 4"/>
-                    <CheckBox Content="KEY 5"/>
-                    <CheckBox Content="KEY 6"/>
-                    <CheckBox Content="KEY 7"/>
-                    <CheckBox Content="KEY 8"/>
-                    <CheckBox Content="KEY 9"/>
-                    <CheckBox Content="KEY 0"/>
-                </ComboBox>
-                <ComboBox x:Name="MpKeys" HorizontalAlignment="Left" Margin="130,93,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
-                    <CheckBox Content="KEY 1"/>
-                    <CheckBox Content="KEY 2"/>
-                    <CheckBox Content="KEY 3"/>
-                    <CheckBox Content="KEY 4"/>
-                    <CheckBox Content="KEY 5"/>
-                    <CheckBox Content="KEY 6"/>
-                    <CheckBox Content="KEY 7"/>
-                    <CheckBox Content="KEY 8"/>
-                    <CheckBox Content="KEY 9"/>
-                    <CheckBox Content="KEY 0"/>
-                </ComboBox>
-                <Label Content="MP Food Keys" HorizontalAlignment="Left" Margin="132,65,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <ComboBox x:Name="HpKeys" HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True">
-                    <CheckBox Content="KEY 1"/>
-                    <CheckBox Content="KEY 2"/>
-                    <CheckBox Content="KEY 3"/>
-                    <CheckBox Content="KEY 4"/>
-                    <CheckBox Content="KEY 5"/>
-                    <CheckBox Content="KEY 6"/>
-                    <CheckBox Content="KEY 7"/>
-                    <CheckBox Content="KEY 8"/>
-                    <CheckBox Content="KEY 9"/>
-                    <CheckBox Content="KEY 0"/>
-                </ComboBox>
-                <Label Content="HP Food Keys" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Button x:Name="UpdateFoodKeysBtn" Content="APPLY" HorizontalAlignment="Left" Margin="110,119,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF10C333" Width="40" Click="UpdateFoodKeysBtn_Click"/>
-                <Button Content="APPLY" HorizontalAlignment="Left" Margin="210,13,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF3D403E" Width="40"/>
-                <Button x:Name="UpdateCombatKeysBtn" Content="APPLY" HorizontalAlignment="Left" Margin="90,13,0,0" VerticalAlignment="Top" Background="Black" Foreground="#FF10C333" Width="40" Click="UpdateCombatKeysBtn_Click"/>
+                <StackPanel Margin="5 5 0 0">
+                    <DockPanel>
+                        <Label Content="Slot" Foreground="White" FontSize="14" FontWeight="Bold"></Label>
+                        <Label Content="Action" Foreground="White" FontSize="14" FontWeight="Bold" Margin="83 0 0 0"></Label>
+                    </DockPanel>
+
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=Settings.Keybindings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:Keybinding}">
+                                <UniformGrid Columns="2" MaxWidth="250" HorizontalAlignment="Left">
+                                    <Label Content="{Binding Key}" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Foreground="White"
+                                           Margin="0 0 0 0">
+                                    </Label>
+                                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="100"
+                                              IsReadOnly="True" SelectedIndex="{Binding Path=Value}"
+                                              Margin="10 0 0 0">
+                                        <ComboBoxItem Content="None" />
+                                        <ComboBoxItem Content="Attack" />
+                                        <ComboBoxItem Content="Skill" />
+                                        <ComboBoxItem Content="HP (Food)" />
+                                        <ComboBoxItem Content="HP (Instant)" />
+                                        <ComboBoxItem Content="MP (Food)" />
+                                        <ComboBoxItem Content="MP (Instant)" />
+                                    </ComboBox>
+                                </UniformGrid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="LoggingOptionsPanel" Header="Logging Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">

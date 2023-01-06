@@ -283,7 +283,11 @@ public sealed partial class MainWindow : Window
 		if (_sim == null)
 			return;
 
-        if (_activeHPKeys.Count == 0)
+        var activeHpKeys = Settings.Keybindings
+            .FindAll(kb => kb.Type is KeybindType.HpFood or KeybindType.HpInstant)
+            .ToArray();
+
+        if (activeHpKeys.Length == 0)
         {
 	        Trace.WriteLine("No active HP keys!");
             Globals.Logger.Warn("No active HP keys are set", LogEntryTag.System);
@@ -303,10 +307,10 @@ public sealed partial class MainWindow : Window
         
         if (hpPercent < (_currentFoodHPThreshold / 100) && _eatHPFood)
         {
-            int ranFood = _ran.Next(0, _activeHPKeys.Count);
+            int ranFood = _ran.Next(0, activeHpKeys.Length);
 				Trace.WriteLine("Eat HP Food Tick");
             Globals.Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            _sim.Keyboard.KeyPress(_activeHPKeys[ranFood]); // food press
+            _sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
             _eatHPFood = false;
             // start the delay timer to press the key again
             StartTimer(HpFoodKeyTimer, (int)(_hpKeyDelay * 1000));
@@ -321,7 +325,11 @@ public sealed partial class MainWindow : Window
 		if (_sim == null)
 			return;
 
-		if (_activeMPKeys.Count == 0)
+        var activeMpKeys = Settings.Keybindings
+            .FindAll(kb => kb.Type is KeybindType.MpFood or KeybindType.MpInstant)
+            .ToArray();
+
+        if (activeMpKeys.Length == 0)
         {
 			Trace.WriteLine("No active MP keys!");
             Globals.Logger.Warn("No active MP keys are set", LogEntryTag.System);
@@ -341,10 +349,10 @@ public sealed partial class MainWindow : Window
 
         if (mpPercent < (_currentFoodMPThreshold / 100) && _eatMPFood)
         {
-            int ranFood = _ran.Next(0, _activeMPKeys.Count);
+            int ranFood = _ran.Next(0, activeMpKeys.Length);
 			Trace.WriteLine("Eat MP Food Tick");
             Globals.Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            _sim.Keyboard.KeyPress(_activeMPKeys[ranFood]); // food press
+            _sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
             // start the delay timer to press the key again
             StartTimer(MpFoodKeyTimer, (int)(_mpKeyDelay * 1000));
             _eatMPFood = false;

@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="InputSimulatorPlus" Version="1.0.7" />
     <PackageReference Include="Memory.dll.x64" Version="1.2.24" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup>

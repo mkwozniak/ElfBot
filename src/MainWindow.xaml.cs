@@ -1,4 +1,6 @@
-﻿namespace ElfBot;
+﻿using System.Collections.Generic;
+
+namespace ElfBot;
 
 using System.Windows;
 using Random = System.Random;
@@ -19,6 +21,9 @@ using System;
 /// </summary>
 public partial class MainWindow : Window
 {
+	public ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
+	public Settings? Settings => ApplicationContext?.Settings;
+
 	// Events
 	private FinishedHooking? OnFinishHook;
 
@@ -46,27 +51,23 @@ public partial class MainWindow : Window
 
 	// Structures
 	private MonsterHashTable? _monsterTable;
-	private KeyList _activeCombatKeys = new KeyList();
-	private KeyList _activeHPKeys = new KeyList();
-	private KeyList _activeMPKeys = new KeyList();
-	private KeyList _activeLootKeys = new KeyList();
-	private KeyList _activeBuffKeys = new KeyList();
 	private TextBoxDict _textBoxes = new TextBoxDict();
 	private CheckBoxDict _checkBoxes = new CheckBoxDict();
-	private ComboBoxDict _comboBoxes = new ComboBoxDict();
 
-	private KeyList _keyMap = new KeyList()
+	public static readonly Dictionary<string, VirtualKeyCode> KeyMap = new()
 	{
-		{ VirtualKeyCode.VK_1 },
-		{ VirtualKeyCode.VK_2 },
-		{ VirtualKeyCode.VK_3 },
-		{ VirtualKeyCode.VK_4 },
-		{ VirtualKeyCode.VK_5 },
-		{ VirtualKeyCode.VK_6 },
-		{ VirtualKeyCode.VK_7 },
-		{ VirtualKeyCode.VK_8 },
-		{ VirtualKeyCode.VK_9 },
-		{ VirtualKeyCode.VK_0 },
+		{ "1", VirtualKeyCode.VK_1 },
+		{ "2", VirtualKeyCode.VK_2 },
+		{ "3", VirtualKeyCode.VK_3 },
+		{ "4", VirtualKeyCode.VK_4},
+		{ "5", VirtualKeyCode.VK_5 },
+		{ "6", VirtualKeyCode.VK_6 },
+		{ "7", VirtualKeyCode.VK_7 },
+		{ "8", VirtualKeyCode.VK_8 },
+		{ "9", VirtualKeyCode.VK_9 },
+		{ "0", VirtualKeyCode.VK_0 },
+		{ "-", VirtualKeyCode.SUBTRACT },
+		{ "=", VirtualKeyCode.OEM_PLUS }
 	};
 
 	// Values

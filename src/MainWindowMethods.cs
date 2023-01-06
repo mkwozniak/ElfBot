@@ -1,16 +1,10 @@
-﻿using System.Windows.Controls;
-
-namespace ElfBot;
+﻿namespace ElfBot;
 
 using System.Windows;
 using WindowsInput;
 using MonsterList = System.Collections.Generic.List<string>;
 using MonsterHashTable = System.Collections.Generic.HashSet<string>;
-using TextBox = System.Windows.Controls.TextBox;
-using CheckBox = System.Windows.Controls.CheckBox;
 using EventArgs = System.EventArgs;
-using Trace = System.Diagnostics.Trace;
-using WindowsInput.Native;
 
 public sealed partial class MainWindow : Window
 {
@@ -146,10 +140,6 @@ public sealed partial class MainWindow : Window
 		_checkBoxes[Globals.Key_AutoMP] = MpFoodCheckBox;
 		_checkBoxes[Globals.Key_CombatLoot] = CombatLootCheckbox;
 
-        _comboBoxes[Globals.Key_CombatKeys] = CombatKeys;
-		_comboBoxes[Globals.Key_HPKeys] = HpKeys;
-		_comboBoxes[Globals.Key_MPKeys] = MpKeys;
-
 		CombatOptionsPanel.Visibility = Visibility.Visible;
 	}
 
@@ -202,19 +192,7 @@ public sealed partial class MainWindow : Window
 		_config.FloatCallbacks[Globals.Key_FoodDelay] = (name, val) => { };
 		_config.FloatCallbacks[Globals.Key_FoodDelay] += UpdateFloatTextBox;
 		_config.FloatCallbacks[Globals.Key_FoodDelay] += Util.LogConfigSetFloat;
-
-		_config.KeyCallbacks[Globals.Key_CombatKeys] = (name, val) => { _activeCombatKeys.Add(val); };
-        _config.KeyCallbacks[Globals.Key_CombatKeys] += UpdateKeyComboBox;
-		_config.KeyCallbacks[Globals.Key_CombatKeys] += Util.LogConfigSetKey;
-
-		_config.KeyCallbacks[Globals.Key_HPKeys] = (name, val) => { _activeHPKeys.Add(val); };
-		_config.KeyCallbacks[Globals.Key_HPKeys] += UpdateKeyComboBox;
-		_config.KeyCallbacks[Globals.Key_HPKeys] += Util.LogConfigSetKey;
-
-		_config.KeyCallbacks[Globals.Key_MPKeys] = (name, val) => { _activeMPKeys.Add(val); };
-		_config.KeyCallbacks[Globals.Key_MPKeys] += UpdateKeyComboBox;
-		_config.KeyCallbacks[Globals.Key_MPKeys] += Util.LogConfigSetKey;
-	}
+    }
 
     /// <summary> Generates string config data from the current settings </summary>
     /// <returns></returns>
@@ -234,25 +212,6 @@ public sealed partial class MainWindow : Window
 		data += $"f:{Globals.Key_MpPercent}={_currentFoodMPThreshold};\n";
 		data += $"f:{Globals.Key_FoodKeyDelay}={_hpKeyDelay};\n";
 		data += $"f:{Globals.Key_FoodDelay}={_foodDelay};\n";
-
-		data += $"k:{Globals.Key_CombatKeys}=";
-
-		for (int i = 0; i < _activeCombatKeys.Count; i++) { data += $"{_activeCombatKeys[i]},"; }
-
-		data += ";\n";
-
-		data += $"k:{Globals.Key_HPKeys}=";
-
-		for (int i = 0; i < _activeHPKeys.Count; i++) { data += $"{_activeHPKeys[i]},"; }
-
-		data += ";\n";
-
-		data += $"k:{Globals.Key_MPKeys}=";
-
-		for (int i = 0; i < _activeMPKeys.Count; i++) { data += $"{_activeMPKeys[i]},"; }
-
-		data += ";\n";
-
 		return data;
 	}
 
@@ -298,22 +257,6 @@ public sealed partial class MainWindow : Window
 			return;
 
         _checkBoxes[name].IsChecked = value;
-	}
-
-	/// <summary> Updates a key combo box in the combo boxes dictionary </summary>
-	/// <param name="name"> The name key </param>
-	/// <param name="value"> The keycode </param>
-	private void UpdateKeyComboBox(string name, VirtualKeyCode key)
-	{
-		if (!_comboBoxes.ContainsKey(name))
-			return;
-
-		CheckBox c = (CheckBox)_comboBoxes[name].Items[_keyMap.IndexOf(key)];
-
-		if (c == null)
-			return;
-
-		c.IsChecked = true;
 	}
 
 	/// <summary> Rebuilds the monster list from the monster hash table </summary>
@@ -387,14 +330,24 @@ public sealed partial class MainWindow : Window
     /// <summary> Checks if the bot should be pressing to attack a target </summary>
     private void CheckShouldAttackTarget()
     {
+	    var activeCombatKeys = Settings.Keybindings
+		    .FindAll(kb => kb.Type is KeybindType.Attack or KeybindType.Skill)
+		    .ToArray();
+
+	    if (activeCombatKeys.Length == 0)
+	    {
+		    Globals.Logger.Warn("Tried to attack, but no keys are set");
+		    return;
+	    }
+	    
         // if target uid is not 0 and there are combat keys and no defeat message 
-        if (_currentTargetUID != 0 && _activeCombatKeys.Count > 0 && _targetDefeatedMsg.Length == 0)
+        if (_currentTargetUID != 0 && _targetDefeatedMsg.Length == 0)
         {
             // choose random attack and press key
-            int ranSkill = _ran.Next(0, _activeCombatKeys.Count);
-            _sim?.Keyboard.KeyPress(_activeCombatKeys[ranSkill]);
+            int ranSkill = _ran.Next(0, activeCombatKeys.Length);
+            _sim?.Keyboard.KeyPress(activeCombatKeys[ranSkill].KeyCode);
 
-            Globals.Logger.Debug($"Attack tick: {_activeCombatKeys[ranSkill]}", LogEntryTag.Combat);
+            Globals.Logger.Debug($"Attack tick: {activeCombatKeys[ranSkill]}", LogEntryTag.Combat);
 
             if (!AttackTimeoutTimer.IsEnabled)
             {
