@@ -29,7 +29,7 @@
             <Button x:Name="LoggingOptionsBtn" Background="Black" Content="Logging" Foreground="White" Height="20" Width="128" Click="LoggingOptionsBtn_Click"/>
             <Button x:Name="ControlPanelBtn" Background="Black" Content="Control Panel" Foreground="White" Height="20" Width="128" Click="ControlPanelBtn_Click"/>
         </ListBox>
-        <ScrollViewer Margin="10,218,627,10" Background="#FF1D1D1D" BorderBrush="Red" BorderThickness="2,2,2,2" Content="System Log" Foreground="White" Visibility="Collapsed"/>
+        
         <Button x:Name="HookBtn" Content="H O O K" HorizontalAlignment="Left" Margin="62,21,0,0" VerticalAlignment="Top" Width="91" Background="Black" Foreground="White" Height="24" Click="HookBtn_Click"/>
         <GroupBox x:Name="CombatOptionsPanel" Header="Combat Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
