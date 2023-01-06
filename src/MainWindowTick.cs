@@ -252,15 +252,15 @@ public sealed partial class MainWindow : Window
         SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
     }
 
-        /// <summary> Timer tick for looting </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Loot_Tick(object sender, EventArgs e)
-        {
-            AutoCombatState.Content = _combatState.ToString();
-            Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
-            _sim.Keyboard.KeyPress(VirtualKeyCode.VK_4);
-        }
+    /// <summary> Timer tick for looting </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Loot_Tick(object sender, EventArgs e)
+    {
+        AutoCombatState.Content = _combatState.ToString();
+        Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
+        _sim.Keyboard.KeyPress(VirtualKeyCode.VK_T);
+    }
 
     /// <summary> Timer tick for looting finished </summary>
     /// <param name="sender"></param>
