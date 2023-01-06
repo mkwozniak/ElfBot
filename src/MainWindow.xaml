@@ -35,22 +35,31 @@
         </GroupBox>
         <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
             <Grid>
-                <Label x:Name="PlayerNameLabel" Content="Name:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerLevelLabel" Content="Level:" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CurrentXPLabel" Content="Current XP:" HorizontalAlignment="Left" Margin="9,30,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerZulyLabel" Content="Zuly:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosXLabel" Content="X:" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosYLabel" Content="Y:" HorizontalAlignment="Left" Margin="59,54,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerPosZLabel" Content="Z:" HorizontalAlignment="Left" Margin="111,54,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerMapIdLabel" Content="Map ID:" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerHPLabel" Content="HP:" HorizontalAlignment="Left" Margin="11,79,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="PlayerMPLabel" Content="MP:" HorizontalAlignment="Left" Margin="11,91,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="TargetLabel" Content="Target:" HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="TargetUIDLabel" Content="Target UID:" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraZoomLabel" Content="Zoom:" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraPitchLabel" Content="Pitch:" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="CameraYawLabel" Content="Yaw:" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Foreground="White"/>
-                <Label x:Name="XPBeforeKillLabel" Content="XP Before Kill:" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <!-- char -->
+                <Label Content="Character" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,2,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerNameLabel" Content="Name: N/A" HorizontalAlignment="Left" Margin="10,17,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerLevelLabel" Content="Level: N/A" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CurrentXpLabel" Content="XP: N/A" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerZulyLabel" Content="Zuly: N/A" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerHpLabel" Content="HP: - / -" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerMpLabel" Content="MP: - / -" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <!-- location -->
+                <Label Content="Location" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,117,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosXLabel" Content="X:  N/A" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosYLabel" Content="Y: N/A" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerPosZLabel" Content="Z: N/A" HorizontalAlignment="Left" Margin="10,162,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="PlayerMapIdLabel" Content="Map ID: N/A" HorizontalAlignment="Left" Margin="10,177,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <!-- camera -->
+                <Label Content="Camera" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,202,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraZoomLabel" Content="Zoom: N/A" HorizontalAlignment="Left" Margin="10,217,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraPitchLabel" Content="Pitch: N/A" HorizontalAlignment="Left" Margin="10,232,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="CameraYawLabel" Content="Yaw: N/A" HorizontalAlignment="Left" Margin="10,247,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <!-- misc -->
+                <Label Content="Misc" FontWeight="Bold" FontSize="14" HorizontalAlignment="Left" Margin="5,272,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="TargetLabel" Content="Target: N/A" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="TargetIdLabel" Content="Target UID: N/A" HorizontalAlignment="Left" Margin="10,302,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="XpBeforeKillLabel" Content="XP Before Kill: N/A" HorizontalAlignment="Left" Margin="10,317,0,0" VerticalAlignment="Top" Foreground="White"/>
+                <Label x:Name="AutoCombatState" Content="Combat Inactive" HorizontalAlignment="Left" Margin="10,346,0,0" VerticalAlignment="Top" Foreground="White"/>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">

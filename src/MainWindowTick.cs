@@ -76,13 +76,13 @@ public sealed partial class MainWindow : Window
             _currentXP = Addresses.Xp.GetValue();
             _xpBeforeKill = _currentXP;
 
-                // go into checking target mode to make sure the tab target was OK
-                // update labels
-                XPBeforeKillLabel.Content = $@"XP Before Kill: {_currentXP}";
-                StartTimer(CheckTimer, (int)(_actionDelay * 1000));
-                _combatState = CombatStates.CheckingTarget;
-                return;
-            }
+            // go into checking target mode to make sure the tab target was OK
+            // update labels
+            XpBeforeKillLabel.Content = $@"XP Before Kill: {_currentXP}";
+            StartTimer(CheckTimer, (int)(_actionDelay * 1000));
+            _combatState = CombatStates.CheckingTarget;
+            return;
+        }
 
         SwitchToTargetting();
     }
@@ -193,15 +193,15 @@ public sealed partial class MainWindow : Window
         // Primary window
         AutoCombatState.Content = _combatState.ToString();
 
-            // Character information
-            string name = Addresses.CharacterName.GetValue();
-            int level = Addresses.Level.GetValue();
-            int xp = Addresses.Xp.GetValue();
-            int zuly = Addresses.Zuly.GetValue();
-            PlayerNameLabel.Content = $@"Name: {name}";
-            PlayerLevelLabel.Content = $@"Level: {level}";
-            CurrentXPLabel.Content = $@"XP: {xp:n0}";
-            PlayerZulyLabel.Content = $@"Zuly: {zuly:n0}";
+        // Character information
+        string name = Addresses.CharacterName.GetValue();
+        int level = Addresses.Level.GetValue();
+        int xp = Addresses.Xp.GetValue();
+        int zuly = Addresses.Zuly.GetValue();
+        PlayerNameLabel.Content = $@"Name: {name}";
+        PlayerLevelLabel.Content = $@"Level: {level}";
+        CurrentXpLabel.Content = $@"XP: {xp:n0}";
+        PlayerZulyLabel.Content = $@"Zuly: {zuly:n0}";
 
         // Location information
         float x = Addresses.PositionX.GetValue();
@@ -213,18 +213,18 @@ public sealed partial class MainWindow : Window
         PlayerPosZLabel.Content = $@"Z: {z}";
         PlayerMapIdLabel.Content = $@"Map ID: {mapId}";
 
-            // Status information
-            int hp = Addresses.Hp.GetValue();
-            int maxHp = Addresses.MaxHp.GetValue();
-            int mp = Addresses.Mp.GetValue();
-            int maxMp = Addresses.MaxMp.GetValue();
-            PlayerHPLabel.Content = $@"HP: {hp} / {maxHp}";
-            PlayerMPLabel.Content = $@"MP: {mp} / {maxMp}";
+        // Status information
+        int hp = Addresses.Hp.GetValue();
+        int maxHp = Addresses.MaxHp.GetValue();
+        int mp = Addresses.Mp.GetValue();
+        int maxMp = Addresses.MaxMp.GetValue();
+        PlayerHpLabel.Content = $@"HP: {hp} / {maxHp}";
+        PlayerMpLabel.Content = $@"MP: {mp} / {maxMp}";
 
-            // Misc information
-            TargetLabel.Content = $@"Target: {(string.IsNullOrEmpty(_currentTarget) ? "N/A" : _currentTarget)}";
-            TargetUIDLabel.Content = $@"Target UID: {_currentTargetUID}";
-        }
+        // Misc information
+        TargetLabel.Content = $@"Target: {(string.IsNullOrEmpty(_currentTarget) ? "N/A" : _currentTarget)}";
+        TargetIdLabel.Content = $@"Target UID: {_currentTargetUID}";
+    }
 
     /// <summary> Refreshes the log </summary>
     private void RefreshLogs()
