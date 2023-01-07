@@ -1,10 +1,9 @@
-﻿namespace ElfBot;
+﻿using System;
+
+namespace ElfBot;
 
 using System.Windows;
 using WindowsInput;
-using MonsterList = System.Collections.Generic.List<string>;
-using MonsterHashTable = System.Collections.Generic.HashSet<string>;
-using EventArgs = System.EventArgs;
 
 public sealed partial class MainWindow : Window
 {
@@ -71,12 +70,7 @@ public sealed partial class MainWindow : Window
     {
 		_sim = new InputSimulator();
 
-        _openMonsterTableDialog = new Microsoft.Win32.OpenFileDialog();
-		_openMonsterTableDialog.Filter = "Text files(*.txt)| *.txt";
-
-		_monsterTable = new MonsterHashTable();
-
-        // listen to hook event
+		// listen to hook event
         OnFinishHook += FinishHook;
 
         // prepare the initial interface view
@@ -136,46 +130,8 @@ public sealed partial class MainWindow : Window
 	    ZHackOptionsPanel.Visibility = Visibility.Hidden;
     }
 
-    /// <summary> Rebuilds the monster list from the monster hash table </summary>
-	private void RebuildMonsterList()
-    {
-        if (_monsterTable == null)
-            return;
 
-        MonsterList monsterList = new MonsterList(_monsterTable);
-        monsterTableText.Content = "";
-
-        for (int i = 0; i < monsterList.Count; i++)
-        {
-            monsterTableText.Content += monsterList[i] + "\n";
-        }
-
-        if (monsterList.Count == 0)
-        {
-            monsterTableText.Content = "Empty";
-        }
-    }
-
-    /// <summary> Loads a string array of monsters into the monster hash table then rebuilds the list </summary>
-    /// <param name="monsters"> The list of monsters. </param>
-    private void LoadToMonsterTable(string[] monsters)
-    {
-		if (_monsterTable == null)
-			return;
-
-		_monsterTable.Clear();
-        for (int i = 0; i < monsters.Length; i++)
-        {
-            if (monsters[i].Length > 0)
-            {
-                Logger.Info($"Added monster {monsters[i]} to monster table", LogEntryTag.Combat);
-                _monsterTable.Add(monsters[i]);
-            }
-        }
-        RebuildMonsterList();
-    }     
-
-	/// <summary> Checks if the last targetted enemy has been killed by checking XP gain. </summary>
+    /// <summary> Checks if the last targetted enemy has been killed by checking XP gain. </summary>
 	private void CheckTargetKilled()
     {
         // if current xp is greater than our xp while targetting

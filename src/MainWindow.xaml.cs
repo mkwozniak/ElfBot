@@ -5,17 +5,14 @@ namespace ElfBot;
 
 using System.Windows;
 using Random = System.Random;
-using MonsterHashTable = System.Collections.Generic.HashSet<string>;
 using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
 using TextBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.TextBox>;
 using CheckBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.CheckBox>;
 using ComboBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.ComboBox>;
 using InputSimulator = WindowsInput.InputSimulator;
 using Timer = System.Windows.Threading.DispatcherTimer;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
-using System;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -50,10 +47,9 @@ public partial class MainWindow : Window
 	// References
 	private InputSimulator? _sim;
     private Random _ran = new();
-	private OpenFileDialog? _openMonsterTableDialog;
 
 	// Structures
-	private MonsterHashTable? _monsterTable;
+	private readonly HashSet<string> _monsterTable = new();
 
 	public static readonly Dictionary<string, VirtualKeyCode> KeyMap = new()
 	{

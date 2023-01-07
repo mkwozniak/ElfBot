@@ -27,27 +27,28 @@ public sealed partial class MainWindow : Window
     /// <summary> Loads a monster table </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void LoadTableBtn_Click(object sender, RoutedEventArgs e)
+    private void LoadMonsterTable(object sender, RoutedEventArgs e)
     {
-        if (_openMonsterTableDialog?.ShowDialog() == true)
-        {
-            try
-            {
-                var filePath = _openMonsterTableDialog.FileName;
-                var sr = new System.IO.StreamReader(_openMonsterTableDialog.FileName);
-                string contents = sr.ReadToEnd();
-                string[] monsters = contents.Split(',');
-                if (monsters.Length > 0)
-                {
-                    LoadToMonsterTable(monsters);
-                }
-            }
-            catch (System.Security.SecurityException ex)
-            {
-                MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
-                $"Details:\n\n{ex.StackTrace}");
-            }
-        }
+	    var dialog = new OpenFileDialog();
+	    dialog.Filter = "Plain Text (*.txt)|*.txt";
+	    if (dialog.ShowDialog() is not true) return;
+
+	    try
+	    {
+		    using var reader = new StreamReader(dialog.FileName);
+		    var contents = reader.ReadToEnd();
+		    var monsters = contents.Split(',');
+
+		    _monsterTable.Clear();
+		    _monsterTable.UnionWith(monsters);
+
+		    MonsterTableText.Content = monsters.Length == 0 ? "Empty" : string.Join("\n", monsters);
+	    }
+	    catch (System.Security.SecurityException ex)
+	    {
+		    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+		                    $"Details:\n\n{ex.StackTrace}");
+	    }
     }
 
 	/// <summary> Loads a config to file </summary>

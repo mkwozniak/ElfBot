@@ -245,12 +245,12 @@
         <!--                     -->
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
-                <ScrollViewer x:Name="monsterTableText" Content="Empty" Margin="15 15 15 50" 
+                <ScrollViewer x:Name="MonsterTableText" Content="Empty" Margin="15 15 15 50" 
                               Background="#FF171717" FontSize="14"/>
                 <Button x:Name="LoadTableBtn" Content="Load" 
                         Margin="15 0 0 20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="105" 
                         Background="Black" Foreground="White" 
-                        Click="LoadTableBtn_Click"/>
+                        Click="LoadMonsterTable"/>
             </Grid>
         </GroupBox>
         <!--                    -->
