@@ -73,15 +73,9 @@ public partial class MainWindow : Window
 	// Values
 	private CombatStates _combatState;
 
-	private bool _dualClient = true;
     private bool _pressedTargetting = false;
     private bool _eatHPFood = true;
     private bool _eatMPFood = true;
-    private bool _combatCamera = false;
-    private bool _timedCameraYaw = false;
-    private bool _combatLoot = false;
-    private bool _autoHP = false;
-    private bool _autoMP = false;
 
     private int _currentTargetUID = 0;
     private int _currentXP = 0;
@@ -98,22 +92,57 @@ public partial class MainWindow : Window
 	private const float CameraMaxZoom = 100f;
 	private const float CameraMaxPitch = 1f;
 
-	private float _combatLootSeconds = 3f;
-    private float _actionDelay = 0.5f;
-    private float _combatKeyDelay = 1f;
-    private float _foodDelay = 1f;
-    private float _hpKeyDelay = 7f;
-    private float _mpKeyDelay = 7f;
-    private float _retargetTimeout = 15f;
     private float _lastXPos = 0f;
     private float _lastYPos = 0f;
-    private float _currentFoodHPThreshold = 50f;
-    private float _currentFoodMPThreshold = 50f;
-	private float _zHackDelay = 5f;
-	private float _zHackDelayAmount = 7f;
 
     private double _yawCounter = 0;
 
     private string _currentTarget = "";
     private string _targetDefeatedMsg = "";
+}
+
+public class ApplicationContext : PropertyNotifyingClass
+{
+	private Settings _settings = new()
+	{
+		Keybindings = new List<Keybinding>
+		{
+			new() { Key = "1", Value = 0 },
+			new() { Key = "2", Value = 0 },
+			new() { Key = "3", Value = 0 },
+			new() { Key = "4", Value = 0 },
+			new() { Key = "5", Value = 0 },
+			new() { Key = "6", Value = 0 },
+			new() { Key = "7", Value = 0 },
+			new() { Key = "8", Value = 0 },
+			new() { Key = "9", Value = 0 },
+			new() { Key = "0", Value = 0 },
+			new() { Key = "-", Value = 0 },
+			new() { Key = "=", Value = 0 }
+		}
+	};
+	private bool _hooked;
+
+	public Settings Settings
+	{
+		get => _settings;
+		set
+		{
+			_settings = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public bool Hooked
+	{
+		get => _hooked;
+		set
+		{
+			_hooked = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public bool AutoCombatEnabled { get; set; }
+	public bool UseSecondClient { get; set; }
 }

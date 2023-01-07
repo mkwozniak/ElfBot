@@ -46,14 +46,14 @@ public sealed partial class MainWindow : Window
     /// <returns>True if the process was successfully hooked.</returns>
     private bool TryOpenProcess()
     {
-        int pID = RoseProcess.GetProcIdFromName("trose", _dualClient);
+        int pID = RoseProcess.GetProcIdFromName("trose", ApplicationContext.UseSecondClient);
 
         if (pID > 0)
         {
             Globals.TargetApplicationMemory.OpenProcess(pID);
             Globals.Logger.Info($"Successfully hooked ROSE process with PID {pID}", LogEntryTag.System);
             OnFinishHook?.Invoke();
-            Globals.Hooked = true;
+            ApplicationContext.Hooked = true;
             return true;
         }
         
@@ -120,11 +120,7 @@ public sealed partial class MainWindow : Window
     private void PrepareElfbotInterface()
     {
 		SystemMsgLog.Content = "";
-
-		AutoCombatCheckBox.IsEnabled = false;
-		HpFoodCheckBox.IsEnabled = false;
-		MpFoodCheckBox.IsEnabled = false;
-
+		
         _textBoxes[Globals.Key_CombatActionDelay] = ActionDelayInputBox;
 		_textBoxes[Globals.Key_CombatKeyDelay] = CombatKeyDelayInputBox;
 		_textBoxes[Globals.Key_RetargetTimeout] = RetargetTimeoutInputBox;
@@ -133,8 +129,7 @@ public sealed partial class MainWindow : Window
 		_textBoxes[Globals.Key_MpPercent] = FoodMpPercentInputBox;
 		_textBoxes[Globals.Key_FoodKeyDelay] = EatKeyDelayInputBox;
         _textBoxes[Globals.Key_FoodDelay] = FoodDelayInputBox;
-
-        _checkBoxes[Globals.Key_CombatCamera] = CombatCameraCheckBox;
+        
 		_checkBoxes[Globals.Key_CameraYawWave] = TimedCameraYawCheckBox;
 		_checkBoxes[Globals.Key_AutoHP] = HpFoodCheckBox;
 		_checkBoxes[Globals.Key_AutoMP] = MpFoodCheckBox;
@@ -199,19 +194,18 @@ public sealed partial class MainWindow : Window
 	private string GenerateConfigData()
 	{
 		string data = "";
-		data += $"f:{Globals.Key_CombatActionDelay}={_actionDelay};\n";
-		data += $"f:{Globals.Key_CombatKeyDelay}={_combatKeyDelay};\n";
-		data += $"f:{Globals.Key_RetargetTimeout}={_retargetTimeout};\n";
-		data += $"b:{Globals.Key_CombatCamera}={_combatCamera};\n";
-		data += $"b:{Globals.Key_CameraYawWave}={_timedCameraYaw};\n";
-		data += $"b:{Globals.Key_CombatLoot}={_combatLoot};\n";
-		data += $"f:{Globals.Key_CombatLootTime}={_combatLootSeconds};\n";
-		data += $"b:{Globals.Key_AutoHP}={_autoHP};\n";
-		data += $"b:{Globals.Key_AutoMP}={_autoMP};\n";
-		data += $"f:{Globals.Key_HpPercent}={_currentFoodHPThreshold};\n";
-		data += $"f:{Globals.Key_MpPercent}={_currentFoodMPThreshold};\n";
-		data += $"f:{Globals.Key_FoodKeyDelay}={_hpKeyDelay};\n";
-		data += $"f:{Globals.Key_FoodDelay}={_foodDelay};\n";
+		data += $"f:{Globals.Key_CombatActionDelay}={Settings.CombatOptions.ActionTimerDelay};\n";
+		data += $"f:{Globals.Key_CombatKeyDelay}={Settings.CombatOptions.CombatKeyDelay};\n";
+		data += $"f:{Globals.Key_RetargetTimeout}={Settings.CombatOptions.RetargetTimeout};\n";
+		data += $"b:{Globals.Key_CameraYawWave}={Settings.CombatOptions.CameraYawWaveEnabled};\n";
+		data += $"b:{Globals.Key_CombatLoot}={Settings.LootOptions.LootAfterCombatEnabled};\n";
+		data += $"f:{Globals.Key_CombatLootTime}={Settings.LootOptions.Duration};\n";
+		data += $"b:{Globals.Key_AutoHP}={Settings.FoodOptions.AutoHpEnabled};\n";
+		data += $"b:{Globals.Key_AutoMP}={Settings.FoodOptions.AutoMpEnabled};\n";
+		data += $"f:{Globals.Key_HpPercent}={Settings.FoodOptions.AutoHpThresholdPercent};\n";
+		data += $"f:{Globals.Key_MpPercent}={Settings.FoodOptions.AutoMpThresholdPercent};\n";
+		data += $"f:{Globals.Key_FoodKeyDelay}={Settings.FoodOptions.CheckFrequency};\n";
+		data += $"f:{Globals.Key_FoodDelay}={Settings.FoodOptions.Cooldown};\n";
 		return data;
 	}
 
@@ -219,9 +213,6 @@ public sealed partial class MainWindow : Window
 	private void FinishHook()
     {
         HookBtn.Content = "Process Hooked!";
-        AutoCombatCheckBox.IsEnabled = true;
-        HpFoodCheckBox.IsEnabled = true;
-        MpFoodCheckBox.IsEnabled = true;
     }
 
 	/// <summary> Hides all panels visibility and controls. </summary>
@@ -315,9 +306,9 @@ public sealed partial class MainWindow : Window
                 _combatState = CombatStates.Looting;
                 StopTimer(CombatTimer);
                 // start the looting timer for hotkey
-                StartTimer(LootingTimer, (int)(_actionDelay * 1000));
+                StartTimer(LootingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
                 // start the timer to end that 
-                StartTimer(LootingEndTimer, (int)(_combatLootSeconds * 1000));
+                StartTimer(LootingEndTimer, (int)(Settings.LootOptions.Duration * 1000));
                 return;
             }
 
@@ -352,7 +343,7 @@ public sealed partial class MainWindow : Window
             if (!AttackTimeoutTimer.IsEnabled)
             {
                 // start timeout timer incase this target gets the bot stuck
-                StartTimer(AttackTimeoutTimer, (int)(_retargetTimeout * 1000));
+                StartTimer(AttackTimeoutTimer, (int)(Settings.CombatOptions.RetargetTimeout * 1000));
             }
         }
     }
@@ -369,7 +360,7 @@ public sealed partial class MainWindow : Window
         _currentTarget = "";
         _pressedTargetting = false;
         _combatState = CombatStates.Targetting;
-        StartTimer(TargettingTimer, (int)(_actionDelay * 1000));
+        StartTimer(TargettingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
     }
 
     #endregion

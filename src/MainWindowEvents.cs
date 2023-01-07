@@ -1,4 +1,6 @@
-﻿namespace ElfBot;
+﻿using System.Windows.Controls;
+
+namespace ElfBot;
 
 using System.Windows;
 using EventArgs = System.EventArgs;
@@ -147,222 +149,70 @@ public sealed partial class MainWindow : Window
 	}
 
 	#endregion
-
-	#region InputBox Events
-
-	// All inputbox inputchanged events
-
-	private void lootTimeInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(CombatLootTimeInputBox, ref _combatLootSeconds);
-    }
-
-    private void actionDelayInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(ActionDelayInputBox, ref _actionDelay);
-    }
-
-    private void RetargetTimeoutInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(RetargetTimeoutInputBox, ref _retargetTimeout);
-    }
-
-    private void CombatKeyDelayInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(CombatKeyDelayInputBox, ref _combatKeyDelay);
-    }
-
-    private void FoodDelayInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(FoodDelayInputBox, ref _foodDelay);
-    }
-
-    private void EatKeyDelayInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(EatKeyDelayInputBox, ref _hpKeyDelay);
-		Util.TryFloatFromInputBox(EatKeyDelayInputBox, ref _mpKeyDelay);
-    }
-
-    private void FoodMpPercentInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(FoodMpPercentInputBox, ref _currentFoodMPThreshold, true);
-    }
-
-    private void FoodHpPercentInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-    {
-		Util.TryFloatFromInputBox(FoodHpPercentInputBox, ref _currentFoodHPThreshold, true);
-    }
-
-	private void TimedZHackDelayInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-	{
-		Util.TryFloatFromInputBox(TimedZHackDelayInputBox, ref _zHackDelay);
-	}
-
-	private void TimedZHackAmountInputBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-	{
-		Util.TryFloatFromInputBox(TimedZHackAmountInputBox, ref _zHackDelayAmount);
-	}
-
-	#endregion
-
+	
 	#region Checkbox Events
 
-	/// <summary> Enables/disables auto combat </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void AutoCombatCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        if (!Globals.Hooked)
-            return;
+	private void EnableAutoCombat(object sender, RoutedEventArgs e)
+	{
+		StopAllCombatRelatedTimers();
+		if (_monsterTable?.Count == 0)
+		{
+			Globals.Logger.Error("Could not enable auto-combat due to empty monster table", 
+				LogEntryTag.System);
+			if (sender is CheckBox c) c.IsChecked = false;
+			return;
+		}
+		
+		Globals.Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
+		_xpBeforeKill = -1;
+		SwitchToTargetting();
+	}
 
-        if (!AutoCombatCheckBox.IsChecked == true)
-        {
-            StopAllCombatRelatedTimers();
-            AutoCombatState.Content = "Combat State: Inactive";
-            Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
-            return;
-        }
+	private void DisableAutoCombat(object sender, RoutedEventArgs e)
+	{
+		StopAllCombatRelatedTimers();
+		AutoCombatState.Content = "Combat State: Inactive";
+		Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
+	}
 
-        if (_monsterTable?.Count == 0)
-        {
-            Globals.Logger.Error("Could not enable auto-combat due to empty monster table", 
-                LogEntryTag.System);
-            AutoCombatCheckBox.IsChecked = false;
-            return;
-        }
+	private void EnableHpTimer(object sender, RoutedEventArgs e)
+	{
+		StopTimer(HpFoodTimer); // just in case it's already running
+		StartTimer(HpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
+		Globals.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
+	}
 
-        Globals.Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
-        HpFoodCheckBox.IsEnabled = true;
-        MpFoodCheckBox.IsEnabled = true;
-        _xpBeforeKill = -1;
-        SwitchToTargetting();
-    }
-
-    /// <summary> Enables/disables auto hp food </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void HpFoodCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        if (!Globals.Hooked)
-            return;
-
-        if (HpFoodCheckBox.IsChecked == true)
-        {
-            Globals.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
-            StartTimer(HpFoodTimer, (int)(_foodDelay * 1000));
-            _autoHP = true;
-            return;
-        }
-
-        Globals.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
+	private void DisableHpTimer(object sender, RoutedEventArgs e)
+	{
 		StopTimer(HpFoodTimer);
-		_autoHP = false;
+		Globals.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
 	}
 
-    /// <summary> Enables/disables auto mp food </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void MpFoodCheckBox_Checked(object sender, RoutedEventArgs e)
-    {
-        if (!Globals.Hooked)
-            return;
+	private void EnableMpTimer(object sender, RoutedEventArgs e)
+	{
+		StopTimer(MpFoodTimer); // just in case it's already running
+		StartTimer(MpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
+		Globals.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
+	}
 
-        if (MpFoodCheckBox.IsChecked == true)
-        {
-            Globals.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
-            StartTimer(MpFoodTimer, (int)(_foodDelay * 1000));
-			_autoMP = true;
-			return;
-        }
-
-        Globals.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
+	private void DisableMpTimer(object sender, RoutedEventArgs e)
+	{
 		StopTimer(MpFoodTimer);
-		_autoMP = false;
+		Globals.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
 	}
 
-	/// <summary> Enables/disables force max camera zoom </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void CombatCameraCheckBox_Checked(object sender, RoutedEventArgs e)
-	{
-		if (CombatCameraCheckBox.IsChecked == true)
-		{
-            Globals.Logger.Info("Enabled combat camera", LogEntryTag.Camera);
-			_combatCamera = true;
-			return;
-		}
-
-        Globals.Logger.Info("Disabled combat camera", LogEntryTag.Camera);
-		_combatCamera = false;
-	}
-
-	/// <summary> Enables/disables combat looting </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void CombatLootCheckbox_Checked(object sender, RoutedEventArgs e)
-	{
-		if (CombatLootCheckbox.IsChecked == true)
-		{
-			Globals.Logger.Info("Enabled combat loot", LogEntryTag.Combat);
-			_combatLoot = true;
-			return;
-		}
-
-		Globals.Logger.Info("Disabled combat loot", LogEntryTag.Combat);
-		_combatLoot = false;
-	}
-
-	/// <summary> Enables/disables second client mode </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void SecondClientCheckBox_Checked(object sender, RoutedEventArgs e)
+	private void EnableZHack(object sender, RoutedEventArgs e)
     {
-        if (SecondClientCheckBox.IsChecked == true)
-        {
-            Globals.Logger.Info("Enabled 2nd client mode", LogEntryTag.System);
-            _dualClient = true;
-            return;
-        }
-
-        Globals.Logger.Info("Disabled 2nd client mode", LogEntryTag.System);
-        _dualClient = false;
+	    StopTimer(ZHackTimer); 
+	    StartTimer(ZHackTimer, (int)(Settings.ZHackOptions.Frequency * 1000));
+	    Globals.Logger.Info("Enabled Timed ZHack", LogEntryTag.Combat);
     }
 
-	/// <summary> Enables/disables timed camera yaw </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void TimedCameraYawCheckBox_Checked(object sender, RoutedEventArgs e)
-	{
-		if (TimedCameraYawCheckBox.IsChecked == true)
-		{
-            Globals.Logger.Info("Enabled timed camera yaw", LogEntryTag.System);
-			    _timedCameraYaw = true;
-			    return;
-		}
-
-        Globals.Logger.Info("Disabled timed camera yaw", LogEntryTag.System);
-        _timedCameraYaw = false;
-	}
-
-    /// <summary> Enables / disables timed zhack </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-	private void TimedZHackCheckBox_Checked(object sender, RoutedEventArgs e)
-	{
-		if (!Globals.Hooked)
-			return;
-
-		if (!TimedZHackCheckBox.IsChecked == true)
-		{
-			Globals.Logger.Debug("Disabled Timed ZHack", LogEntryTag.Combat);
-			StopTimer(ZHackTimer);
-			return;
-		}
-
-		Globals.Logger.Info("Enabled Timed ZHack", LogEntryTag.Combat);
-		if (!ZHackTimer.IsEnabled)
-			StartTimer(ZHackTimer, (int)(_zHackDelay * 1000));
-	}
+    private void DisableZHack(object sender, RoutedEventArgs e)
+    {
+	    StopTimer(ZHackTimer);
+	    Globals.Logger.Info("Disabled Timed ZHack", LogEntryTag.Combat);
+    }
 
 	#endregion
 

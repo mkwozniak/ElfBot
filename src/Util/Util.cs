@@ -1,7 +1,10 @@
-﻿namespace ElfBot;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace ElfBot;
 
 using Trace = System.Diagnostics.Trace;
-using TextBox = System.Windows.Controls.TextBox;
 using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 
 
@@ -24,26 +27,23 @@ public static class Util
 		Trace.WriteLine($"Config Added Key: {name} : {key}");
 		Globals.Logger.Log(Level.Debug, $"Config Added Key: {name} : {key}");
 	}
+}
 
-	/// <summary> Tries to parse a float in an input box and stores the value in the referenced float. </summary>
-	/// <param name="box"> The box to try to parse the float. </param>
-	/// <param name="write"> The float to store the parsed value. </param>
-	/// <param name="isPercentage"> If true, forces the value to be within 0 - 100 </param>
-	public static void TryFloatFromInputBox(TextBox box, ref float write, bool isPercentage = false)
+/// <summary>
+/// Base class definition for a class to extend if it needs to perform
+/// two-way binding with the WPF XAML application.
+/// </summary>
+public abstract class PropertyNotifyingClass : INotifyPropertyChanged
+{
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	/// <summary>
+	/// Invoked by a property that has change, causes any XAML
+	/// that is bound to the property to refresh itself.
+	/// </summary>
+	/// <param name="propertyName">Name of the property that was changed</param>
+	protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
 	{
-		float result = 0f;
-
-		if (!float.TryParse(box.Text, out result))
-		{
-			box.Text = write.ToString();
-			return;
-		}
-
-		if (isPercentage && (result <= 0 || result > 100))
-		{
-			return;
-		}
-
-		write = result;
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 }

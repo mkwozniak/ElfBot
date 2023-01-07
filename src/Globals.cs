@@ -1,17 +1,14 @@
-﻿using Trace = System.Diagnostics.Trace;
-using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
+﻿using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 
 namespace ElfBot
 {
     using Mem = Memory.Mem;
 	using ConfigKeyEntryDict = System.Collections.Generic.Dictionary<string, VirtualKeyCode>;
-	using System.Windows.Controls;
 
-	public static class Globals
+    public static class Globals
 	{
 
 		public static readonly Mem TargetApplicationMemory = new Mem();
-        public static bool Hooked = false;
         public static readonly Logger Logger = new Logger();
 
 		public static string Key_CombatCamera = "CombatCamera";
@@ -27,9 +24,6 @@ namespace ElfBot
 		public static string Key_MpPercent = "MpPercent";
 		public static string Key_FoodKeyDelay = "FoodKeyDelay";
 		public static string Key_FoodDelay = "FoodDelay";
-		public static string Key_CombatKeys = "CombatKeys";
-		public static string Key_HPKeys = "HPKeys";
-		public static string Key_MPKeys = "MPKeys";
 
 		public static readonly ConfigKeyEntryDict ConfigKeyEntries = new ConfigKeyEntryDict()
         {

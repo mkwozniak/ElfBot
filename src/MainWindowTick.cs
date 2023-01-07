@@ -79,7 +79,7 @@ public sealed partial class MainWindow : Window
             // go into checking target mode to make sure the tab target was OK
             // update labels
             XpBeforeKillLabel.Content = $@"XP Before Kill: {_currentXP}";
-            StartTimer(CheckTimer, (int)(_actionDelay * 1000));
+            StartTimer(CheckTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
             _combatState = CombatStates.CheckingTarget;
             return;
         }
@@ -122,7 +122,7 @@ public sealed partial class MainWindow : Window
 
             if (!CombatTimer.IsEnabled)
             {
-                StartTimer(CombatTimer, (int)(_combatKeyDelay * 1000));
+                StartTimer(CombatTimer, (int)(Settings.CombatOptions.CombatKeyDelay * 1000));
             }
 
             return;
@@ -185,7 +185,7 @@ public sealed partial class MainWindow : Window
             RefreshLogs();
         }
 
-        if (!Globals.Hooked)
+        if (!ApplicationContext.Hooked)
         {
             return;
         }
@@ -303,7 +303,7 @@ public sealed partial class MainWindow : Window
 		Trace.WriteLine("Check HP Food Tick");
         Globals.Logger.Debug("Checking health...", LogEntryTag.Food);
         
-        if (hpPercent < (_currentFoodHPThreshold / 100) && _eatHPFood)
+        if (hpPercent < (Settings.FoodOptions.AutoHpThresholdPercent / 100) && _eatHPFood)
         {
             int ranFood = _ran.Next(0, activeHpKeys.Length);
 				Trace.WriteLine("Eat HP Food Tick");
@@ -311,7 +311,7 @@ public sealed partial class MainWindow : Window
             _sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
             _eatHPFood = false;
             // start the delay timer to press the key again
-            StartTimer(HpFoodKeyTimer, (int)(_hpKeyDelay * 1000));
+            StartTimer(HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
         }
     }
 
@@ -345,14 +345,14 @@ public sealed partial class MainWindow : Window
 		Trace.WriteLine("Check MP Food Tick");
         Globals.Logger.Debug("Checking mana...", LogEntryTag.Food);
 
-        if (mpPercent < (_currentFoodMPThreshold / 100) && _eatMPFood)
+        if (mpPercent < (Settings.FoodOptions.AutoMpThresholdPercent / 100) && _eatMPFood)
         {
             int ranFood = _ran.Next(0, activeMpKeys.Length);
 			Trace.WriteLine("Eat MP Food Tick");
             Globals.Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
             _sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
             // start the delay timer to press the key again
-            StartTimer(MpFoodKeyTimer, (int)(_mpKeyDelay * 1000));
+            StartTimer(MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
             _eatMPFood = false;
         }
     }
@@ -399,17 +399,20 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void CombatCameraTimer_Tick(object? sender, EventArgs e)
     {
-        if (!Globals.Hooked)
+        if (!ApplicationContext.Hooked)
             return;
 
         CameraZoomLabel.Content = $@"Zoom: {Addresses.CameraZoom.GetValue()}";
         CameraPitchLabel.Content = $@"Pitch: {Addresses.CameraPitch.GetValue()}";
         CameraYawLabel.Content = $@"Yaw: {Addresses.CameraYaw.GetValue()}";
 
-        if (_combatCamera)
+        if (Settings.CombatOptions.ForceCameraOverhead)
+        {
+            Addresses.CameraPitch.writeValue(CameraMaxPitch);
+        }
+        if (Settings.CombatOptions.ForceCameraZoom)
         {
             Addresses.CameraZoom.writeValue(CameraMaxZoom);
-            Addresses.CameraPitch.writeValue(CameraMaxPitch);
         }
     }
 
@@ -418,7 +421,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void CameraYawTimer_Tick(object? sender, EventArgs e)
     {
-		if (!Globals.Hooked || !_timedCameraYaw || _sim == null)
+		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled || _sim == null)
             return;
 
         float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
@@ -439,11 +442,11 @@ public sealed partial class MainWindow : Window
 	/// <param name="e"></param>
 	private void ZHackTimer_Tick(object? sender, EventArgs e)
 	{
-		if (!Globals.Hooked)
+		if (!ApplicationContext.Hooked)
 			return;
 
 		Globals.Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
-		Addresses.PositionZ.writeValue(_zHackDelayAmount);
+		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
 	}
 
 	#endregion

@@ -78,36 +78,39 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="CombatOptionsPanel" Header="Combat Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+        <GroupBox x:Name="CombatOptionsPanel" Header="Combat Options" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
             <Grid>
                 <StackPanel>
                     <StackPanel>
-                        <Label Content="Action Timer Delay" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="ActionDelayInputBox" Text="0.5"
+                        <Label Content="Action Timer Delay (s)" FontWeight="Bold" Foreground="White" />
+                        <TextBox x:Name="ActionDelayInputBox"
+                                 Text="{Binding Path=Settings.CombatOptions.ActionTimerDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White"
-                                 TextChanged="actionDelayInputBox_TextChanged" />
+                                 Background="Black" Foreground="White" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="Combat Key Delay" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="CombatKeyDelayInputBox" Text="1"
+                        <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
+                        <TextBox x:Name="CombatKeyDelayInputBox" 
+                                 Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White"
-                                 TextChanged="CombatKeyDelayInputBox_TextChanged" />
+                                 Background="Black" Foreground="White" />
                     </StackPanel>
                     <StackPanel>
-                        <Label Content="Retarget Timeout" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="RetargetTimeoutInputBox" Text="15"
+                        <Label Content="Retarget Timeout (s)" FontWeight="Bold" Foreground="White" />
+                        <TextBox x:Name="RetargetTimeoutInputBox" 
+                                 Text="{Binding Path=Settings.CombatOptions.RetargetTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White"
-                                 TextChanged="RetargetTimeoutInputBox_TextChanged" />
+                                 Background="Black" Foreground="White" />
                     </StackPanel>
-                    <CheckBox x:Name="CombatCameraCheckBox" Content="Combat Camera"
-                              Margin="5 5 0 0 " Foreground="White"
-                              Checked="CombatCameraCheckBox_Checked" Unchecked="CombatCameraCheckBox_Checked" />
+                    <CheckBox Content="Force Camera Zoom"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Force Camera Overhead"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
                     <CheckBox x:Name="TimedCameraYawCheckBox" Content="Camera Yaw Wave"
-                              Margin="5 5 0 0" Foreground="White"
-                              Checked="TimedCameraYawCheckBox_Checked" Unchecked="TimedCameraYawCheckBox_Checked" />
+                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -124,53 +127,55 @@
         <GroupBox x:Name="LootOptionsPanel" Header="Loot Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
                 <StackPanel>
-                    <Label Content="Loot Time" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="CombatLootTimeInputBox" Text="3"
+                    <Label Content="Loot Time (s)" FontWeight="Bold" Foreground="White" />
+                    <TextBox x:Name="CombatLootTimeInputBox"
+                             Text="{Binding Path=Settings.LootOptions.Duration, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                              HorizontalAlignment="Left" Width="90" Margin="5 0"
-                             Background="Black" Foreground="White"
-                             TextChanged="lootTimeInputBox_TextChanged" />
-                    <CheckBox x:Name="CombatLootCheckbox" Content="Loot After Combat" 
-                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
-                              Checked="CombatLootCheckbox_Checked"/>    
+                             Background="Black" Foreground="White" />
+                    <CheckBox x:Name="CombatLootCheckbox" Content="Loot After Combat"
+                              IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" />
                 </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
                 <StackPanel>
-                    <CheckBox x:Name="HpFoodCheckBox" Content="Auto HP" 
+                    <CheckBox x:Name="HpFoodCheckBox" Content="Auto HP"
+                              IsChecked="{Binding Path=Settings.FoodOptions.AutoHpEnabled, Source={StaticResource ApplicationContext}}"
                               HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
-                              Checked="HpFoodCheckBox_Checked" Unchecked="HpFoodCheckBox_Checked"/>    
+                              Checked="EnableHpTimer" Unchecked="DisableHpTimer"/>
                     <DockPanel>
-                        <TextBox x:Name="FoodHpPercentInputBox" Text="50" TextAlignment="Center" 
+                        <TextBox x:Name="FoodHpPercentInputBox" TextAlignment="Center"
+                                 Text="{Binding Path=Settings.FoodOptions.AutoHpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  Margin="5 0" Height="15" Width="31"
-                                 Background="Black" Foreground="White"
-                                 TextChanged="FoodHpPercentInputBox_TextChanged" />
-                        <Label Content="%" Foreground="White" FontSize="16" />
-                    </DockPanel>
-                    
-                    <CheckBox x:Name="MpFoodCheckBox" Content="Auto MP" 
-                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
-                              Checked="MpFoodCheckBox_Checked" Unchecked="MpFoodCheckBox_Checked"/>
-                    <DockPanel>
-                        <TextBox x:Name="FoodMpPercentInputBox" Text="50" TextAlignment="Center" 
-                                 Margin="5 0" Height="15" Width="31"
-                                 Background="Black" Foreground="White"
-                                 TextChanged="FoodMpPercentInputBox_TextChanged" />
+                                 Background="Black" Foreground="White" />
                         <Label Content="%" Foreground="White" FontSize="16" />
                     </DockPanel>
 
-                    <Label Content="Check Food Delay" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="FoodDelayInputBox" Text="1"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Background="Black" Foreground="White"
-                             TextChanged="FoodDelayInputBox_TextChanged" />
+                    <CheckBox x:Name="MpFoodCheckBox" Content="Auto MP"
+                              IsChecked="{Binding Path=Settings.FoodOptions.AutoMpEnabled, Source={StaticResource ApplicationContext}}"
+                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
+                              Checked="EnableMpTimer" Unchecked="DisableMpTimer"/>
+                    <DockPanel>
+                        <TextBox x:Name="FoodMpPercentInputBox" TextAlignment="Center"
+                                 Text="{Binding Path=Settings.FoodOptions.AutoMpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="5 0" Height="15" Width="31"
+                                 Background="Black" Foreground="White" />
+                        <Label Content="%" Foreground="White" FontSize="16" />
+                    </DockPanel>
 
-                    <Label Content="Eat Key Delay" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="EatKeyDelayInputBox" Text="7"
+                    <Label Content="Check Frequency (s)" FontWeight="Bold" Foreground="White" />
+                    <TextBox x:Name="FoodDelayInputBox"
+                             Text="{Binding Path=Settings.FoodOptions.CheckFrequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                              HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Background="Black" Foreground="White"
-                             TextChanged="EatKeyDelayInputBox_TextChanged" />
+                             Background="Black" Foreground="White" />
+
+                    <Label Content="Consume Cooldown (s)" FontWeight="Bold" Foreground="White" />
+                    <TextBox x:Name="EatKeyDelayInputBox"
+                             Text="{Binding Path=Settings.FoodOptions.Cooldown, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Left" Margin="5 0" Width="98"
+                             Background="Black" Foreground="White" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -228,11 +233,13 @@
                 <StackPanel>
                     <CheckBox x:Name="AutoCombatCheckBox" Content="Auto Combat" Foreground="White"
                               Margin="5 5 0 0"
-                              Checked="AutoCombatCheckBox_Checked" Unchecked="AutoCombatCheckBox_Checked" />
-                    
+                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat"/>
+
                     <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
                               Margin="5 5 0 0"
-                              Checked="SecondClientCheckBox_Checked" Unchecked="SecondClientCheckBox_Checked" />
+                              IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
                 </StackPanel>
                 <DockPanel VerticalAlignment="Bottom">
                     <Button x:Name="SaveConfigBtn" Content="Save Config" 
@@ -251,27 +258,27 @@
         <GroupBox x:Name="ZHackOptionsPanel" Header="ZHack Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
                 <StackPanel>
-                    <CheckBox x:Name="TimedZHackCheckBox" Content="Timed ZHack" 
-                              Margin="5 5 0 0" Foreground="White" 
-                              Checked="TimedZHackCheckBox_Checked" Unchecked="TimedZHackCheckBox_Checked"/>
-                   
-                    <Label Content="Timed ZHack Delay" FontWeight="Bold" Foreground="White"/>
-                    <TextBox x:Name="TimedZHackDelayInputBox" Text="30" 
-                             HorizontalAlignment="Left" Margin="5 0" Width="98" 
-                             Foreground="White" Background="Black" 
-                             TextChanged="TimedZHackDelayInputBox_TextChanged"/>
+                    <CheckBox x:Name="TimedZHackCheckBox" Content="Enable ZHack"
+                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White"
+                              Checked="EnableZHack" Unchecked="DisableZHack" />
+
+                    <Label Content="Frequency" FontWeight="Bold" Foreground="White" />
+                    <TextBox x:Name="TimedZHackDelayInputBox"
+                             Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Left" Margin="5 0" Width="98"
+                             Foreground="White" Background="Black" />
                     
                     <Label Content="Time ZHack Amount" FontWeight="Bold" Foreground="White"/>
-                    <TextBox x:Name="TimedZHackAmountInputBox" Text="8"
+                    <TextBox x:Name="TimedZHackAmountInputBox" 
+                             Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                              HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black"
-                             TextChanged="TimedZHackAmountInputBox_TextChanged" />
+                             Foreground="White" Background="Black" />
                     <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
                                HorizontalAlignment="Left" Margin="5 0" Width="98"
                                FontStyle="Italic" Foreground="#FFEFBD0A" />
                 </StackPanel>
             </Grid>
         </GroupBox>
-
     </Grid>
 </Window>
