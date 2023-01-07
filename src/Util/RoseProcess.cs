@@ -43,7 +43,7 @@ public static class RoseProcess
 				if (dualClient && foundClient)
 				{
 					mainID = theprocess.Id;
-					Globals.Logger.Debug($"Hooking to second ROSE client with PID {mainID}", LogEntryTag.System);
+					MainWindow.Logger.Debug($"Hooking to second ROSE client with PID {mainID}", LogEntryTag.System);
 					return mainID;
 				}
 			}

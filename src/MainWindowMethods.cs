@@ -50,14 +50,14 @@ public sealed partial class MainWindow : Window
 
         if (pID > 0)
         {
-            Globals.TargetApplicationMemory.OpenProcess(pID);
-            Globals.Logger.Info($"Successfully hooked ROSE process with PID {pID}", LogEntryTag.System);
+            TargetApplicationMemory.OpenProcess(pID);
+            Logger.Info($"Successfully hooked ROSE process with PID {pID}", LogEntryTag.System);
             OnFinishHook?.Invoke();
             ApplicationContext.Hooked = true;
             return true;
         }
         
-        Globals.Logger.Warn($"Process PID {pID} was invalid and could not be hooked", LogEntryTag.System);
+        Logger.Warn($"Process PID {pID} was invalid and could not be hooked", LogEntryTag.System);
         HookBtn.Content = "Hook Failed :(";
         return false;
     }
@@ -168,7 +168,7 @@ public sealed partial class MainWindow : Window
         {
             if (monsters[i].Length > 0)
             {
-                Globals.Logger.Info($"Added monster {monsters[i]} to monster table", LogEntryTag.Combat);
+                Logger.Info($"Added monster {monsters[i]} to monster table", LogEntryTag.Combat);
                 _monsterTable.Add(monsters[i]);
             }
         }
@@ -182,7 +182,7 @@ public sealed partial class MainWindow : Window
         if (_currentXP > _xpBeforeKill)
         {
             _targetDefeatedMsg = Addresses.TargetDefeatedMessage.GetValue();
-            Globals.Logger.Debug($"Defeated target and received message \"{_targetDefeatedMsg}\"", LogEntryTag.Combat);
+            Logger.Debug($"Defeated target and received message \"{_targetDefeatedMsg}\"", LogEntryTag.Combat);
             StopTimer(AttackTimeoutTimer);
             _pressedTargetting = false;
 
@@ -213,7 +213,7 @@ public sealed partial class MainWindow : Window
 
 	    if (activeCombatKeys.Length == 0)
 	    {
-		    Globals.Logger.Warn("Tried to attack, but no keys are set");
+		    Logger.Warn("Tried to attack, but no keys are set");
 		    return;
 	    }
 	    
@@ -224,7 +224,7 @@ public sealed partial class MainWindow : Window
             int ranSkill = _ran.Next(0, activeCombatKeys.Length);
             _sim?.Keyboard.KeyPress(activeCombatKeys[ranSkill].KeyCode);
 
-            Globals.Logger.Debug($"Attack tick: {activeCombatKeys[ranSkill]}", LogEntryTag.Combat);
+            Logger.Debug($"Attack tick: {activeCombatKeys[ranSkill]}", LogEntryTag.Combat);
 
             if (!AttackTimeoutTimer.IsEnabled)
             {

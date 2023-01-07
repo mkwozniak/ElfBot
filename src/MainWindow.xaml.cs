@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Memory;
 
 namespace ElfBot;
 
@@ -23,6 +24,9 @@ public partial class MainWindow : Window
 {
 	public ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
 	public Settings? Settings => ApplicationContext?.Settings;
+	
+	public static readonly Mem TargetApplicationMemory = new Mem();
+	public static readonly Logger Logger = new Logger();
 
 	// Events
 	private FinishedHooking? OnFinishHook;

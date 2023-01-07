@@ -71,7 +71,7 @@ public sealed partial class MainWindow : Window
             _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
             _pressedTargetting = true;
 
-            Globals.Logger.Debug("Pressed tab key to select next target",  LogEntryTag.Combat);
+            Logger.Debug("Pressed tab key to select next target",  LogEntryTag.Combat);
 
             _currentXP = Addresses.Xp.GetValue();
             _xpBeforeKill = _currentXP;
@@ -101,7 +101,7 @@ public sealed partial class MainWindow : Window
         _currentTarget = Addresses.Target.GetValue();
         _currentTargetUID = Addresses.TargetId.GetValue();
 
-        Globals.Logger.Debug("Checking active target...", LogEntryTag.Combat);
+        Logger.Debug("Checking active target...", LogEntryTag.Combat);
 
         StopTimer(CheckTimer);
 
@@ -163,7 +163,7 @@ public sealed partial class MainWindow : Window
         // if the current XP is less than the xp before the last kill, then the char leveled up
         if (_currentXP < _xpBeforeKill)
         {
-            Globals.Logger.Debug("Level up detected, resetting state", LogEntryTag.Combat);
+            Logger.Debug("Level up detected, resetting state", LogEntryTag.Combat);
 
             // reset the xp before kill to -1
             _xpBeforeKill = -1;
@@ -230,7 +230,7 @@ public sealed partial class MainWindow : Window
     private void RefreshLogs()
     {
         Level level = (Level) Enum.Parse(typeof(Level), LogLevelSelection.Text, true);
-        var logEntries = Globals.Logger.Entries.Where(e => e.Level >= level).ToList();
+        var logEntries = Logger.Entries.Where(e => e.Level >= level).ToList();
         
         var displayedLog = SystemMsgLog.Content;
         if (displayedLog is not string)
@@ -258,7 +258,7 @@ public sealed partial class MainWindow : Window
     private void Loot_Tick(object sender, EventArgs e)
     {
         AutoCombatState.Content = $"Combat State: {_combatState}";
-        Globals.Logger.Debug("Looting items...", LogEntryTag.Combat);
+        Logger.Debug("Looting items...", LogEntryTag.Combat);
         _sim.Keyboard.KeyPress(VirtualKeyCode.VK_T);
     }
 
@@ -270,7 +270,7 @@ public sealed partial class MainWindow : Window
         AutoCombatState.Content = $"Combat State: {_combatState}";
         StopTimer(LootingEndTimer);
         StopTimer(LootingTimer);
-        Globals.Logger.Debug("Finished looting items", LogEntryTag.Combat);
+        Logger.Debug("Finished looting items", LogEntryTag.Combat);
 
         SwitchToTargetting(true);
     }
@@ -288,7 +288,7 @@ public sealed partial class MainWindow : Window
         if (activeHpKeys.Length == 0)
         {
 	        Trace.WriteLine("No active HP keys!");
-            Globals.Logger.Warn("No active HP keys are set", LogEntryTag.System);
+            Logger.Warn("No active HP keys are set", LogEntryTag.System);
 	        return;
         }
 
@@ -301,13 +301,13 @@ public sealed partial class MainWindow : Window
         float hpPercent = ((float)(_playerHP) / (float)(_playerMaxHP));
 
 		Trace.WriteLine("Check HP Food Tick");
-        Globals.Logger.Debug("Checking health...", LogEntryTag.Food);
+        Logger.Debug("Checking health...", LogEntryTag.Food);
         
         if (hpPercent < (Settings.FoodOptions.AutoHpThresholdPercent / 100) && _eatHPFood)
         {
             int ranFood = _ran.Next(0, activeHpKeys.Length);
 				Trace.WriteLine("Eat HP Food Tick");
-            Globals.Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
+            Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
             _sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
             _eatHPFood = false;
             // start the delay timer to press the key again
@@ -330,7 +330,7 @@ public sealed partial class MainWindow : Window
         if (activeMpKeys.Length == 0)
         {
 			Trace.WriteLine("No active MP keys!");
-            Globals.Logger.Warn("No active MP keys are set", LogEntryTag.System);
+            Logger.Warn("No active MP keys are set", LogEntryTag.System);
 			return;
 		}
 
@@ -343,13 +343,13 @@ public sealed partial class MainWindow : Window
         float mpPercent = ((float)(_playerMP) / (float)(_playerMaxMP));
 
 		Trace.WriteLine("Check MP Food Tick");
-        Globals.Logger.Debug("Checking mana...", LogEntryTag.Food);
+        Logger.Debug("Checking mana...", LogEntryTag.Food);
 
         if (mpPercent < (Settings.FoodOptions.AutoMpThresholdPercent / 100) && _eatMPFood)
         {
             int ranFood = _ran.Next(0, activeMpKeys.Length);
 			Trace.WriteLine("Eat MP Food Tick");
-            Globals.Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
+            Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
             _sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
             // start the delay timer to press the key again
             StartTimer(MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
@@ -388,7 +388,7 @@ public sealed partial class MainWindow : Window
 
         if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) || (x == _lastXPos && y == _lastYPos))
         {
-            Globals.Logger.Debug($"Attack timed out", LogEntryTag.Combat);
+            Logger.Debug($"Attack timed out", LogEntryTag.Combat);
             StopAllCombatRelatedTimers();
             SwitchToTargetting(true);
         }
@@ -445,7 +445,7 @@ public sealed partial class MainWindow : Window
 		if (!ApplicationContext.Hooked)
 			return;
 
-		Globals.Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
+		Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
 		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
 	}
 

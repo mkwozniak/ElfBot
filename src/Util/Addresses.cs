@@ -77,7 +77,7 @@
     {
         public override string GetValue()
         {
-            return Globals.TargetApplicationMemory.ReadString(Address);
+            return MainWindow.TargetApplicationMemory.ReadString(Address);
         }
 
         public override bool writeValue(string value)
@@ -94,12 +94,12 @@
     {
         public override int GetValue()
         {
-            return Globals.TargetApplicationMemory.ReadInt(Address);
+            return MainWindow.TargetApplicationMemory.ReadInt(Address);
         }
 
         public override bool writeValue(int value)
         {
-            return Globals.TargetApplicationMemory.WriteMemory(Address, "int", value.ToString());
+            return MainWindow.TargetApplicationMemory.WriteMemory(Address, "int", value.ToString());
         }
 
         public IntField(string app, params string[] offsets) : base(app, offsets)
@@ -111,12 +111,12 @@
     {
         public override float GetValue()
         {
-            return Globals.TargetApplicationMemory.ReadFloat(Address);
+            return MainWindow.TargetApplicationMemory.ReadFloat(Address);
         }
 
         public override bool writeValue(float value)
         {
-            return Globals.TargetApplicationMemory.WriteMemory(Address, "float", value.ToString());
+            return MainWindow.TargetApplicationMemory.WriteMemory(Address, "float", value.ToString());
         }
 
         public FloatField(string app, params string[] offsets) : base(app, offsets)
@@ -128,12 +128,12 @@
     {
         public override int GetValue()
         {
-            return Globals.TargetApplicationMemory.Read2Byte(Address);
+            return MainWindow.TargetApplicationMemory.Read2Byte(Address);
         }
 
         public override bool writeValue(int value)
         {
-            return Globals.TargetApplicationMemory.WriteMemory(Address, "2bytes", value.ToString());
+            return MainWindow.TargetApplicationMemory.WriteMemory(Address, "2bytes", value.ToString());
         }
 
         public TwoByteField(string app, params string[] offsets) : base(app, offsets)

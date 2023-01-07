@@ -68,7 +68,7 @@ public sealed partial class MainWindow : Window
 		}
 		else
 		{
-			Globals.Logger.Warn("Failed to show save configuration dialog");
+			Logger.Warn("Failed to show save configuration dialog");
 		}
 	}
 
@@ -84,7 +84,7 @@ public sealed partial class MainWindow : Window
 
 		if (!dialog.ShowDialog() == true)
 		{
-			Globals.Logger.Warn("Failed to show open configuration dialog");
+			Logger.Warn("Failed to show open configuration dialog");
 			return;
 		}
 
@@ -96,14 +96,14 @@ public sealed partial class MainWindow : Window
 
 			if (settings is null)
 			{
-				Globals.Logger.Warn($"Settings file had no data");
+				Logger.Warn($"Settings file had no data");
 				return;
 			}
 			ApplicationContext.Settings = settings;
 		}
 		catch (Exception ex) 
 		{
-			Globals.Logger.Error($"Failed to load config file: {ex.Message}");
+			Logger.Error($"Failed to load config file: {ex.Message}");
 		}
 	}
 
@@ -124,7 +124,7 @@ public sealed partial class MainWindow : Window
 	/// <param name="e"></param>
 	private void ClearLogsButton_Click(object sender, EventArgs e)
 	{
-		Globals.Logger.Clear();
+		Logger.Clear();
 		SystemMsgLog.Content = "";
 	}
 
@@ -137,13 +137,13 @@ public sealed partial class MainWindow : Window
 		StopAllCombatRelatedTimers();
 		if (_monsterTable?.Count == 0)
 		{
-			Globals.Logger.Error("Could not enable auto-combat due to empty monster table", 
+			Logger.Error("Could not enable auto-combat due to empty monster table", 
 				LogEntryTag.System);
 			if (sender is CheckBox c) c.IsChecked = false;
 			return;
 		}
 		
-		Globals.Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
+		Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
 		_xpBeforeKill = -1;
 		SwitchToTargetting();
 	}
@@ -152,46 +152,46 @@ public sealed partial class MainWindow : Window
 	{
 		StopAllCombatRelatedTimers();
 		AutoCombatState.Content = "Combat State: Inactive";
-		Globals.Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
+		Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
 	}
 
 	private void EnableHpTimer(object sender, RoutedEventArgs e)
 	{
 		StopTimer(HpFoodTimer); // just in case it's already running
 		StartTimer(HpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
-		Globals.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
+		Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
 	}
 
 	private void DisableHpTimer(object sender, RoutedEventArgs e)
 	{
 		StopTimer(HpFoodTimer);
-		Globals.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
+		Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
 	}
 
 	private void EnableMpTimer(object sender, RoutedEventArgs e)
 	{
 		StopTimer(MpFoodTimer); // just in case it's already running
 		StartTimer(MpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
-		Globals.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
+		Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
 	}
 
 	private void DisableMpTimer(object sender, RoutedEventArgs e)
 	{
 		StopTimer(MpFoodTimer);
-		Globals.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
+		Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
 	}
 
 	private void EnableZHack(object sender, RoutedEventArgs e)
     {
 	    StopTimer(ZHackTimer); 
 	    StartTimer(ZHackTimer, (int)(Settings.ZHackOptions.Frequency * 1000));
-	    Globals.Logger.Info("Enabled Timed ZHack", LogEntryTag.Combat);
+	    Logger.Info("Enabled Timed ZHack", LogEntryTag.Combat);
     }
 
     private void DisableZHack(object sender, RoutedEventArgs e)
     {
 	    StopTimer(ZHackTimer);
-	    Globals.Logger.Info("Disabled Timed ZHack", LogEntryTag.Combat);
+	    Logger.Info("Disabled Timed ZHack", LogEntryTag.Combat);
     }
 
 	#endregion
