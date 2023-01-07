@@ -56,21 +56,15 @@ public sealed partial class MainWindow : Window
 
         StopTimer(TargettingTimer);
 
-        if (_currentTargetUID != -1)
+        if (_currentTargetUID != 0)
         {
             _currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
             _currentTargetUID = Addresses.TargetId.GetValue();
         }
 
-        if (_priorityTargetScanning && !_scanningForPriorityTargets)
-        {
-            StartTimer(TargetPriorityTimer, (int)(Settings.CombatOptions.TargetPriorityScanTime * 1000));
-            _scanningForPriorityTargets = true;
-        }
-
 		// if current target isnt in monstertable or there is no unique target id
-		if (((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting) || _scanningForPriorityTargets)
-        {
+		if ((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
+		{
             // press targetting key
             _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
             _pressedTargetting = true;
@@ -105,19 +99,6 @@ public sealed partial class MainWindow : Window
         Logger.Debug("Checking active target...", LogEntryTag.Combat);
 
         StopTimer(CheckTimer);
-
-        // if priority scanning is enabled, and is currently active
-		if (_priorityTargetScanning && _scanningForPriorityTargets)
-        {
-            // if the monster table doesnt contain a priority version of this target
-			if(!_monsterTable.Contains("*" + _currentTarget) && _currentTargetUID != 0)
-            {
-                // keep targetting
-                StopTimer(TargettingTimer);
-				SwitchToTargetting(true);
-				return;
-            }
-		}
 
 		// if current target is in monster table
 		if (_monsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
@@ -257,8 +238,9 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void HpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (_sim == null)
+		if (_sim == null || !ApplicationContext.Hooked)
 			return;
+
         var activeHpKeys = Settings.Keybindings
             .FindAll(kb => kb.Type is KeybindType.HpFood or KeybindType.HpInstant)
             .ToArray();
@@ -297,7 +279,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void MpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (_sim == null)
+		if (_sim == null || !ApplicationContext.Hooked)
 			return;
 
         var activeMpKeys = Settings.Keybindings

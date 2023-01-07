@@ -144,7 +144,7 @@ public sealed partial class MainWindow : Window
             StopTimer(AttackTimeoutTimer);
             _pressedTargetting = false;
 
-            if (CombatLootCheckbox.IsChecked == true)
+			if (CombatLootCheckbox.IsChecked == true)
             {
                 // enemy has died, loot now and start the loot timer
                 ApplicationContext.CombatState = CombatStates.Looting;
@@ -198,13 +198,12 @@ public sealed partial class MainWindow : Window
     {
         if (resetUID)
         {
-            _currentTargetUID = -1;
+            _currentTargetUID = 0;
         }
 
         _currentTarget = "";
         _pressedTargetting = false;
         ApplicationContext.CombatState = CombatStates.Targetting;
-        Trace.WriteLine("Switching to targetting");
         StartTimer(TargettingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
     }
 
