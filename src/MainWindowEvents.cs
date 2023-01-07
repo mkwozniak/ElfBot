@@ -60,12 +60,15 @@ public sealed partial class MainWindow : Window
 			Filter = "JSON (*.json)|*.json",
 			FileName = "config.json"
 		};
-
-		// TODO: error handling?
+		
 		if (dialog.ShowDialog() == true)
 		{
 			var json = JsonConvert.SerializeObject(ApplicationContext.Settings, Formatting.Indented);
 			File.WriteAllText(dialog.FileName, json);
+		}
+		else
+		{
+			Globals.Logger.Warn("Failed to show save configuration dialog");
 		}
 	}
 
@@ -78,8 +81,12 @@ public sealed partial class MainWindow : Window
 		{
 			Filter = "Json files (*.json)|*.json"
 		};
-		
-		if (!dialog.ShowDialog() == true) return;
+
+		if (!dialog.ShowDialog() == true)
+		{
+			Globals.Logger.Warn("Failed to show open configuration dialog");
+			return;
+		}
 
 		try
 		{
