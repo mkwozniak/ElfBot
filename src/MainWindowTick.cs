@@ -62,8 +62,14 @@ public sealed partial class MainWindow : Window
             _currentTargetUID = Addresses.TargetId.GetValue();
         }
 
-        // if current target isnt in monstertable or there is no unique target id
-        if ((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
+        if (_priorityTargetScanning && !_scanningForPriorityTargets)
+        {
+            StartTimer(TargetPriorityTimer, (int)(Settings.CombatOptions.TargetPriorityScanTime * 1000));
+            _scanningForPriorityTargets = true;
+        }
+
+		// if current target isnt in monstertable or there is no unique target id
+		if (((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting) || _scanningForPriorityTargets)
         {
             // press targetting key
             _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
@@ -100,8 +106,21 @@ public sealed partial class MainWindow : Window
 
         StopTimer(CheckTimer);
 
-        // if current target is in monster table
-        if (_monsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
+        // if priority scanning is enabled, and is currently active
+		if (_priorityTargetScanning && _scanningForPriorityTargets)
+        {
+            // if the monster table doesnt contain a priority version of this target
+			if(!_monsterTable.Contains("*" + _currentTarget) && _currentTargetUID != 0)
+            {
+                // keep targetting
+                StopTimer(TargettingTimer);
+				SwitchToTargetting(true);
+				return;
+            }
+		}
+
+		// if current target is in monster table
+		if (_monsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
         {
             StopTimer(AttackTimeoutTimer); // stop timeout timer
 
@@ -401,6 +420,16 @@ public sealed partial class MainWindow : Window
 
 		Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
 		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
+	}
+
+	/// <summary> Timer tick to reset target priority scanning </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void TargetPriorityTimer_Tick(object? sender, EventArgs e)
+	{
+		_scanningForPriorityTargets = false;
+		Logger.Debug("Target Priority Scan Timeout. No Priority Targets were found.", LogEntryTag.System);
+		StopTimer(TargetPriorityTimer);
 	}
 
 	#endregion

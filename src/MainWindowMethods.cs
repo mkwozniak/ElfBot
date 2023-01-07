@@ -2,6 +2,7 @@
 
 namespace ElfBot;
 
+using System.Diagnostics;
 using System.Windows;
 using WindowsInput;
 
@@ -100,6 +101,7 @@ public sealed partial class MainWindow : Window
 		ListenToTimer(CombatCameraTimer, CombatCameraTimer_Tick);
 		ListenToTimer(CameraYawTimer, CameraYawTimer_Tick);
         ListenToTimer(ZHackTimer, ZHackTimer_Tick);
+        ListenToTimer(TargetPriorityTimer, TargetPriorityTimer_Tick);
 
 		StartTimer(InterfaceTimer, _interfaceUpdateTime);
 		StartTimer(CombatCameraTimer, _combatCameraTickTime);
@@ -202,6 +204,7 @@ public sealed partial class MainWindow : Window
         _currentTarget = "";
         _pressedTargetting = false;
         ApplicationContext.CombatState = CombatStates.Targetting;
+        Trace.WriteLine("Switching to targetting");
         StartTimer(TargettingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
     }
 
