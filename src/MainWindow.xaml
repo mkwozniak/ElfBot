@@ -10,9 +10,14 @@
 
     <Window.Resources>
         <local:ApplicationContext x:Key="ApplicationContext" />
+        <local:FloatFormattingConverter x:Key="FloatFormattingConverter"/>
+        <local:NullValueConverter x:Key="NullValueConverter"/>
         
         <ControlTemplate x:Key="InformationLabel" TargetType="ContentControl">
-            <Label Content="{TemplateBinding Content}" Padding="0" Foreground="White" />
+            <DockPanel>
+            <Label Content="{TemplateBinding Tag}" Padding="0" Foreground="White"/>
+            <Label Content="{TemplateBinding Content, Converter={StaticResource NullValueConverter}}" Padding="0" Foreground="White" />
+            </DockPanel>
         </ControlTemplate>
     </Window.Resources>
     
@@ -97,41 +102,72 @@
                     <StackPanel Margin="5">
                         <Label Content="Character" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
                         <StackPanel Margin="10 0 0 0">
-                            <ContentControl Content="Name: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerNameLabel" />
-                            <ContentControl Content="Level: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerLevelLabel" />
-                            <ContentControl Content="XP: N/A" Template="{StaticResource InformationLabel}" x:Name="CurrentXpLabel" />
-                            <ContentControl Content="Zuly: N/A" Template="{StaticResource InformationLabel}" x:Name="PlayerZulyLabel" />
-                            <ContentControl Content="HP: - / -" Template="{StaticResource InformationLabel}" x:Name="PlayerHpLabel" />
-                            <ContentControl Content="MP: - / -" Template="{StaticResource InformationLabel}" x:Name="PlayerMpLabel" />
+                            <ContentControl Tag="Name: "
+                                            Content="{Binding Path=CharacterData.Name, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Level: "
+                                            Content="{Binding Path=CharacterData.Level, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="XP: "
+                                            Content="{Binding Path=CharacterData.Xp, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Zuly: "
+                                            Content="{Binding Path=CharacterData.Zuly, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="HP: "
+                                            Content="{Binding Path=CharacterData.HpText, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="MP: "
+                                            Content="{Binding Path=CharacterData.MpText, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
                         </StackPanel>
                     </StackPanel>
                     <!-- location -->
                     <StackPanel Margin="5">
                         <Label Content="Location" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
                         <StackPanel Margin="10 0 0 0">
-                            <ContentControl Content="X:  N/A" x:Name="PlayerPosXLabel" Template="{StaticResource InformationLabel}" />
-                            <ContentControl Content="Y: N/A" x:Name="PlayerPosYLabel" Template="{StaticResource InformationLabel}" />
-                            <ContentControl Content="Z: N/A" x:Name="PlayerPosZLabel" Template="{StaticResource InformationLabel}" />
-                            <ContentControl Content="Map ID: N/A" x:Name="PlayerMapIdLabel" Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="X: "
+                                            Content="{Binding Path=CharacterData.Location.X, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Y: "
+                                            Content="{Binding Path=CharacterData.Location.Y, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Z: "
+                                            Content="{Binding Path=CharacterData.Location.Z, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Map ID: "
+                                            Content="{Binding Path=CharacterData.Location.MapId, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
                         </StackPanel>
                     </StackPanel>
                     <!-- camera -->
                     <StackPanel Margin="5">
                         <Label Content="Camera" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
                         <StackPanel Margin="10 0 0 0">
-                            <ContentControl Content="Zoom: N/A" x:Name="CameraZoomLabel" Template="{StaticResource InformationLabel}"  />
-                            <ContentControl Content="Pitch: N/A" x:Name="CameraPitchLabel" Template="{StaticResource InformationLabel}"  />
-                            <ContentControl Content="Yaw: N/A" x:Name="CameraYawLabel" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Tag="Zoom: "
+                                            Content="{Binding Path=CharacterData.Camera.Zoom, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Pitch: "
+                                            Content="{Binding Path=CharacterData.Camera.Pitch, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Yaw: "
+                                            Content="{Binding Path=CharacterData.Camera.Yaw, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
                         </StackPanel>
                     </StackPanel>
                     <!-- misc -->
                     <StackPanel Margin="5">
                         <Label Content="Misc" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
                         <StackPanel Margin="10 0 0 0">
-                            <ContentControl Content="Target: N/A" x:Name="TargetLabel" Template="{StaticResource InformationLabel}"  />
-                            <ContentControl Content="Target UID: N/A" x:Name="TargetIdLabel" Template="{StaticResource InformationLabel}"  />
-                            <ContentControl Content="XP Before Kill: N/A" x:Name="XpBeforeKillLabel" Template="{StaticResource InformationLabel}"  />
-                            <ContentControl Content="Combat State: Inactive" x:Name="AutoCombatState" Template="{StaticResource InformationLabel}"  />
+                            <ContentControl Tag="Target: "
+                                            Content="{Binding Path=CharacterData.CurrentTarget.Name, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Target ID: "
+                                            Content="{Binding Path=CharacterData.CurrentTarget.Id, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
+                            <ContentControl Tag="Combat State: "
+                                            Content="{Binding Path=CombatState, Source={StaticResource ApplicationContext}}"
+                                            Template="{StaticResource InformationLabel}" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

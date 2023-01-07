@@ -189,7 +189,7 @@ public sealed partial class MainWindow : Window
             if (CombatLootCheckbox.IsChecked == true)
             {
                 // enemy has died, loot now and start the loot timer
-                _combatState = CombatStates.Looting;
+                ApplicationContext.CombatState = CombatStates.Looting;
                 StopTimer(CombatTimer);
                 // start the looting timer for hotkey
                 StartTimer(LootingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
@@ -245,7 +245,7 @@ public sealed partial class MainWindow : Window
 
         _currentTarget = "";
         _pressedTargetting = false;
-        _combatState = CombatStates.Targetting;
+        ApplicationContext.CombatState = CombatStates.Targetting;
         StartTimer(TargettingTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
     }
 

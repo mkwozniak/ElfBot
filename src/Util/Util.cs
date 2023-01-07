@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Data;
 
 namespace ElfBot;
 
@@ -20,5 +23,34 @@ public abstract class PropertyNotifyingClass : INotifyPropertyChanged
 	protected void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+}
+
+[ValueConversion(typeof(float), typeof(String))]
+public class FloatFormattingConverter : IValueConverter
+{
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return $"{value:n0}";
+	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return float.Parse(value as string ?? string.Empty);
+	}
+}
+
+
+[ValueConversion(typeof(object), typeof(String))]
+public class NullValueConverter : IValueConverter
+{
+	public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		return value?.ToString() ?? "N/A";
+	}
+
+	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+	{
+		throw new NotImplementedException();
 	}
 }

@@ -151,7 +151,6 @@ public sealed partial class MainWindow : Window
 	private void DisableAutoCombat(object sender, RoutedEventArgs e)
 	{
 		StopAllCombatRelatedTimers();
-		AutoCombatState.Content = "Combat State: Inactive";
 		Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
 	}
 

@@ -72,8 +72,6 @@ public partial class MainWindow : Window
 	};
 
 	// Values
-	private CombatStates _combatState;
-
     private bool _pressedTargetting = false;
     private bool _eatHPFood = true;
     private bool _eatMPFood = true;
@@ -122,6 +120,7 @@ public class ApplicationContext : PropertyNotifyingClass
 			new() { Key = "=", Value = 0 }
 		}
 	};
+	private CombatStates _combatState = CombatStates.Inactive;
 	private bool _hooked;
 
 	public Settings Settings
@@ -130,6 +129,19 @@ public class ApplicationContext : PropertyNotifyingClass
 		set
 		{
 			_settings = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public CharacterData CharacterData { get; } = new();
+
+	public CombatStates CombatState
+	{
+		get => _combatState;
+		set
+		{
+			if (_combatState == value) return;
+			_combatState = value;
 			NotifyPropertyChanged();
 		}
 	}
@@ -147,3 +159,4 @@ public class ApplicationContext : PropertyNotifyingClass
 	public bool AutoCombatEnabled { get; set; }
 	public bool UseSecondClient { get; set; }
 }
+
