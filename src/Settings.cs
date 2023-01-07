@@ -25,10 +25,10 @@ public class Settings : PropertyNotifyingClass
 
 public sealed class CombatOptions
 {
-	public float ActionTimerDelay { get; set; } = 0.5f;
+	[JsonIgnore]
+	public bool AutoCombatEnabled { get; set; }
 	public float CombatKeyDelay { get; set; } = 1f;
-	public float RetargetTimeout { get; set; } = 15f;
-	public float TargetPriorityScanTime { get; set; } = 3f;
+	public float AttackTimeout { get; set; } = 60f;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
@@ -36,7 +36,7 @@ public sealed class CombatOptions
 
 public sealed class LootOptions
 {
-	public float Duration { get; set; } = 3f;
+	public float Duration { get; set; } = 1f;
 	public bool LootAfterCombatEnabled { get; set; }
 }
 

@@ -157,16 +157,16 @@
                     </StackPanel>
                     <!-- misc -->
                     <StackPanel Margin="5">
-                        <Label Content="Misc" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                        <Label Content="Combat" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
                         <StackPanel Margin="10 0 0 0">
                             <ContentControl Tag="Target: "
-                                            Content="{Binding Path=CharacterData.CurrentTarget.Name, Source={StaticResource ApplicationContext}}"
+                                            Content="{Binding Path=AutoCombat.State.CurrentTarget, Source={StaticResource ApplicationContext}}"
                                             Template="{StaticResource InformationLabel}" />
                             <ContentControl Tag="Target ID: "
-                                            Content="{Binding Path=CharacterData.CurrentTarget.Id, Source={StaticResource ApplicationContext}}"
+                                            Content="{Binding Path=AutoCombat.State.CurrentTargetId, Source={StaticResource ApplicationContext}}"
                                             Template="{StaticResource InformationLabel}" />
                             <ContentControl Tag="Combat State: "
-                                            Content="{Binding Path=CombatState, Source={StaticResource ApplicationContext}}"
+                                            Content="{Binding Path=AutoCombat.State.Status, Source={StaticResource ApplicationContext}}"
                                             Template="{StaticResource InformationLabel}" />
                         </StackPanel>
                     </StackPanel>
@@ -183,19 +183,12 @@
                               Margin="5 5 0 0"
                               VerticalAlignment="Bottom"
                               IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
-                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat" />
+                              IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
                     <UniformGrid Columns="2" Width="300" Margin="0 5 0 0"
                                  HorizontalAlignment="Left">
                         <StackPanel>
                             <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
-                            <StackPanel>
-                                <Label Content="Action Timer Delay (s)" FontWeight="Bold" Foreground="White" />
-                                <TextBox x:Name="ActionDelayInputBox"
-                                         Text="{Binding Path=Settings.CombatOptions.ActionTimerDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                         Background="Black" Foreground="White" />
-                            </StackPanel>
                             <StackPanel>
                                 <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
                                 <TextBox x:Name="CombatKeyDelayInputBox"
@@ -204,9 +197,8 @@
                                          Background="Black" Foreground="White" />
                             </StackPanel>
                             <StackPanel>
-                                <Label Content="Retarget Timeout (s)" FontWeight="Bold" Foreground="White" />
-                                <TextBox x:Name="RetargetTimeoutInputBox"
-                                         Text="{Binding Path=Settings.CombatOptions.RetargetTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                <Label Content="Attack Timeout (s)" FontWeight="Bold" Foreground="White" />
+                                <TextBox Text="{Binding Path=Settings.CombatOptions.AttackTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                          HorizontalAlignment="Left" Width="90" Margin="5 0"
                                          Background="Black" Foreground="White" />
                             </StackPanel>
