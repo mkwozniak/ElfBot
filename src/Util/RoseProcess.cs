@@ -1,8 +1,6 @@
 ﻿namespace ElfBot;
 
 using Process = System.Diagnostics.Process;
-using Trace = System.Diagnostics.Trace;
-using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 using StringComparison = System.StringComparison;
 using IntPtr = System.IntPtr;
 using Int32 = System.Int32;

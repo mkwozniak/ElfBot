@@ -1,4 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.IO;
+using System.Windows.Controls;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ElfBot;
 
@@ -49,22 +53,51 @@ public sealed partial class MainWindow : Window
 	/// <summary> Loads a config to file </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private void SaveConfigBtn_Click(object sender, RoutedEventArgs e)
+	private void SaveConfiguration(object sender, RoutedEventArgs e)
 	{
-		if (_config == null)
-            return;
-		
-        _config.TrySaveConfigToFile(GenerateConfigData());
+		var dialog = new SaveFileDialog()
+		{
+			Filter = "JSON (*.json)|*.json",
+			FileName = "config.json"
+		};
+
+		// TODO: error handling?
+		if (dialog.ShowDialog() == true)
+		{
+			var json = JsonConvert.SerializeObject(ApplicationContext.Settings, Formatting.Indented);
+			File.WriteAllText(dialog.FileName, json);
+		}
 	}
 
 	/// <summary> Saves the current config to file </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	private void LoadConfigBtn_Click(object sender, RoutedEventArgs e)
+	private void LoadConfiguration(object sender, RoutedEventArgs e)
 	{
-		if (_config == null)
-			return;
-		_config.LoadConfigFromFile();
+		var dialog = new OpenFileDialog()
+		{
+			Filter = "Json files (*.json)|*.json"
+		};
+		
+		if (!dialog.ShowDialog() == true) return;
+
+		try
+		{
+			using var reader = new StreamReader(dialog.FileName);
+			var json = reader.ReadToEnd();
+			var settings = JsonConvert.DeserializeObject<Settings>(json);
+
+			if (settings is null)
+			{
+				Globals.Logger.Warn($"Settings file had no data");
+				return;
+			}
+			ApplicationContext.Settings = settings;
+		}
+		catch (Exception ex) 
+		{
+			Globals.Logger.Error($"Failed to load config file: {ex.Message}");
+		}
 	}
 
 	/// <summary> Opens the control panel </summary>

@@ -245,11 +245,11 @@
                     <Button x:Name="SaveConfigBtn" Content="Save Config" 
                             Foreground="White" Background="Black" 
                             Width="90" Height="28" 
-                            Click="SaveConfigBtn_Click"/>
+                            Click="SaveConfiguration"/>
                     <Button x:Name="LoadConfigBtn" Content="Load Config"
                             Foreground="White" Background="Black" 
                             Width="90" Height="28" Margin="5 0"
-                            Click="LoadConfigBtn_Click"/>
+                            Click="LoadConfiguration"/>
                     <TextBlock Text="It is recommended to load your config before hooking." TextWrapping="Wrap" Width="200"/> 
                 </DockPanel>
             </Grid>

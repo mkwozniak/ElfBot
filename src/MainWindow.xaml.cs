@@ -46,13 +46,10 @@ public partial class MainWindow : Window
 	// References
 	private InputSimulator? _sim;
     private Random _ran = new();
-    private Config? _config;
 	private OpenFileDialog? _openMonsterTableDialog;
 
 	// Structures
 	private MonsterHashTable? _monsterTable;
-	private TextBoxDict _textBoxes = new TextBoxDict();
-	private CheckBoxDict _checkBoxes = new CheckBoxDict();
 
 	public static readonly Dictionary<string, VirtualKeyCode> KeyMap = new()
 	{

@@ -75,13 +75,9 @@ public sealed partial class MainWindow : Window
 		_openMonsterTableDialog.Filter = "Text files(*.txt)| *.txt";
 
 		_monsterTable = new MonsterHashTable();
-		_config = new Config();
 
         // listen to hook event
         OnFinishHook += FinishHook;
-
-        // register the config callbacks
-        RegisterConfigCallbacks();
 
         // prepare the initial interface view
         PrepareElfbotInterface();
@@ -120,137 +116,29 @@ public sealed partial class MainWindow : Window
     private void PrepareElfbotInterface()
     {
 		SystemMsgLog.Content = "";
-		
-        _textBoxes[Globals.Key_CombatActionDelay] = ActionDelayInputBox;
-		_textBoxes[Globals.Key_CombatKeyDelay] = CombatKeyDelayInputBox;
-		_textBoxes[Globals.Key_RetargetTimeout] = RetargetTimeoutInputBox;
-		_textBoxes[Globals.Key_CombatLootTime] = CombatLootTimeInputBox;
-		_textBoxes[Globals.Key_HpPercent] = FoodHpPercentInputBox;
-		_textBoxes[Globals.Key_MpPercent] = FoodMpPercentInputBox;
-		_textBoxes[Globals.Key_FoodKeyDelay] = EatKeyDelayInputBox;
-        _textBoxes[Globals.Key_FoodDelay] = FoodDelayInputBox;
-        
-		_checkBoxes[Globals.Key_CameraYawWave] = TimedCameraYawCheckBox;
-		_checkBoxes[Globals.Key_AutoHP] = HpFoodCheckBox;
-		_checkBoxes[Globals.Key_AutoMP] = MpFoodCheckBox;
-		_checkBoxes[Globals.Key_CombatLoot] = CombatLootCheckbox;
-
 		CombatOptionsPanel.Visibility = Visibility.Visible;
 	}
 
-    /// <summary> Registers event callbacks for Config to invoke when loading </summary>
-    private void RegisterConfigCallbacks()
-    {
-	    if (_config == null)
-		    return;
-
-	    _config.BoolCallbacks[Globals.Key_CombatCamera] = (name, val) => {};
-		_config.BoolCallbacks[Globals.Key_CombatCamera] += UpdateBoolCheckBox;
-		_config.BoolCallbacks[Globals.Key_CombatCamera] += Util.LogConfigSetBool;
-
-		_config.BoolCallbacks[Globals.Key_CameraYawWave] = (name, val) => { };
-		_config.BoolCallbacks[Globals.Key_CameraYawWave] += UpdateBoolCheckBox;
-		_config.BoolCallbacks[Globals.Key_CameraYawWave] += Util.LogConfigSetBool;
-
-		_config.BoolCallbacks[Globals.Key_CombatLoot] = (name, val) => { };
-		_config.BoolCallbacks[Globals.Key_CombatLoot] += UpdateBoolCheckBox;
-		_config.BoolCallbacks[Globals.Key_CombatLoot] += Util.LogConfigSetBool;
-
-		_config.FloatCallbacks[Globals.Key_CombatActionDelay] = (name, val) => { };
-		_config.FloatCallbacks[Globals.Key_CombatActionDelay] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_CombatActionDelay] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_CombatKeyDelay] = (name, val) => {  };
-		_config.FloatCallbacks[Globals.Key_CombatKeyDelay] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_CombatKeyDelay] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_RetargetTimeout] = (name, val) => { };
-		_config.FloatCallbacks[Globals.Key_RetargetTimeout] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_RetargetTimeout] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_CombatLootTime] = (name, val) => {  };
-		_config.FloatCallbacks[Globals.Key_CombatLootTime] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_CombatLootTime] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_HpPercent] = (name, val) => { };
-		_config.FloatCallbacks[Globals.Key_HpPercent] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_HpPercent] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_MpPercent] = (name, val) => { };
-		_config.FloatCallbacks[Globals.Key_MpPercent] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_MpPercent] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_FoodKeyDelay] = (name, val) => {  };
-		_config.FloatCallbacks[Globals.Key_FoodKeyDelay] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_FoodKeyDelay] += Util.LogConfigSetFloat;
-
-		_config.FloatCallbacks[Globals.Key_FoodDelay] = (name, val) => { };
-		_config.FloatCallbacks[Globals.Key_FoodDelay] += UpdateFloatTextBox;
-		_config.FloatCallbacks[Globals.Key_FoodDelay] += Util.LogConfigSetFloat;
-    }
-
-    /// <summary> Generates string config data from the current settings </summary>
-    /// <returns></returns>
-	private string GenerateConfigData()
-	{
-		string data = "";
-		data += $"f:{Globals.Key_CombatActionDelay}={Settings.CombatOptions.ActionTimerDelay};\n";
-		data += $"f:{Globals.Key_CombatKeyDelay}={Settings.CombatOptions.CombatKeyDelay};\n";
-		data += $"f:{Globals.Key_RetargetTimeout}={Settings.CombatOptions.RetargetTimeout};\n";
-		data += $"b:{Globals.Key_CameraYawWave}={Settings.CombatOptions.CameraYawWaveEnabled};\n";
-		data += $"b:{Globals.Key_CombatLoot}={Settings.LootOptions.LootAfterCombatEnabled};\n";
-		data += $"f:{Globals.Key_CombatLootTime}={Settings.LootOptions.Duration};\n";
-		data += $"b:{Globals.Key_AutoHP}={Settings.FoodOptions.AutoHpEnabled};\n";
-		data += $"b:{Globals.Key_AutoMP}={Settings.FoodOptions.AutoMpEnabled};\n";
-		data += $"f:{Globals.Key_HpPercent}={Settings.FoodOptions.AutoHpThresholdPercent};\n";
-		data += $"f:{Globals.Key_MpPercent}={Settings.FoodOptions.AutoMpThresholdPercent};\n";
-		data += $"f:{Globals.Key_FoodKeyDelay}={Settings.FoodOptions.CheckFrequency};\n";
-		data += $"f:{Globals.Key_FoodDelay}={Settings.FoodOptions.Cooldown};\n";
-		return data;
-	}
-
-	/// <summary> Callback for when process has hooked. </summary>
+    /// <summary> Callback for when process has hooked. </summary>
 	private void FinishHook()
     {
         HookBtn.Content = "Process Hooked!";
     }
 
-	/// <summary> Hides all panels visibility and controls. </summary>
-	private void HideAllPanels()
-	{
-		CombatOptionsPanel.Visibility = Visibility.Hidden;
-		LootOptionsPanel.Visibility = Visibility.Hidden;
-		FoodOptionsPanel.Visibility = Visibility.Hidden;
-		MonsterTablePanel.Visibility = Visibility.Hidden;
-		KeybindOptionsPanel.Visibility = Visibility.Hidden;
-		LoggingOptionsPanel.Visibility = Visibility.Hidden;
-		ControlPanel.Visibility = Visibility.Hidden;
-        ZHackOptionsPanel.Visibility = Visibility.Hidden;
-	}
-
-	/// <summary> Updates a float text box in the text boxes dictionary </summary>
-	/// <param name="name"> The name key </param>
-	/// <param name="value"> The float </param>
-	private void UpdateFloatTextBox(string name, float value)
+    /// <summary> Hides all panels visibility and controls. </summary>
+    private void HideAllPanels()
     {
-        if (!_textBoxes.ContainsKey(name))
-            return;
-
-        _textBoxes[name].Text = value.ToString();
+	    CombatOptionsPanel.Visibility = Visibility.Hidden;
+	    LootOptionsPanel.Visibility = Visibility.Hidden;
+	    FoodOptionsPanel.Visibility = Visibility.Hidden;
+	    MonsterTablePanel.Visibility = Visibility.Hidden;
+	    KeybindOptionsPanel.Visibility = Visibility.Hidden;
+	    LoggingOptionsPanel.Visibility = Visibility.Hidden;
+	    ControlPanel.Visibility = Visibility.Hidden;
+	    ZHackOptionsPanel.Visibility = Visibility.Hidden;
     }
 
-	/// <summary> Updates a bool check box in the check boxes dictionary </summary>
-	/// <param name="name"> The name key </param>
-	/// <param name="value"> The bool </param>
-	private void UpdateBoolCheckBox(string name, bool value)
-	{
-		if (!_checkBoxes.ContainsKey(name))
-			return;
-
-        _checkBoxes[name].IsChecked = value;
-	}
-
-	/// <summary> Rebuilds the monster list from the monster hash table </summary>
+    /// <summary> Rebuilds the monster list from the monster hash table </summary>
 	private void RebuildMonsterList()
     {
         if (_monsterTable == null)

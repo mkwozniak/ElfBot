@@ -51,7 +51,7 @@ public class FoodOptions
 
 public class ZHackOptions
 {
-	[JsonIgnore] public bool Enabled { get; set; }
+	public bool Enabled { get; set; }
 	public float Frequency { get; set; } = 5f; 
 	public float Amount { get; set; } = 7f;
 }
