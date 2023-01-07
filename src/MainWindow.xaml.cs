@@ -13,6 +13,7 @@ using InputSimulator = WindowsInput.InputSimulator;
 using Timer = System.Windows.Threading.DispatcherTimer;
 
 using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -24,6 +25,9 @@ public partial class MainWindow : Window
 	
 	public static readonly Mem TargetApplicationMemory = new Mem();
 	public static readonly Logger Logger = new Logger();
+
+	[DllImport("ROSE_Input.dll")]
+	private static extern void SendKey(int key);
 
 	// Events
 	private FinishedHooking? OnFinishHook;

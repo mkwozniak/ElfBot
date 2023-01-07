@@ -401,6 +401,7 @@ public sealed partial class MainWindow : Window
 			return;
 
 		Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
+        //_sim.Keyboard.KeyPress(VirtualKeyCode.VK_W);
 		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
 	}
 
