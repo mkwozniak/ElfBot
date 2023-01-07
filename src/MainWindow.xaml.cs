@@ -72,7 +72,7 @@ public partial class MainWindow : Window
     private bool _pressedTargetting = false;
     private bool _eatHPFood = true;
     private bool _eatMPFood = true;
-	private bool _priorityTargetScanning = true; // TODO: Add checkbox and input box for timeout in settings
+	private bool _priorityTargetScanning = false; // TODO: Add checkbox and input box for timeout in settings
 	private bool _scanningForPriorityTargets = false;
 
 	private int _currentTargetUID = 0;

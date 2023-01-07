@@ -23,24 +23,24 @@ public class Settings : PropertyNotifyingClass
 	}
 }
 
-public class CombatOptions
+public sealed class CombatOptions
 {
 	public float ActionTimerDelay { get; set; } = 0.5f;
 	public float CombatKeyDelay { get; set; } = 1f;
 	public float RetargetTimeout { get; set; } = 15f;
-	public float TargetPriorityScanTime { get; set; } = 5f;
+	public float TargetPriorityScanTime { get; set; } = 3f;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
 }
 
-public class LootOptions
+public sealed class LootOptions
 {
 	public float Duration { get; set; } = 3f;
 	public bool LootAfterCombatEnabled { get; set; }
 }
 
-public class FoodOptions
+public sealed class FoodOptions
 {
 	public bool AutoHpEnabled { get; set; }
 	public float AutoHpThresholdPercent { get; set; } = 50f;
@@ -50,7 +50,7 @@ public class FoodOptions
 	public float Cooldown { get; set; } = 7f; 
 }
 
-public class ZHackOptions
+public sealed class ZHackOptions
 {
 	public bool Enabled { get; set; }
 	public float Frequency { get; set; } = 5f; 
