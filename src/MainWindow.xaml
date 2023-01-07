@@ -17,20 +17,49 @@
     </Window.Resources>
     
     <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
-        <Image HorizontalAlignment="Left" Height="43" Margin="10,19,0,0" VerticalAlignment="Top" Width="42" Source="/Assets/elfbot-icon-large.png"/>
-        <ListBox HorizontalAlignment="Left" Margin="10,48,0,10" Width="143" Background="Black" Foreground="White">
-            <Button x:Name="CombatOptionsBtn" Background="Black" Content="Combat" Foreground="White" Height="20" Width="128" Click="CombatOptionsBtn_Click"/>
-            <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="22" Width="128" Click="MonsterTableOptionsBtn_Click"/>
-            <Button x:Name="LootOptionsBtn" Background="Black" Content="Loot" Foreground="White" Height="19" Width="128" Click="LootOptionsBtn_Click"/>
-            <Button x:Name="FoodOptionsBtn" Background="Black" Content="Food" Foreground="White" Height="20" Width="128" Click="FoodOptionsBtn_Click"/>
-            <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128"/>
-            <Button x:Name="KeybindsOptionBtn" Background="Black" Content="Keybinds" Foreground="White" Height="20" Width="128" Click="KeybindsOptionBtn_Click"/>
-            <Button x:Name="ZHackOptionsBtn" Background="Black" Content="ZHack" Foreground="White" Height="19" Width="128" Click="ZHackOptionsBtn_Click"/>
-            <Button x:Name="LoggingOptionsBtn" Background="Black" Content="Logging" Foreground="White" Height="20" Width="128" Click="LoggingOptionsBtn_Click"/>
-            <Button x:Name="ControlPanelBtn" Background="Black" Content="Control Panel" Foreground="White" Height="20" Width="128" Click="ControlPanelBtn_Click"/>
-        </ListBox>
-        
-        <Button x:Name="HookBtn" Content="H O O K" HorizontalAlignment="Left" Margin="62,21,0,0" VerticalAlignment="Top" Width="91" Background="Black" Foreground="White" Height="24" Click="HookBtn_Click"/>
+        <StackPanel Height="428" Margin="0 -15 0 0 ">
+            <DockPanel Margin="20 0">
+                <Image Source="/Assets/elfbot-icon-large.png"
+                       Height="50" Width="50"
+                       HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                <Label Content="ELFBOT 0.0.7"
+                       Foreground="White" Padding="0"
+                       VerticalAlignment="Bottom" />
+            </DockPanel>
+            <ListBox Margin="10 0" Width="143" Height="300" BorderBrush="Black" Background="Black" Foreground="White"
+                     HorizontalAlignment="Left" HorizontalContentAlignment="Center">
+                <Button x:Name="HookBtn" Content="H O O K"
+                        Height="20" Width="128" HorizontalAlignment="Center"
+                        Background="Black" Foreground="White"
+                        Click="HookBtn_Click" />
+                <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
+                          Margin="5 5 0 0"
+                          IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
+                <Separator Margin="0 5 0 5"></Separator>
+                <Button x:Name="CombatOptionsBtn" Background="Black" Content="Auto Combat" Foreground="White" Height="20" Width="128" Click="CombatOptionsBtn_Click" />
+                <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="22" Width="128" Click="MonsterTableOptionsBtn_Click" />
+                <Button x:Name="LootOptionsBtn" Background="Black" Content="Loot" Foreground="White" Height="19" Width="128" Click="LootOptionsBtn_Click" />
+                <Button x:Name="FoodOptionsBtn" Background="Black" Content="Food" Foreground="White" Height="20" Width="128" Click="FoodOptionsBtn_Click" />
+                <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
+                <Button x:Name="KeybindsOptionBtn" Background="Black" Content="Keybinds" Foreground="White" Height="20" Width="128" Click="KeybindsOptionBtn_Click" />
+                <Button x:Name="ZHackOptionsBtn" Background="Black" Content="ZHack" Foreground="White" Height="19" Width="128" Click="ZHackOptionsBtn_Click" />
+                <Button x:Name="LoggingOptionsBtn" Background="Black" Content="Logs" Foreground="White" Height="20" Width="128" Click="LoggingOptionsBtn_Click" />
+            </ListBox>
+            <ListBox Margin="10 0 10 0" Width="143" BorderBrush="Black" Background="Black" Foreground="White"
+                     VerticalAlignment="Bottom"
+                                  HorizontalAlignment="Left" HorizontalContentAlignment="Center">
+                <Button x:Name="SaveConfigBtn" Content="Save Config" 
+                        Foreground="White" Background="Black" 
+                        Height="20" Width="128" 
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                        Click="SaveConfiguration"/>
+            <Button x:Name="LoadConfigBtn" Content="Load Config"
+                    Foreground="White" Background="Black" 
+                    Height="20" Width="128" 
+                    HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                    Click="LoadConfiguration"/>
+            </ListBox>
+        </StackPanel>
         <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
             <Grid>
                 <StackPanel>
@@ -78,9 +107,15 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="CombatOptionsPanel" Header="Combat Options" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
+        <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
             <Grid>
                 <StackPanel>
+                    <CheckBox x:Name="AutoCombatCheckBox" Content="Enable Auto Combat" Foreground="White"
+                              Margin="5 5 0 0" 
+                              VerticalAlignment="Bottom"
+                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat"/>
                     <StackPanel>
                         <Label Content="Action Timer Delay (s)" FontWeight="Bold" Foreground="White" />
                         <TextBox x:Name="ActionDelayInputBox"
@@ -102,6 +137,7 @@
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
                                  Background="Black" Foreground="White" />
                     </StackPanel>
+                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold"/>
                     <CheckBox Content="Force Camera Zoom"
                               IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
                               Margin="5 5 0 0 " Foreground="White" />
@@ -213,7 +249,7 @@
                 </StackPanel>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="LoggingOptionsPanel" Header="Logging Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+        <GroupBox x:Name="LoggingOptionsPanel" Header="Logs" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
                 <Button x:Name="ClearLogsButton" Background="Black" Content="Clear" Foreground="White" Height="16" Width="45"
                         VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 2 0 0" Click="ClearLogsButton_Click" />
@@ -228,33 +264,6 @@
                 </ScrollViewer>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="ControlPanel" Header="Control Panel" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <StackPanel>
-                    <CheckBox x:Name="AutoCombatCheckBox" Content="Auto Combat" Foreground="White"
-                              Margin="5 5 0 0"
-                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
-                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat"/>
-
-                    <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
-                              Margin="5 5 0 0"
-                              IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
-                </StackPanel>
-                <DockPanel VerticalAlignment="Bottom">
-                    <Button x:Name="SaveConfigBtn" Content="Save Config" 
-                            Foreground="White" Background="Black" 
-                            Width="90" Height="28" 
-                            Click="SaveConfiguration"/>
-                    <Button x:Name="LoadConfigBtn" Content="Load Config"
-                            Foreground="White" Background="Black" 
-                            Width="90" Height="28" Margin="5 0"
-                            Click="LoadConfiguration"/>
-                    <TextBlock Text="It is recommended to load your config before hooking." TextWrapping="Wrap" Width="200"/> 
-                </DockPanel>
-            </Grid>
-        </GroupBox>
-        <TextBlock HorizontalAlignment="Left" Margin="62,6,0,0" TextWrapping="Wrap" Text="ELFBOT 0.0.7" VerticalAlignment="Top" Width="91" Foreground="White"/>
         <GroupBox x:Name="ZHackOptionsPanel" Header="ZHack Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <Grid>
                 <StackPanel>
@@ -263,7 +272,7 @@
                               Margin="5 5 0 0" Foreground="White"
                               Checked="EnableZHack" Unchecked="DisableZHack" />
 
-                    <Label Content="Frequency" FontWeight="Bold" Foreground="White" />
+                    <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
                     <TextBox x:Name="TimedZHackDelayInputBox"
                              Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                              HorizontalAlignment="Left" Margin="5 0" Width="98"
