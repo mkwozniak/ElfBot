@@ -107,15 +107,6 @@ public sealed partial class MainWindow : Window
 		}
 	}
 
-	/// <summary> Opens the control panel </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void ControlPanelBtn_Click(object sender, RoutedEventArgs e)
-	{
-		HideAllPanels();
-		ControlPanel.Visibility = Visibility.Visible;
-	}
-
 	/// <summary> Opens the combat options menu </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
@@ -125,16 +116,7 @@ public sealed partial class MainWindow : Window
         CombatOptionsPanel.Visibility = Visibility.Visible;
     }
 
-    /// <summary> Options the loot options menu </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void LootOptionsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        LootOptionsPanel.Visibility = Visibility.Visible;
-    }
-
-    /// <summary> Opens the food options menu </summary>
+	/// <summary> Opens the food options menu </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void FoodOptionsBtn_Click(object sender, RoutedEventArgs e)

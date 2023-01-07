@@ -129,12 +129,10 @@ public sealed partial class MainWindow : Window
     private void HideAllPanels()
     {
 	    CombatOptionsPanel.Visibility = Visibility.Hidden;
-	    LootOptionsPanel.Visibility = Visibility.Hidden;
 	    FoodOptionsPanel.Visibility = Visibility.Hidden;
 	    MonsterTablePanel.Visibility = Visibility.Hidden;
 	    KeybindOptionsPanel.Visibility = Visibility.Hidden;
 	    LoggingOptionsPanel.Visibility = Visibility.Hidden;
-	    ControlPanel.Visibility = Visibility.Hidden;
 	    ZHackOptionsPanel.Visibility = Visibility.Hidden;
     }
 

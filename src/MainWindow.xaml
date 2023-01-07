@@ -38,7 +38,6 @@
                 <Separator Margin="0 5 0 5"></Separator>
                 <Button x:Name="CombatOptionsBtn" Background="Black" Content="Auto Combat" Foreground="White" Height="20" Width="128" Click="CombatOptionsBtn_Click" />
                 <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="22" Width="128" Click="MonsterTableOptionsBtn_Click" />
-                <Button x:Name="LootOptionsBtn" Background="Black" Content="Loot" Foreground="White" Height="19" Width="128" Click="LootOptionsBtn_Click" />
                 <Button x:Name="FoodOptionsBtn" Background="Black" Content="Food" Foreground="White" Height="20" Width="128" Click="FoodOptionsBtn_Click" />
                 <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
                 <Button x:Name="KeybindsOptionBtn" Background="Black" Content="Keybinds" Foreground="White" Height="20" Width="128" Click="KeybindsOptionBtn_Click" />
@@ -111,42 +110,63 @@
             <Grid>
                 <StackPanel>
                     <CheckBox x:Name="AutoCombatCheckBox" Content="Enable Auto Combat" Foreground="White"
-                              Margin="5 5 0 0" 
+                              Margin="5 5 0 0"
                               VerticalAlignment="Bottom"
                               IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
                               IsChecked="{Binding Path=AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
-                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat"/>
-                    <StackPanel>
-                        <Label Content="Action Timer Delay (s)" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="ActionDelayInputBox"
-                                 Text="{Binding Path=Settings.CombatOptions.ActionTimerDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="CombatKeyDelayInputBox" 
-                                 Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White" />
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Retarget Timeout (s)" FontWeight="Bold" Foreground="White" />
-                        <TextBox x:Name="RetargetTimeoutInputBox" 
-                                 Text="{Binding Path=Settings.CombatOptions.RetargetTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White" />
-                    </StackPanel>
-                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold"/>
-                    <CheckBox Content="Force Camera Zoom"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Force Camera Overhead"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox x:Name="TimedCameraYawCheckBox" Content="Camera Yaw Wave"
-                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White" />
+                              Checked="EnableAutoCombat" Unchecked="DisableAutoCombat" />
+                    <UniformGrid Columns="2" Width="300" Margin="0 5 0 0"
+                                 HorizontalAlignment="Left">
+                        <StackPanel>
+                            <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
+                            <StackPanel>
+                                <Label Content="Action Timer Delay (s)" FontWeight="Bold" Foreground="White" />
+                                <TextBox x:Name="ActionDelayInputBox"
+                                         Text="{Binding Path=Settings.CombatOptions.ActionTimerDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                         Background="Black" Foreground="White" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
+                                <TextBox x:Name="CombatKeyDelayInputBox"
+                                         Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                         Background="Black" Foreground="White" />
+                            </StackPanel>
+                            <StackPanel>
+                                <Label Content="Retarget Timeout (s)" FontWeight="Bold" Foreground="White" />
+                                <TextBox x:Name="RetargetTimeoutInputBox"
+                                         Text="{Binding Path=Settings.CombatOptions.RetargetTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                         Background="Black" Foreground="White" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="Loot Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+                            <CheckBox x:Name="CombatLootCheckbox" Content="Loot After Combat"
+                                      IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
+                                      HorizontalAlignment="Left" Margin="5 " Foreground="White" />
+                            <Label Content="Loot Time (s)" FontWeight="Bold" Foreground="White" />
+                            <TextBox x:Name="CombatLootTimeInputBox"
+                                     Text="{Binding Path=Settings.LootOptions.Duration, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                     Background="Black" Foreground="White" />
+                           
+                        </StackPanel>
+                        <StackPanel Margin="0 10 0 0 ">
+                            <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+                            <CheckBox Content="Force Camera Zoom"
+                                      IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
+                                      Margin="5 5 0 0 " Foreground="White" />
+                            <CheckBox Content="Force Camera Overhead"
+                                      IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
+                                      Margin="5 5 0 0 " Foreground="White" />
+                            <CheckBox x:Name="TimedCameraYawCheckBox" Content="Camera Yaw Wave"
+                                      IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
+                                      Margin="5 5 0 0" Foreground="White" />
+                        </StackPanel>
+                    </UniformGrid>
+
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -158,20 +178,6 @@
                         Margin="15 0 0 20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="105" 
                         Background="Black" Foreground="White" 
                         Click="LoadTableBtn_Click"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox x:Name="LootOptionsPanel" Header="Loot Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <StackPanel>
-                    <Label Content="Loot Time (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="CombatLootTimeInputBox"
-                             Text="{Binding Path=Settings.LootOptions.Duration, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Width="90" Margin="5 0"
-                             Background="Black" Foreground="White" />
-                    <CheckBox x:Name="CombatLootCheckbox" Content="Loot After Combat"
-                              IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
-                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" />
-                </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
