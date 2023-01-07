@@ -107,58 +107,16 @@ public sealed partial class MainWindow : Window
 		}
 	}
 
-	/// <summary> Opens the combat options menu </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void CombatOptionsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        CombatOptionsPanel.Visibility = Visibility.Visible;
-    }
-
-	/// <summary> Opens the food options menu </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void FoodOptionsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        FoodOptionsPanel.Visibility = Visibility.Visible;
-    }
-
-    /// <summary> Opens the monster table options menu </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void MonsterTableOptionsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        MonsterTablePanel.Visibility = Visibility.Visible;
-    }
-
-    /// <summary> Opens the keybind options menu </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void KeybindsOptionBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        KeybindOptionsPanel.Visibility = Visibility.Visible;
-    }
-
-    /// <summary> Opens the logging options menu </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void LoggingOptionsBtn_Click(object sender, RoutedEventArgs e)
-    {
-        HideAllPanels();
-        LoggingOptionsPanel.Visibility = Visibility.Visible;
-    }
-
-	/// <summary> Opens the zhack options menu </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void ZHackOptionsBtn_Click(object sender, RoutedEventArgs e)
+	/// <summary>
+	/// Navigates to another panel when a properly configured button
+	/// is clicked. The button must have the 'Tag' attribute set
+	/// and bound to the target Panel.
+	/// </summary>
+	private void NavigatePanel(object sender, RoutedEventArgs e)
 	{
+		if (sender is not Button { Tag: UIElement target }) return;
 		HideAllPanels();
-		ZHackOptionsPanel.Visibility = Visibility.Visible;
+		target.Visibility = Visibility.Visible;
 	}
 
 	/// <summary> Clears the log </summary>

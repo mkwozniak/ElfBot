@@ -39,13 +39,38 @@
                           Margin="5 5 0 0"
                           IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
                 <Separator Margin="0 5 0 5"/>
-                <Button x:Name="CombatOptionsBtn" Background="Black" Content="Auto Combat" Foreground="White" Height="20" Width="128" Click="CombatOptionsBtn_Click" />
-                <Button x:Name="MonsterTableOptionsBtn" Background="Black" Content="Monster Table" Foreground="White" Height="22" Width="128" Click="MonsterTableOptionsBtn_Click" />
-                <Button x:Name="FoodOptionsBtn" Background="Black" Content="Food" Foreground="White" Height="20" Width="128" Click="FoodOptionsBtn_Click" />
+                <Button Content="Auto Combat"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=CombatOptionsPanel}"
+                        Click="NavigatePanel" />
+                <Button Content="Monster Table"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=MonsterTablePanel}"
+                        Click="NavigatePanel" />
+                <Button Content="Food"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=FoodOptionsPanel}"
+                        Click="NavigatePanel" />
+                <!-- buffs button is currently disabled until implemented -->
                 <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
-                <Button x:Name="ZHackOptionsBtn" Background="Black" Content="ZHack" Foreground="White" Height="19" Width="128" Click="ZHackOptionsBtn_Click" />
-                <Button x:Name="KeybindsOptionBtn" Background="Black" Content="Keybinds" Foreground="White" Height="20" Width="128" Click="KeybindsOptionBtn_Click" />
-                <Button x:Name="LoggingOptionsBtn" Background="Black" Content="Logs" Foreground="White" Height="20" Width="128" Click="LoggingOptionsBtn_Click" />
+                <Button Content="ZHack"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=ZHackOptionsPanel}"
+                        Click="NavigatePanel" />
+                <Button Content="Keybindings"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=KeybindOptionsPanel}"
+                        Click="NavigatePanel" />
+                <Button Content="Logs"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=LoggingOptionsPanel}"
+                        Click="NavigatePanel" />
             </ListBox>
             <ListBox Margin="10 -5" Width="143" BorderBrush="Black" Background="Black" Foreground="White"
                      VerticalAlignment="Bottom"
