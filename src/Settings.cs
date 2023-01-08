@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using WindowsInput.Native;
 
 namespace ElfBot;
 
@@ -32,6 +31,8 @@ public sealed class CombatOptions
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
+	public bool PriorityTargetScan { get; set; } = true;
+	public int MaxPriorityChecks { get; set; } = 10;
 }
 
 public sealed class LootOptions

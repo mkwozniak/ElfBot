@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Threading;
-using WindowsInput.Native;
 
 namespace ElfBot;
 
@@ -16,7 +15,7 @@ public enum AutoCombatStatus
 	CheckTarget,
 	StartAttack,
 	Attacking,
-	Looting
+	Looting,
 }
 
 /// <summary>
@@ -78,11 +77,6 @@ public sealed class AutoCombat
 			_state.Reset();
 			return;
 		}
-
-		if (!_context.IsHookedProcessInForeground())
-		{
-			// return;
-		}
 		
 		if (_state.isOnCooldown())
 		{
@@ -91,15 +85,10 @@ public sealed class AutoCombat
 		
 		Trace.WriteLine($"Auto-combat heartbeat (current state: {_state.Status})");
 
-		if (_state.Status == AutoCombatStatus.Starting)
-		{
-			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-		}
-
 		_context.CharacterData.Update(); // Make sure character data is up to date
 		_ = _state.Status switch
 		{
+			AutoCombatStatus.Starting => _start(),
 			AutoCombatStatus.Targeting => _selectNewTarget(),
 			AutoCombatStatus.CheckTarget => _checkTarget(),
 			AutoCombatStatus.StartAttack => _prepareAttacking(),
@@ -109,6 +98,13 @@ public sealed class AutoCombat
 		};
 		
 		Trace.WriteLine("Auto-combat heartbeat completed");
+	}
+
+	private bool _start()
+	{
+		_state.Reset();
+		_state.ChangeStatus(AutoCombatStatus.Targeting);
+		return true;
 	}
 
 	/// <summary>
@@ -151,6 +147,39 @@ public sealed class AutoCombat
 
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
+
+		if(_context.Settings.CombatOptions.PriorityTargetScan && _state.ScanningForPriority) 
+		{
+			if (_state.PriorityCheckCount > _context.Settings.CombatOptions.MaxPriorityChecks)
+			{
+				Trace.WriteLine("Priority target selection expired");
+				_state.ScanningForPriority = false;
+				Addresses.Target.writeValue("");
+				Addresses.TargetId.writeValue(0);
+				_state.ResetTarget();
+				// _state.Reset();
+				_state.ChangeStatus(AutoCombatStatus.Targeting);
+				return false;
+			}
+
+			Trace.WriteLine($"Priority Target Check: {_state.PriorityCheckCount} / {_context.Settings.CombatOptions.MaxPriorityChecks}");
+			// If the selected monster is not whitelisted in the monster table,
+			// we need to restart our target search.
+			if (_context.MonsterTable.Contains($"*{name}"))
+			{
+				// A whitelisted monster was finally targeted, so we can 
+				// now move to start attacking it.
+				Trace.WriteLine("Found priority monster to attack");
+				_state.ChangeStatus(AutoCombatStatus.StartAttack);
+				return true;
+			}
+
+			Trace.WriteLine("Priority Monster name not in table");
+			_state.PriorityCheckCount++;
+			_state.ResetTarget();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			return false;
+		}
 
 		// If the selected monster is not whitelisted in the monster table,
 		// we need to restart our target search.
@@ -219,6 +248,12 @@ public sealed class AutoCombat
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 			}
 
+			if(_context.Settings.CombatOptions.PriorityTargetScan)
+			{
+				_state.PriorityCheckCount = 0;
+				_state.ScanningForPriority = true;
+			}
+
 			return false;
 		}
 
@@ -270,6 +305,11 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoCombatStatus _status = AutoCombatStatus.Inactive;
 	private DateTime? _cooldown;
+
+	public bool ScanningForPriority { get; set; } = true;
+	public int PriorityCheckCount { get; set; } = 0;
+
+	public int FirstTargetIDSelected = 0;
 
 	public AutoCombatStatus Status
 	{

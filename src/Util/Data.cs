@@ -20,5 +20,6 @@ public enum KeybindType
     HpFood,
     HpInstant,
     MpFood,
-    MpInstant
+    MpInstant,
+    Buff,
 }

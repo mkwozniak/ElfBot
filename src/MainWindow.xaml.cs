@@ -6,14 +6,11 @@ namespace ElfBot;
 
 using System.Windows;
 using Random = System.Random;
-using KeyList = System.Collections.Generic.List<WindowsInput.Native.VirtualKeyCode>;
 using TextBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.TextBox>;
 using CheckBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.CheckBox>;
 using ComboBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.ComboBox>;
-using InputSimulator = WindowsInput.InputSimulator;
 using Timer = System.Windows.Threading.DispatcherTimer;
 
-using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 using System.Runtime.InteropServices;
 
 /// <summary>
@@ -30,6 +27,12 @@ public partial class MainWindow : Window
 	[DllImport("ROSE_Input.dll")]
 	private static extern void SendKey(int key);
 
+	[DllImport("ROSE_Input.dll")]
+	private static extern void LeftClickOnWin(int x, int y);
+
+	[DllImport("ROSE_Input.dll")]
+	private static extern void MouseMove(int x, int y);
+
 	// Events
 	private FinishedHooking? OnFinishHook;
 
@@ -44,7 +47,6 @@ public partial class MainWindow : Window
 	private Timer ZHackTimer = new();
 
 	// References
-	public static readonly InputSimulator Sim = new();
     public static readonly Random Ran = new();
 
 	// Structures
@@ -68,6 +70,7 @@ public partial class MainWindow : Window
 	// Values
     private bool _eatHPFood = true;
     private bool _eatMPFood = true;
+
     private int _playerMaxMP = 0;
     private int _playerMP = 0;
     private int _playerMaxHP = 0;
@@ -75,13 +78,14 @@ public partial class MainWindow : Window
     private int _interfaceUpdateTime = 60;
     private int _combatCameraTickTime = 500;
 	private int _cameraYawTickTime = 50;
-    private int _rightClickCounter = 0;
+    private int _yawMouseScrollCounter = 0;
+	private int _yawMouseScrollCounterMax = 50;
 
 	private const float CameraMaxZoom = 100f;
-	private const float CameraMaxPitch = 1f;
+	private const float CameraMaxPitch = 0.85f;
 
 	private double _yawCounter = 0;
-
+	private double _yawCounterIncrement = 0.05;
 }
 
 public class ApplicationContext : PropertyNotifyingClass

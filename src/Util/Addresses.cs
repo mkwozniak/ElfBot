@@ -82,7 +82,7 @@
 
         public override bool writeValue(string value)
         {
-            throw new NotImplementedException();
+			return MainWindow.TargetApplicationMemory.WriteMemory(Address, "string", value);
         }
 
         public StringField(string app, params string[] offsets) : base(app, offsets)

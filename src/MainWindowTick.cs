@@ -81,7 +81,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void HpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (Sim == null || !ApplicationContext.Hooked)
+		if (!ApplicationContext.Hooked)
 			return;
 
         var activeHpKeys = Settings.Keybindings
@@ -122,7 +122,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void MpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (Sim == null || !ApplicationContext.Hooked)
+		if (!ApplicationContext.Hooked)
 			return;
 
         var activeMpKeys = Settings.Keybindings
@@ -200,19 +200,20 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void CameraYawTimer_Tick(object? sender, EventArgs e)
     {
-		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled || Sim == null)
+		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled)
             return;
 
         float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
         Addresses.CameraYaw.writeValue(waveform);
-        _yawCounter += 0.05;
+        _yawCounter += _yawCounterIncrement;
 
-        _rightClickCounter++;
+        _yawMouseScrollCounter++;
 
-        if (_rightClickCounter > 50)
+        if (_yawMouseScrollCounter > _yawMouseScrollCounterMax)
         {
-            _rightClickCounter = 0;
-            Sim.Mouse.VerticalScroll(-1);
+            _yawMouseScrollCounter = 0;
+            Addresses.CameraZoom.writeValue(Addresses.CameraZoom.GetValue() + 10f);
+            // Sim.Mouse.VerticalScroll(-1);
         }
     }
 
@@ -225,8 +226,7 @@ public sealed partial class MainWindow : Window
 			return;
 
 		Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
-        //_sim.Keyboard.KeyPress(VirtualKeyCode.VK_W);
-		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
+		Addresses.PositionZ.writeValue(Addresses.PositionZ.GetValue() + Settings.ZHackOptions.Amount);
 	}
 
     #endregion
