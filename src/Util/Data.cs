@@ -11,15 +11,6 @@ public enum LogTypes
     ZHack,
 }
 
-public enum CombatStates
-{
-    Inactive,
-    Targetting,
-    CheckingTarget,
-    Attacking,
-    Looting,
-}
-
 public enum KeybindType
 {
     None,

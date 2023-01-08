@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Memory;
 
 namespace ElfBot;
@@ -33,13 +34,7 @@ public partial class MainWindow : Window
 	private FinishedHooking? OnFinishHook;
 
     // Timers
-	private Timer CombatTimer = new();
-	private Timer TargettingTimer = new();
-	private Timer CheckTimer = new();
-	private Timer LootingTimer = new();
-	private Timer LootingEndTimer = new();
-	private Timer InterfaceTimer = new();
-	private Timer AttackTimeoutTimer = new();
+    private Timer InterfaceTimer = new();
 	private Timer HpFoodTimer = new();
 	private Timer MpFoodTimer = new();
 	private Timer HpFoodKeyTimer = new();
@@ -47,14 +42,12 @@ public partial class MainWindow : Window
 	private Timer CombatCameraTimer = new();
 	private Timer CameraYawTimer = new();
 	private Timer ZHackTimer = new();
-	private Timer TargetPriorityTimer = new();
 
 	// References
-	private InputSimulator? _sim;
-    private Random _ran = new();
+	public static readonly InputSimulator Sim = new();
+    public static readonly Random Ran = new();
 
 	// Structures
-	private readonly HashSet<string> _monsterTable = new();
 
 	public static readonly Dictionary<string, VirtualKeyCode> KeyMap = new()
 	{
@@ -73,19 +66,12 @@ public partial class MainWindow : Window
 	};
 
 	// Values
-    private bool _pressedTargetting = false;
     private bool _eatHPFood = true;
     private bool _eatMPFood = true;
-	private bool _priorityTargetScanning = false; // TODO: Add checkbox and input box for timeout in settings
-	private bool _scanningForPriorityTargets = false;
-
-	private int _currentTargetUID = 0;
-    private int _currentXP = 0;
     private int _playerMaxMP = 0;
     private int _playerMP = 0;
     private int _playerMaxHP = 0;
     private int _playerHP = 0;
-    private int _xpBeforeKill = -1;
     private int _interfaceUpdateTime = 60;
     private int _combatCameraTickTime = 500;
 	private int _cameraYawTickTime = 50;
@@ -94,13 +80,8 @@ public partial class MainWindow : Window
 	private const float CameraMaxZoom = 100f;
 	private const float CameraMaxPitch = 1f;
 
-    private float _lastXPos = 0f;
-    private float _lastYPos = 0f;
+	private double _yawCounter = 0;
 
-    private double _yawCounter = 0;
-
-    private string _currentTarget = "";
-    private string _targetDefeatedMsg = "";
 }
 
 public class ApplicationContext : PropertyNotifyingClass
@@ -123,8 +104,15 @@ public class ApplicationContext : PropertyNotifyingClass
 			new() { Key = "=", Value = 0 }
 		}
 	};
-	private CombatStates _combatState = CombatStates.Inactive;
+	private AutoCombatStatus _combatState = AutoCombatStatus.Inactive;
 	private bool _hooked;
+	
+	public readonly HashSet<string> MonsterTable = new();
+
+	public ApplicationContext()
+	{
+		AutoCombat = new AutoCombat(this);
+	}
 
 	public Settings Settings
 	{
@@ -138,16 +126,9 @@ public class ApplicationContext : PropertyNotifyingClass
 
 	public CharacterData CharacterData { get; } = new();
 
-	public CombatStates CombatState
-	{
-		get => _combatState;
-		set
-		{
-			if (_combatState == value) return;
-			_combatState = value;
-			NotifyPropertyChanged();
-		}
-	}
+	public AutoCombat AutoCombat { get; }
+
+	public int HookedProcessId { get; set; }
 
 	public bool Hooked
 	{
@@ -158,8 +139,16 @@ public class ApplicationContext : PropertyNotifyingClass
 			NotifyPropertyChanged();
 		}
 	}
-
-	public bool AutoCombatEnabled { get; set; }
 	public bool UseSecondClient { get; set; }
-}
 
+	/// <summary>
+	/// Checks whether the hooked ROSE process is in
+	/// the foreground (selected/active window).
+	/// </summary>
+	/// <returns>true if the ROSE window is selected</returns>
+	public bool IsHookedProcessInForeground()
+	{
+		var foreground = RoseProcess.getForegroundProcess();
+		return foreground != null && foreground.Id == HookedProcessId;
+	}
+}

@@ -39,8 +39,8 @@ public sealed partial class MainWindow : Window
 		    var contents = reader.ReadToEnd();
 		    var monsters = contents.Split(',');
 
-		    _monsterTable.Clear();
-		    _monsterTable.UnionWith(monsters);
+		    ApplicationContext.MonsterTable.Clear();
+		    ApplicationContext.MonsterTable.UnionWith(monsters);
 
 		    MonsterTableText.Content = monsters.Length == 0 ? "Empty" : string.Join("\n", monsters);
 	    }
@@ -135,28 +135,16 @@ public sealed partial class MainWindow : Window
 	
 	#region Checkbox Events
 
-	private void EnableAutoCombat(object sender, RoutedEventArgs e)
+	private void StartAutoCombat(object sender, RoutedEventArgs e)
 	{
-		StopAllCombatRelatedTimers();
-		if (_monsterTable?.Count == 0)
-		{
-			Logger.Error("Could not enable auto-combat due to empty monster table", 
-				LogEntryTag.System);
-			if (sender is CheckBox c) c.IsChecked = false;
-			return;
-		}
-		
-		Logger.Info("Enabled auto-combat", LogEntryTag.Combat);
-		_xpBeforeKill = -1;
-		SwitchToTargetting();
+		ApplicationContext.AutoCombat.Start();
 	}
 
-	private void DisableAutoCombat(object sender, RoutedEventArgs e)
+	private void StopAutoCombat(object sender, RoutedEventArgs e)
 	{
-		StopAllCombatRelatedTimers();
-		Logger.Debug("Disabled auto-combat", LogEntryTag.Combat);
+		ApplicationContext.AutoCombat.Stop();
 	}
-
+	
 	private void EnableHpTimer(object sender, RoutedEventArgs e)
 	{
 		StopTimer(HpFoodTimer); // just in case it's already running

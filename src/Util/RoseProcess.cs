@@ -1,18 +1,16 @@
-﻿namespace ElfBot;
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
-using Process = System.Diagnostics.Process;
-using StringComparison = System.StringComparison;
-using IntPtr = System.IntPtr;
-using Int32 = System.Int32;
+namespace ElfBot;
 
 public static class RoseProcess
 {
-	// Externals 
-	[System.Runtime.InteropServices.DllImport("user32.dll")]
+	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
 
-	[System.Runtime.InteropServices.DllImport("user32.dll")]
-	private static extern Int32 GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+	[DllImport("user32.dll", SetLastError = true)]
+	static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
 	/// <summary> Gets a proc id by name. </summary>
 	/// <param name="name"> The name of the process. </param>
@@ -58,26 +56,10 @@ public static class RoseProcess
 		return mainID;
 	}
 
-	/// <summary> Returns the name of the process owning the foreground window. </summary>
-	/// <returns></returns>
-	public static string GetForegroundProcessName()
+	public static Process? getForegroundProcess()
 	{
-		IntPtr hwnd = GetForegroundWindow();
-
-		// The foreground window can be NULL in certain circumstances, 
-		// such as when a window is losing activation.
-		if (hwnd == null)
-			return "Unknown";
-
-		uint pid;
-		GetWindowThreadProcessId(hwnd, out pid);
-
-		foreach (Process p in Process.GetProcesses())
-		{
-			if (p.Id == pid)
-				return p.ProcessName;
-		}
-
-		return "Unknown";
+		var hWnd = GetForegroundWindow(); 
+		GetWindowThreadProcessId(hWnd, out var processId);
+		return Process.GetProcessById(Convert.ToInt32(processId)); 
 	}
 }

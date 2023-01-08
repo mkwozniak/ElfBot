@@ -1,16 +1,11 @@
-﻿namespace ElfBot;
+﻿using System;
+
+namespace ElfBot;
 
 using System.Windows;
 using System.Linq;
-using EventArgs = System.EventArgs;
-using EventHandler = System.EventHandler;
 using Timer = System.Windows.Threading.DispatcherTimer;
-using Math = System.Math;
-using Enum = System.Enum;
-using Environment = System.Environment;
 using Trace = System.Diagnostics.Trace;
-
-using VirtualKeyCode = WindowsInput.Native.VirtualKeyCode;
 
 public sealed partial class MainWindow : Window
 {
@@ -32,140 +27,9 @@ public sealed partial class MainWindow : Window
         timer.Stop();
     }
 
-    private void StopAllCombatRelatedTimers()
-    {
-        StopTimer(CombatTimer);
-        StopTimer(TargettingTimer);
-        StopTimer(CheckTimer);
-        StopTimer(LootingEndTimer);
-        StopTimer(LootingTimer);
-        StopTimer(AttackTimeoutTimer);
-    }
-
     #endregion
 
     #region Tick Methods
-
-    /// <summary> Timer tick for when bot is targetting </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Targetting_Tick(object? sender, EventArgs e)
-    {
-        if (_monsterTable == null || _sim == null)
-            return;
-
-        StopTimer(TargettingTimer);
-
-        if (_currentTargetUID != 0)
-        {
-            _currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
-            _currentTargetUID = Addresses.TargetId.GetValue();
-        }
-
-		// if current target isnt in monstertable or there is no unique target id
-		if ((!_monsterTable.Contains(_currentTarget) || _currentTargetUID == 0) && !_pressedTargetting)
-		{
-            // press targetting key
-            _sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
-            _pressedTargetting = true;
-
-            Logger.Debug("Pressed tab key to select next target",  LogEntryTag.Combat);
-
-            _currentXP = Addresses.Xp.GetValue();
-            _xpBeforeKill = _currentXP;
-
-            // go into checking target mode to make sure the tab target was OK
-            // update labels
-            StartTimer(CheckTimer, (int)(Settings.CombatOptions.ActionTimerDelay * 1000));
-            ApplicationContext.CombatState = CombatStates.CheckingTarget;
-            return;
-        }
-
-        SwitchToTargetting();
-    }
-
-    /// <summary> Timer tick for when bot is checking its target </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void CheckingTarget_Tick(object? sender, EventArgs e)
-    {
-		if (_monsterTable == null)
-			return;
-
-        // get target memory
-        _currentTarget = Addresses.Target.GetValue();
-        _currentTargetUID = Addresses.TargetId.GetValue();
-
-        Logger.Debug("Checking active target...", LogEntryTag.Combat);
-
-        StopTimer(CheckTimer);
-
-		// if current target is in monster table
-		if (_monsterTable.Contains(_currentTarget) && _currentTargetUID != 0)
-        {
-            StopTimer(AttackTimeoutTimer); // stop timeout timer
-
-            // go into attack state
-            StopTimer(CombatTimer);
-
-            // keep track of last position before going into attack mode 
-            _lastXPos = Addresses.PositionX.GetValue();
-            _lastYPos = Addresses.PositionY.GetValue();
-
-            _targetDefeatedMsg = "";
-            ApplicationContext.CombatState = CombatStates.Attacking;
-
-            if (!CombatTimer.IsEnabled)
-            {
-                StartTimer(CombatTimer, (int)(Settings.CombatOptions.CombatKeyDelay * 1000));
-            }
-
-            return;
-        }
-
-        SwitchToTargetting();
-    }
-
-    /// <summary> Timer tick for when bot is attacking its target </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Attacking_Tick(object? sender, EventArgs e)
-    {
-		if (_monsterTable == null)
-			return;
-
-        _currentXP = Addresses.Xp.GetValue(); // get current xp
-        _currentTarget = Addresses.Target.GetValue(); // make sure we are on the target we want.
-        _currentTargetUID = Addresses.TargetId.GetValue();
-        _playerMaxMP = Addresses.MaxMp.GetValue();
-
-        if (_monsterTable.Contains(_currentTarget))
-        {
-            CheckTargetKilled();
-            CheckShouldAttackTarget();
-        }
-
-        // no proper target while attacking
-        if (_currentTargetUID == 0)
-        {
-            // back to targetting
-            StopTimer(CombatTimer);
-            SwitchToTargetting();
-        }
-
-        // if the current XP is less than the xp before the last kill, then the char leveled up
-        if (_currentXP < _xpBeforeKill)
-        {
-            Logger.Debug("Level up detected, resetting state", LogEntryTag.Combat);
-
-            // reset the xp before kill to -1
-            _xpBeforeKill = -1;
-            StopAllCombatRelatedTimers();
-
-            // back to targetting
-            SwitchToTargetting(true);
-        }
-    }
 
     /// <summary> Timer tick for bot interface values to update </summary>
     /// <param name="sender"></param>
@@ -212,33 +76,12 @@ public sealed partial class MainWindow : Window
         SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
     }
 
-    /// <summary> Timer tick for looting </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Loot_Tick(object sender, EventArgs e)
-    {
-        Logger.Debug("Looting items...", LogEntryTag.Combat);
-        _sim.Keyboard.KeyPress(VirtualKeyCode.VK_T);
-    }
-
-    /// <summary> Timer tick for looting finished </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void LootEnd_Tick(object? sender, EventArgs e)
-    {
-        StopTimer(LootingEndTimer);
-        StopTimer(LootingTimer);
-        Logger.Debug("Finished looting items", LogEntryTag.Combat);
-
-        SwitchToTargetting(true);
-    }
-
     /// <summary> Timer tick for eating hp food </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void HpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (_sim == null || !ApplicationContext.Hooked)
+		if (Sim == null || !ApplicationContext.Hooked)
 			return;
 
         var activeHpKeys = Settings.Keybindings
@@ -264,10 +107,10 @@ public sealed partial class MainWindow : Window
         
         if (hpPercent < (Settings.FoodOptions.AutoHpThresholdPercent / 100) && _eatHPFood)
         {
-            int ranFood = _ran.Next(0, activeHpKeys.Length);
+            int ranFood = Ran.Next(0, activeHpKeys.Length);
 				Trace.WriteLine("Eat HP Food Tick");
             Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            _sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
+            Sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
             _eatHPFood = false;
             // start the delay timer to press the key again
             StartTimer(HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
@@ -279,7 +122,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void MpFoodTimer_Tick(object? sender, EventArgs e)
     {
-		if (_sim == null || !ApplicationContext.Hooked)
+		if (Sim == null || !ApplicationContext.Hooked)
 			return;
 
         var activeMpKeys = Settings.Keybindings
@@ -306,10 +149,10 @@ public sealed partial class MainWindow : Window
 
         if (mpPercent < (Settings.FoodOptions.AutoMpThresholdPercent / 100) && _eatMPFood)
         {
-            int ranFood = _ran.Next(0, activeMpKeys.Length);
+            int ranFood = Ran.Next(0, activeMpKeys.Length);
 			Trace.WriteLine("Eat MP Food Tick");
             Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            _sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
+            Sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
             // start the delay timer to press the key again
             StartTimer(MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
             _eatMPFood = false;
@@ -332,25 +175,6 @@ public sealed partial class MainWindow : Window
     {
         _eatMPFood = true;
         StopTimer(MpFoodKeyTimer);
-    }
-
-    /// <summary> Timer tick to timeout retarget </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void RetargetTimeout_Tick(object? sender, EventArgs e)
-    {
-        _currentXP = Addresses.Xp.GetValue();
-        float x = Addresses.PositionX.GetValue();
-        float y = Addresses.PositionY.GetValue();
-
-        StopTimer(AttackTimeoutTimer);
-
-        if ((_targetDefeatedMsg.Length == 0 && _currentXP == _xpBeforeKill) || (x == _lastXPos && y == _lastYPos))
-        {
-            Logger.Debug($"Attack timed out", LogEntryTag.Combat);
-            StopAllCombatRelatedTimers();
-            SwitchToTargetting(true);
-        }
     }
 
     /// <summary> Timer tick for combat camera </summary>
@@ -376,7 +200,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void CameraYawTimer_Tick(object? sender, EventArgs e)
     {
-		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled || _sim == null)
+		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled || Sim == null)
             return;
 
         float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
@@ -388,7 +212,7 @@ public sealed partial class MainWindow : Window
         if (_rightClickCounter > 50)
         {
             _rightClickCounter = 0;
-            _sim.Mouse.VerticalScroll(-1);
+            Sim.Mouse.VerticalScroll(-1);
         }
     }
 
@@ -405,15 +229,5 @@ public sealed partial class MainWindow : Window
 		Addresses.PositionZ.writeValue(Settings.ZHackOptions.Amount);
 	}
 
-	/// <summary> Timer tick to reset target priority scanning </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void TargetPriorityTimer_Tick(object? sender, EventArgs e)
-	{
-		_scanningForPriorityTargets = false;
-		Logger.Debug("Target Priority Scan Timeout. No Priority Targets were found.", LogEntryTag.System);
-		StopTimer(TargetPriorityTimer);
-	}
-
-	#endregion
+    #endregion
 }
