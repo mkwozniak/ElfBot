@@ -61,7 +61,7 @@ public sealed class ZHackOptions
 public class Keybinding
 {
 	[JsonProperty] public string Key { get; init; } = default!;
-	public VirtualKeyCode KeyCode => MainWindow.KeyMap[Key];
+	public int KeyCode => MainWindow.KeyMap[Key];
 
 	[JsonProperty] public int Value { get; set; }
 	public KeybindType Type => (KeybindType)Value;

@@ -25,8 +25,12 @@ public enum AutoCombatStatus
 /// </summary>
 public sealed class AutoCombat
 {
+	public SendingKey? OnSendKey;
+
 	private ApplicationContext _context;
 	private AutoCombatState _state = new();
+	private int _tabKeyCode = 0x09;
+	private int _lootKeyCode = 0x54;
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{
@@ -77,7 +81,7 @@ public sealed class AutoCombat
 
 		if (!_context.IsHookedProcessInForeground())
 		{
-			return;
+			// return;
 		}
 		
 		if (_state.isOnCooldown())
@@ -114,7 +118,7 @@ public sealed class AutoCombat
 	private bool _selectNewTarget()
 	{
 		_state.ResetTarget();
-		MainWindow.Sim.Keyboard.KeyPress(VirtualKeyCode.TAB);
+		OnSendKey?.Invoke(_tabKeyCode);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
 		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
 		return true;
@@ -232,7 +236,7 @@ public sealed class AutoCombat
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
 		var ranSkill = MainWindow.Ran.Next(0, activeCombatKeys.Length);
 		var keyCode = activeCombatKeys[ranSkill].KeyCode;
-		MainWindow.Sim?.Keyboard.KeyPress(activeCombatKeys[ranSkill].KeyCode);
+		OnSendKey?.Invoke(activeCombatKeys[ranSkill].KeyCode);
 		var delayBetweenAttacks = _context.Settings.CombatOptions.CombatKeyDelay;
 		_state.SetCooldown(TimeSpan.FromSeconds(delayBetweenAttacks));
 		Trace.WriteLine($"Running skill in slot {ranSkill} by pressing keycode {keyCode}. " +
@@ -253,7 +257,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		MainWindow.Sim?.Keyboard.KeyPress(VirtualKeyCode.VK_T);
+		OnSendKey?.Invoke(_lootKeyCode);
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250));
 		Trace.WriteLine("Sent 'T' keypress to loot, waiting 250ms");
 		return true;

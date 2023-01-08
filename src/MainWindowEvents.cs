@@ -125,8 +125,6 @@ public sealed partial class MainWindow : Window
 	/// <param name="e"></param>
 	private void ClearLogsButton_Click(object sender, EventArgs e)
 	{
-		//SendKey(0x09);
-		SendKey(0x31);
 		Logger.Clear();
 		SystemMsgLog.Content = "";
 	}

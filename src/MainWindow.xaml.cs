@@ -49,20 +49,20 @@ public partial class MainWindow : Window
 
 	// Structures
 
-	public static readonly Dictionary<string, VirtualKeyCode> KeyMap = new()
+	public static readonly Dictionary<string, int> KeyMap = new()
 	{
-		{ "1", VirtualKeyCode.VK_1 },
-		{ "2", VirtualKeyCode.VK_2 },
-		{ "3", VirtualKeyCode.VK_3 },
-		{ "4", VirtualKeyCode.VK_4},
-		{ "5", VirtualKeyCode.VK_5 },
-		{ "6", VirtualKeyCode.VK_6 },
-		{ "7", VirtualKeyCode.VK_7 },
-		{ "8", VirtualKeyCode.VK_8 },
-		{ "9", VirtualKeyCode.VK_9 },
-		{ "0", VirtualKeyCode.VK_0 },
-		{ "-", VirtualKeyCode.SUBTRACT },
-		{ "=", VirtualKeyCode.OEM_PLUS }
+		{ "1", 0x31 },
+		{ "2", 0x32 },
+		{ "3", 0x33 },
+		{ "4", 0x34 },
+		{ "5", 0x35 },
+		{ "6", 0x36 },
+		{ "7", 0x37 },
+		{ "8", 0x38 },
+		{ "9", 0x39 },
+		{ "0", 0x30 },
+		{ "-", 0xBD },
+		{ "=", 0x6B }
 	};
 
 	// Values

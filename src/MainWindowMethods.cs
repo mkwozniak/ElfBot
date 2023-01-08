@@ -65,6 +65,9 @@ public sealed partial class MainWindow : Window
 		// listen to hook event
         OnFinishHook += FinishHook;
 
+		// listen auto combat send key event
+		ApplicationContext.AutoCombat.OnSendKey += SendKey; 
+
         // prepare the initial interface view
         PrepareElfbotInterface();
 

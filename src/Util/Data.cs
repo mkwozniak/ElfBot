@@ -1,6 +1,7 @@
 ﻿namespace ElfBot;
 
 public delegate void FinishedHooking();
+public delegate void SendingKey(int key);
 
 public enum LogTypes
 {

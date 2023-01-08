@@ -110,7 +110,7 @@ public sealed partial class MainWindow : Window
             int ranFood = Ran.Next(0, activeHpKeys.Length);
 				Trace.WriteLine("Eat HP Food Tick");
             Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            Sim.Keyboard.KeyPress(activeHpKeys[ranFood].KeyCode); // food press
+            SendKey(activeHpKeys[ranFood].KeyCode);
             _eatHPFood = false;
             // start the delay timer to press the key again
             StartTimer(HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
@@ -152,7 +152,7 @@ public sealed partial class MainWindow : Window
             int ranFood = Ran.Next(0, activeMpKeys.Length);
 			Trace.WriteLine("Eat MP Food Tick");
             Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            Sim.Keyboard.KeyPress(activeMpKeys[ranFood].KeyCode); // food press
+            SendKey(activeMpKeys[ranFood].KeyCode);
             // start the delay timer to press the key again
             StartTimer(MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
             _eatMPFood = false;
