@@ -385,6 +385,8 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		ResetTarget();
 		StartingXp = 0;
 		StartingLevel = 0;
+		PriorityCheckCount = 0;
+		ScanningForPriority = false;
 		_cooldown = null;
 		Trace.WriteLine("Auto-combat state was fully reset");
 	}
