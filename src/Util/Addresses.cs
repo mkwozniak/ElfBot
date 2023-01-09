@@ -27,7 +27,7 @@
         public static readonly FloatField CameraYaw = new FloatField("trose.exe", "010D3520", "0xD70", "0x6BC");//updated working
         // Misc
         public static readonly IntField MapId = new IntField("trose.exe", "10C5AE4");//updated working
-        public static readonly StringField Target = new StringField("trose.exe", "10D8C10");//updated working
+        public static readonly StringField Target = new StringField("trose.exe", "10D9C10");//updated working
         public static readonly IntField TargetId = new IntField("trose.exe", "10C1458", "0x8");//updated working
         public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C6950");//updated working (on load into game it actually stores player name)
     }
