@@ -47,5 +47,11 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <ContentWithTargetPath Include="ROSE_Input.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>%(Filename)%(Extension)</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
 </Project>
