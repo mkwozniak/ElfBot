@@ -22,10 +22,23 @@ public class Settings : PropertyNotifyingClass
 	}
 }
 
-public sealed class CombatOptions
+public sealed class CombatOptions : PropertyNotifyingClass
 {
+
+	private bool _autoCombatEnabled;
+	
 	[JsonIgnore]
-	public bool AutoCombatEnabled { get; set; }
+	public bool AutoCombatEnabled
+	{
+		get => _autoCombatEnabled;
+		set
+		{
+			if (_autoCombatEnabled == value) return;
+			_autoCombatEnabled = value;
+			NotifyPropertyChanged();
+		}
+		
+	}
 	public float CombatKeyDelay { get; set; } = 1f;
 	public float AttackTimeout { get; set; } = 60f;
 	public bool ForceCameraZoom { get; set; }

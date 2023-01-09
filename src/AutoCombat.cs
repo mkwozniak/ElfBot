@@ -59,6 +59,8 @@ public sealed class AutoCombat
 	/// </summary>
 	public void Stop()
 	{
+		_context.Settings.CombatOptions.AutoCombatEnabled = false;
+		_state.Reset();
 		_autoCombatTimer.Stop();
 	}
 
@@ -73,8 +75,9 @@ public sealed class AutoCombat
 		    || _context.MonsterTable.Count == 0)
 		{
 			Trace.WriteLine("Canceled auto-combat due to invalid state");
-			_autoCombatTimer.Stop();
-			_state.Reset();
+			MainWindow.Logger.Warn("Auto-combat disabled, please ensure that ROSE is hooked and that " +
+			                       "a monster table is loaded");
+			Stop();
 			return;
 		}
 		
@@ -85,18 +88,34 @@ public sealed class AutoCombat
 		
 		Trace.WriteLine($"Auto-combat heartbeat (current state: {_state.Status})");
 
-		_context.CharacterData.Update(); // Make sure character data is up to date
-		_ = _state.Status switch
+		try
 		{
-			AutoCombatStatus.Starting => _start(),
-			AutoCombatStatus.Targeting => _selectNewTarget(),
-			AutoCombatStatus.CheckTarget => _checkTarget(),
-			AutoCombatStatus.StartAttack => _prepareAttacking(),
-			AutoCombatStatus.Attacking => _attack(),
-			AutoCombatStatus.Looting => _loot(),
-			_ => true
-		};
-		
+			_context.CharacterData.Update(); // Make sure character data is up to date
+			_ = _state.Status switch
+			{
+				AutoCombatStatus.Starting => _start(),
+				AutoCombatStatus.Targeting => _selectNewTarget(),
+				AutoCombatStatus.CheckTarget => _checkTarget(),
+				AutoCombatStatus.StartAttack => _prepareAttacking(),
+				AutoCombatStatus.Attacking => _attack(),
+				AutoCombatStatus.Looting => _loot(),
+				_ => true
+			};
+		}
+		catch (Exception ex)
+		{
+			MainWindow.Logger.Error($"An exception occurred when attempting to process state {_state.Status}");
+			MainWindow.Logger.Error($"Disabling auto-combat");
+			MainWindow.Logger.Error(ex.Message);
+			if (ex.StackTrace != null)
+			{
+				MainWindow.Logger.Error(ex.StackTrace);
+			}
+
+			Stop();
+			return;
+		}
+
 		Trace.WriteLine("Auto-combat heartbeat completed");
 	}
 

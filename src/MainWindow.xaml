@@ -377,7 +377,7 @@
                     <ComboBoxItem Content="Warn"/>
                     <ComboBoxItem Content="Error"/>
                 </ComboBox>
-                <ScrollViewer x:Name="SystemMsgLog" Margin="10,30,0,0" Background="#FF212121">
+                <ScrollViewer x:Name="SystemMsgLog" Margin="10,30,0,0" Background="#FF212121" HorizontalScrollBarVisibility="Auto">
                     <TextBlock TextWrapping="Wrap" Text="TextBlock"/>
                 </ScrollViewer>
             </Grid>
