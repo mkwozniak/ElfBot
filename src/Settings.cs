@@ -1,35 +1,61 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace ElfBot;
 
 public class Settings : PropertyNotifyingClass
 {
-	private List<Keybinding> _keybindings = default!;
+	private List<HotkeySlot> _keybindings = default!;
+	private List<HotkeySlot> _shiftKeybindings = default!;
 	public CombatOptions CombatOptions { get; } = new();
 	public LootOptions LootOptions { get; } = new();
 	public FoodOptions FoodOptions { get; } = new();
 	public ZHackOptions ZHackOptions { get; } = new();
 
-	public List<Keybinding> Keybindings
+	public List<HotkeySlot> Keybindings
 	{
-		get => _keybindings;
+		get => _keybindings.FindAll(v => !v.IsShift);
 		set
 		{
-			_keybindings = value;
+			_keybindings = value.OrderBy(v => v.Value).ToList();
 			NotifyPropertyChanged();
 		}
 	}
 
-	[JsonIgnore]
-	public Level SelectedLogLevel = Level.Info;
+	public List<HotkeySlot> ShiftKeybindings
+	{
+		get => _shiftKeybindings.FindAll(v => v.IsShift);
+		set
+		{
+			_shiftKeybindings = value.OrderBy(v => v.Value).ToList();
+			NotifyPropertyChanged();
+		}
+	}
+
+	[JsonIgnore] public Level SelectedLogLevel = Level.Info;
+
+	/// <summary>
+	/// Finds all keybindings for a specified keybind action.
+	///
+	/// The returned type specifies the key code to press as well as whether
+	/// it is on the shift hotbar. 
+	/// </summary>
+	/// <param name="types">Types of actions to query for</param>
+	/// <returns>List of matching keybinds, empty if nothing found</returns>
+	public List<HotkeySlot> FindKeybindings(params KeybindAction[] types)
+	{
+		List<HotkeySlot> matching = new();
+		matching.AddRange(Keybindings.FindAll(kb => types.Contains(kb.Action)));
+		matching.AddRange(ShiftKeybindings.FindAll(kb => types.Contains(kb.Action)));
+		return matching;
+	}
 }
 
 public sealed class CombatOptions : PropertyNotifyingClass
 {
-
 	private bool _autoCombatEnabled;
-	
+
 	[JsonIgnore]
 	public bool AutoCombatEnabled
 	{
@@ -40,8 +66,8 @@ public sealed class CombatOptions : PropertyNotifyingClass
 			_autoCombatEnabled = value;
 			NotifyPropertyChanged();
 		}
-		
 	}
+
 	public float CombatKeyDelay { get; set; } = 1f;
 	public float AttackTimeout { get; set; } = 60f;
 	public bool ForceCameraZoom { get; set; }
@@ -64,22 +90,24 @@ public sealed class FoodOptions
 	public bool AutoMpEnabled { get; set; }
 	public float AutoMpThresholdPercent { get; set; } = 50f;
 	public float CheckFrequency { get; set; } = 1f;
-	public float Cooldown { get; set; } = 7f; 
+	public float Cooldown { get; set; } = 7f;
 }
 
 public sealed class ZHackOptions
 {
 	public bool Enabled { get; set; }
-	public float Frequency { get; set; } = 5f; 
+	public float Frequency { get; set; } = 5f;
 	public float Amount { get; set; } = 7f;
 }
 
 [JsonObject(MemberSerialization.OptIn)]
-public class Keybinding
+public class HotkeySlot
 {
 	[JsonProperty] public string Key { get; init; } = default!;
 	public int KeyCode => MainWindow.KeyMap[Key];
 
 	[JsonProperty] public int Value { get; set; }
-	public KeybindType Type => (KeybindType)Value;
+	public KeybindAction Action => (KeybindAction)Value;
+	
+	[JsonProperty] public bool IsShift { get; init; }
 }

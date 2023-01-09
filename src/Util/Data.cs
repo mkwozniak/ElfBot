@@ -3,16 +3,7 @@
 public delegate void FinishedHooking();
 public delegate void SendingKey(int key);
 
-public enum LogTypes
-{
-    System,
-    Combat,
-    Food,
-    Camera,
-    ZHack,
-}
-
-public enum KeybindType
+public enum KeybindAction
 {
     None,
     Attack,

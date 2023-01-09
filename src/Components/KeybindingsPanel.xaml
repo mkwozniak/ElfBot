@@ -4,38 +4,93 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:elfbot="clr-namespace:ElfBot"
-             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+             mc:Ignorable="d" d:DesignHeight="750" d:DesignWidth="500">
 
     <Grid Background="Black">
-        <StackPanel Margin="5 5 0 0">
-            <DockPanel>
-                <Label Content="Slot" Foreground="White" FontSize="14" FontWeight="Bold"></Label>
-                <Label Content="Action" Foreground="White" FontSize="14" FontWeight="Bold" Margin="83 0 0 0"></Label>
-            </DockPanel>
-
-            <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=Settings.Keybindings}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type elfbot:Keybinding}">
-                        <UniformGrid Columns="2" MaxWidth="250" HorizontalAlignment="Left">
-                            <Label Content="{Binding Key}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Foreground="White"
-                                   Margin="0 0 0 0">
-                            </Label>
-                            <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="100"
-                                      IsReadOnly="True" SelectedIndex="{Binding Path=Value}"
-                                      Margin="10 0 0 0">
-                                <ComboBoxItem Content="None" />
-                                <ComboBoxItem Content="Attack" />
-                                <ComboBoxItem Content="Skill" />
-                                <ComboBoxItem Content="HP (Food)" />
-                                <ComboBoxItem Content="HP (Instant)" />
-                                <ComboBoxItem Content="MP (Food)" />
-                                <ComboBoxItem Content="MP (Instant)" />
-                            </ComboBox>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="5 5 0 0">
+                <StackPanel>
+                    <Label Content="Regular Hotkeys"
+                           Foreground="White"
+                           FontSize="14" FontWeight="Bold"
+                           HorizontalAlignment="Left" />
+                    <DockPanel>
+                        <Label Content="Slot" Width="50" Foreground="White" FontSize="14" FontWeight="Bold" />
+                        <UniformGrid Columns="2" Width="250" HorizontalAlignment="Left">
+                            <Label Content="Action" Foreground="White" FontSize="14" FontWeight="Bold" />
                         </UniformGrid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
+                    </DockPanel>
+
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=Settings.Keybindings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type elfbot:HotkeySlot}">
+                                <DockPanel>
+                                    <Label Content="{Binding Key}" Width="50"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Foreground="White"
+                                           Margin="0 0 0 0">
+                                    </Label>
+                                    <UniformGrid Columns="1" HorizontalAlignment="Left" Width="250">
+                                        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="100"
+                                                  IsReadOnly="True" SelectedIndex="{Binding Path=Value}"
+                                                  Margin="2 0 0 0">
+                                            <ComboBoxItem Content="None" />
+                                            <ComboBoxItem Content="Attack" />
+                                            <ComboBoxItem Content="Skill" />
+                                            <ComboBoxItem Content="HP (Food)" />
+                                            <ComboBoxItem Content="HP (Instant)" />
+                                            <ComboBoxItem Content="MP (Food)" />
+                                            <ComboBoxItem Content="MP (Instant)" />
+                                        </ComboBox>
+                                    </UniformGrid>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <!-- Shift actions are not yet supported, but the functionality is ready to use -->
+                <!-- when the ROSE_Input DLL fixes the logic. Once supported, enablement is done -->
+                <!-- by removing the IsEnabled="false" option in the below StackPanel as well as -->
+                <!-- providing implementation for reliant features (i.e. auto-combat, hp/mp). -->
+                <StackPanel Visibility="Hidden">
+                    <Label Content="Shift Hotkeys"
+                           Foreground="White"
+                           FontSize="14" FontWeight="Bold"
+                           HorizontalAlignment="Left" />
+                    <DockPanel>
+                        <Label Content="Slot" Width="50" Foreground="White" FontSize="14" FontWeight="Bold" />
+                        <UniformGrid Columns="2" Width="250" HorizontalAlignment="Left">
+                            <Label Content="Action" Foreground="White" FontSize="14" FontWeight="Bold" />
+                        </UniformGrid>
+                    </DockPanel>
+
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=Settings.ShiftKeybindings}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type elfbot:HotkeySlot}">
+                                <DockPanel>
+                                    <Label Content="{Binding Key}" Width="50"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Foreground="White"
+                                           Margin="0 0 0 0" />
+                                    <UniformGrid Columns="1" HorizontalAlignment="Left" Width="250">
+                                        <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="100"
+                                                  IsReadOnly="True" SelectedIndex="{Binding Path=Value}"
+                                                  Margin="2 0 0 0">
+                                            <ComboBoxItem Content="None" />
+                                            <ComboBoxItem Content="Attack" />
+                                            <ComboBoxItem Content="Skill" />
+                                            <ComboBoxItem Content="HP (Food)" />
+                                            <ComboBoxItem Content="HP (Instant)" />
+                                            <ComboBoxItem Content="MP (Food)" />
+                                            <ComboBoxItem Content="MP (Instant)" />
+                                        </ComboBox>
+                                    </UniformGrid>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

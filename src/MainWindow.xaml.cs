@@ -79,7 +79,7 @@ public class ApplicationContext : PropertyNotifyingClass
 {
 	private Settings _settings = new()
 	{
-		Keybindings = new List<Keybinding>
+		Keybindings = new List<HotkeySlot>
 		{
 			new() { Key = "1", Value = 0 },
 			new() { Key = "2", Value = 0 },
@@ -93,6 +93,21 @@ public class ApplicationContext : PropertyNotifyingClass
 			new() { Key = "0", Value = 0 },
 			new() { Key = "-", Value = 0 },
 			new() { Key = "=", Value = 0 }
+		},
+		ShiftKeybindings = new List<HotkeySlot>
+		{
+			new() { Key = "1", Value = 0, IsShift = true },
+			new() { Key = "2", Value = 0, IsShift = true },
+			new() { Key = "3", Value = 0, IsShift = true },
+			new() { Key = "4", Value = 0, IsShift = true },
+			new() { Key = "5", Value = 0, IsShift = true },
+			new() { Key = "6", Value = 0, IsShift = true },
+			new() { Key = "7", Value = 0, IsShift = true },
+			new() { Key = "8", Value = 0, IsShift = true },
+			new() { Key = "9", Value = 0, IsShift = true },
+			new() { Key = "0", Value = 0, IsShift = true },
+			new() { Key = "-", Value = 0, IsShift = true },
+			new() { Key = "=", Value = 0, IsShift = true }
 		}
 	};
 

@@ -83,10 +83,8 @@ public sealed partial class MainWindow : Window
 		if (!ApplicationContext.Hooked)
 			return;
 
-        var activeHpKeys = Settings.Keybindings
-            .FindAll(kb => kb.Type is KeybindType.HpFood or KeybindType.HpInstant)
-            .ToArray();
-        if (activeHpKeys.Length == 0)
+        var activeHpKeys = Settings.FindKeybindings(KeybindAction.HpFood, KeybindAction.HpInstant);
+        if (activeHpKeys.Count == 0)
         {
 	        Trace.WriteLine("No active HP keys!");
             Logger.Warn("No active HP keys are set", LogEntryTag.System);
@@ -106,10 +104,22 @@ public sealed partial class MainWindow : Window
         
         if (hpPercent < (Settings.FoodOptions.AutoHpThresholdPercent / 100) && _eatHPFood)
         {
-            int ranFood = Ran.Next(0, activeHpKeys.Length);
-				Trace.WriteLine("Eat HP Food Tick");
-            Logger.Debug($"Health is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            SendKey(activeHpKeys[ranFood].KeyCode);
+            // Select a random slot to attack/skill from and then go on cooldown for a little bit.
+            var randomKeyIndex = Ran.Next(0, activeHpKeys.Count);
+            var chosenKey = activeHpKeys[randomKeyIndex];
+
+            if (chosenKey.IsShift)
+            {
+                Logger.Warn($"Attempted to use unsupported shift keypress for HP potion in slot {chosenKey.Key}");
+                // TODO: Implementation for shift-hotkeys required
+            }
+            else
+            {
+                SendKey(chosenKey.KeyCode);
+                Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+                Logger.Debug($"Health is low, eating food at slot {chosenKey.Key}", LogEntryTag.Food);
+            }
+            
             _eatHPFood = false;
             // start the delay timer to press the key again
             StartTimer(ApplicationContext.HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
@@ -124,11 +134,8 @@ public sealed partial class MainWindow : Window
 		if (!ApplicationContext.Hooked)
 			return;
 
-        var activeMpKeys = Settings.Keybindings
-            .FindAll(kb => kb.Type is KeybindType.MpFood or KeybindType.MpInstant)
-            .ToArray();
-
-        if (activeMpKeys.Length == 0)
+        var activeMpKeys = Settings.FindKeybindings(KeybindAction.MpFood, KeybindAction.MpInstant);
+        if (activeMpKeys.Count == 0)
         {
 			Trace.WriteLine("No active MP keys!");
             Logger.Warn("No active MP keys are set", LogEntryTag.System);
@@ -148,10 +155,22 @@ public sealed partial class MainWindow : Window
 
         if (mpPercent < (Settings.FoodOptions.AutoMpThresholdPercent / 100) && _eatMPFood)
         {
-            int ranFood = Ran.Next(0, activeMpKeys.Length);
-			Trace.WriteLine("Eat MP Food Tick");
-            Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
-            SendKey(activeMpKeys[ranFood].KeyCode);
+            // Select a random slot to attack/skill from and then go on cooldown for a little bit.
+            var randomKeyIndex = Ran.Next(0, activeMpKeys.Count);
+            var chosenKey = activeMpKeys[randomKeyIndex];
+
+            if (chosenKey.IsShift)
+            {
+                Logger.Warn($"Attempted to use unsupported shift keypress for HP potion in slot {chosenKey.Key}");
+                // TODO: Implementation for shift-hotkeys required
+            }
+            else
+            {
+                SendKey(chosenKey.KeyCode);
+                Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+                Logger.Debug($"Mana is low, eating food at slot {chosenKey.Key}", LogEntryTag.Food);
+            }
+            
             // start the delay timer to press the key again
             StartTimer(ApplicationContext.MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
             _eatMPFood = false;

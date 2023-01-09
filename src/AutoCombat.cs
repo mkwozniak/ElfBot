@@ -277,10 +277,8 @@ public sealed class AutoCombat
 		}
 
 		// TODO: Implement skill cooldowns in the future
-		var activeCombatKeys = _context.Settings.Keybindings
-			.FindAll(kb => kb.Type is KeybindType.Attack or KeybindType.Skill)
-			.ToArray();
-		if (activeCombatKeys.Length == 0)
+		var activeCombatKeys = _context.Settings.FindKeybindings(KeybindAction.Attack, KeybindAction.Skill);
+		if (activeCombatKeys.Count == 0)
 		{
 			Trace.WriteLine("No attack keys have been set");
 			MainWindow.Logger.Warn("Tried to attack, but no keys are set");
@@ -288,13 +286,23 @@ public sealed class AutoCombat
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var ranSkill = MainWindow.Ran.Next(0, activeCombatKeys.Length);
-		var keyCode = activeCombatKeys[ranSkill].KeyCode;
-		OnSendKey?.Invoke(activeCombatKeys[ranSkill].KeyCode);
+		var randomKeyIndex = MainWindow.Ran.Next(0, activeCombatKeys.Count);
+		var chosenKey = activeCombatKeys[randomKeyIndex];
+
+		if (chosenKey.IsShift)
+		{
+			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for attack in slot {chosenKey.Key}");
+			// TODO: Implementation for shift-hotkeys required
+		}
+		else
+		{
+			OnSendKey?.Invoke(chosenKey.KeyCode);
+			Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		}
+		
 		var delayBetweenAttacks = _context.Settings.CombatOptions.CombatKeyDelay;
 		_state.SetCooldown(TimeSpan.FromSeconds(delayBetweenAttacks));
-		Trace.WriteLine($"Running skill in slot {ranSkill} by pressing keycode {keyCode}. " +
-		                $"Waiting {delayBetweenAttacks} second...");
+		Trace.WriteLine($"Waiting {delayBetweenAttacks} second...");
 		return true;
 	}
 
