@@ -16,20 +16,20 @@
         public static readonly IntField MaxMp = new IntField("trose.exe", "10BF100", "0x4604");//updated
         // Position
         public static readonly FloatField PositionX =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1B8");
+            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1B8");//updated
         public static readonly FloatField PositionY =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1BC");
+            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1BC");//updated
         public static readonly FloatField PositionZ =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1C0");
+            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1C0");//updated
         // Camera
-        public static readonly FloatField CameraZoom = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C4");
-        public static readonly FloatField CameraPitch = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C0");
-        public static readonly FloatField CameraYaw = new FloatField("trose.exe", "010D3520", "0xD70", "0x6BC");
+        public static readonly FloatField CameraZoom = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C4");//updated
+        public static readonly FloatField CameraPitch = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C0");//updated
+        public static readonly FloatField CameraYaw = new FloatField("trose.exe", "010D3520", "0xD70", "0x6BC");//updated
         // Misc
-        public static readonly IntField MapId = new IntField("trose.exe", "10C4AE4");
-        public static readonly StringField Target = new StringField("trose.exe", "10D8C10");
-        public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");
-        public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C6950");
+        public static readonly IntField MapId = new IntField("trose.exe", "10C4AE4");//updated
+        public static readonly StringField Target = new StringField("trose.exe", "10D8C10");//updated
+        public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");//updated
+        public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C6950");//updated
     }
 
     /// <summary>
