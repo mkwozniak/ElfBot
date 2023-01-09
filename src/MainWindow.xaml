@@ -30,6 +30,9 @@
                 <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
                           Margin="5 5 0 0"
                           IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
+                <!--                    -->
+                <!-- Navigation buttons -->
+                <!--                    -->
                 <Separator Margin="0 5 0 5"/>
                 <Button Content="Auto Combat"
                         Background="Black" Foreground="White"
@@ -79,45 +82,30 @@
                     Click="LoadConfiguration"/>
             </ListBox>
         </StackPanel>
-        <!--                             -->
-        <!-- Character information panel -->
-        <!--                             -->
+        <!--                                          -->
+        <!-- Right-hand character information sidebar -->
+        <!--                                          -->
         <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
             <components:Sidebar />
         </GroupBox>
-        <!--                   -->
-        <!-- Auto combat panel -->
-        <!--                   -->
+        <!--                          -->
+        <!-- Navigation target panels -->
+        <!--                          -->
         <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
             <components:AutoCombatPanel />
         </GroupBox>
-        <!--                     -->
-        <!-- Monster table panel -->
-        <!--                     -->
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:MonsterTablePanel />
         </GroupBox>
-        <!--                    -->
-        <!-- Food options panel -->
-        <!--                    -->
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:FoodOptionsPanel />
         </GroupBox>
-        <!--                      -->
-        <!-- Z-hack options panel -->
-        <!--                      -->
         <GroupBox x:Name="ZHackOptionsPanel" Header="ZHack Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:ZHackOptionsPanel />
         </GroupBox>
-        <!--                      -->
-        <!-- Keybind config panel -->
-        <!--                      -->
         <GroupBox x:Name="KeybindOptionsPanel" Header="Keybind Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:KeybindingsPanel />
         </GroupBox>
-        <!--                   -->
-        <!-- Logs viewer panel -->
-        <!--                   -->
         <GroupBox x:Name="LoggingOptionsPanel" Header="Logs" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:LogsViewPanel x:Name="LogsViewPanel" />
         </GroupBox>
