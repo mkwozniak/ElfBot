@@ -6,14 +6,14 @@
     {
         // General Character Information
         public static readonly StringField CharacterName = new StringField("trose.exe", "10CAFF8");//updated
-        public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BE100", "0x3AD8");
-        public static readonly IntField Xp = new IntField("trose.exe", "10BE100", "0x3AD4");
-        public static readonly IntField Zuly = new IntField("trose.exe", "10BE100", "0x3D38");
+        public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BF100", "0x3AD8");//updated
+        public static readonly IntField Xp = new IntField("trose.exe", "10BF100", "0x3AD4");//updated
+        public static readonly IntField Zuly = new IntField("trose.exe", "10BF100", "0x3D38");//updated
         // Player Stats
-        public static readonly IntField Hp = new IntField("trose.exe", "10BE100", "0x3ACC");
-        public static readonly IntField MaxHp = new IntField("trose.exe", "10BE100", "0x4600");
-        public static readonly IntField Mp = new IntField("trose.exe", "10BE100", "0x3AD0");
-        public static readonly IntField MaxMp = new IntField("trose.exe", "10BE100", "0x4604");
+        public static readonly IntField Hp = new IntField("trose.exe", "10BF100", "0x3ACC");//updated
+        public static readonly IntField MaxHp = new IntField("trose.exe", "10BF100", "0x4600");//updated
+        public static readonly IntField Mp = new IntField("trose.exe", "10BF100", "0x3AD0");//updated
+        public static readonly IntField MaxMp = new IntField("trose.exe", "10BF100", "0x4604");//updated
         // Position
         public static readonly FloatField PositionX =
             new FloatField("trose.exe", "010BE100", "0x258", "0x370", "0xA0", "0x380", "0x1B8");
