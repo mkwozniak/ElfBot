@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
 
@@ -85,8 +86,6 @@ public sealed class AutoCombat
 		{
 			return;
 		}
-		
-		Trace.WriteLine($"Auto-combat heartbeat (current state: {_state.Status})");
 
 		try
 		{
@@ -116,7 +115,7 @@ public sealed class AutoCombat
 			return;
 		}
 
-		Trace.WriteLine("Auto-combat heartbeat completed");
+		Trace.WriteLine($"Auto-combat heartbeat completed (status: {_state.Status}");
 	}
 
 	private bool _start()
@@ -176,7 +175,6 @@ public sealed class AutoCombat
 				Addresses.Target.writeValue("");
 				Addresses.TargetId.writeValue(0);
 				_state.ResetTarget();
-				// _state.Reset();
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 				return false;
 			}
@@ -276,7 +274,6 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		// TODO: Implement skill cooldowns in the future
 		var activeCombatKeys = _context.Settings.FindKeybindings(KeybindAction.Attack, KeybindAction.Skill);
 		if (activeCombatKeys.Count == 0)
 		{
@@ -285,24 +282,28 @@ public sealed class AutoCombat
 			return false;
 		}
 
+		var notOnCooldown = activeCombatKeys.FindAll(hk => !_state.isHotkeyOnCooldown(hk));
+		if (notOnCooldown.Count == 0)
+		{
+			Trace.WriteLine("Tried to attack but all attacks are on cooldown");
+			return false;
+		}
+
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var randomKeyIndex = MainWindow.Ran.Next(0, activeCombatKeys.Count);
-		var chosenKey = activeCombatKeys[randomKeyIndex];
+		var randomKeyIndex = MainWindow.Ran.Next(0, notOnCooldown.Count);
+		var chosenKey = notOnCooldown[randomKeyIndex];
 
 		if (chosenKey.IsShift)
 		{
 			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for attack in slot {chosenKey.Key}");
 			// TODO: Implementation for shift-hotkeys required
+			return false;
 		}
-		else
-		{
-			OnSendKey?.Invoke(chosenKey.KeyCode);
-			Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
-		}
-		
-		var delayBetweenAttacks = _context.Settings.CombatOptions.CombatKeyDelay;
-		_state.SetCooldown(TimeSpan.FromSeconds(delayBetweenAttacks));
-		Trace.WriteLine($"Waiting {delayBetweenAttacks} second...");
+
+		OnSendKey?.Invoke(chosenKey.KeyCode);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
+		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
 		return true;
 	}
 
@@ -331,6 +332,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	private string? _currentTarget;
 	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoCombatStatus _status = AutoCombatStatus.Inactive;
+	private List<(HotkeySlot, DateTime)> _hotkeyCooldowns = new(); // List of hotkey->cooldown expirations
 
 	public bool ScanningForPriority { get; set; } = true;
 	public int PriorityCheckCount { get; set; }
@@ -399,6 +401,47 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
 		Cooldown = DateTime.Now.Add(duration);
 	}
+	
+	/// <summary>
+	/// Returns true if the current state is on a cooldown.
+	/// </summary>
+	/// <returns>cooldown state</returns>
+	public bool isOnCooldown()
+	{
+		return Cooldown != null && !_isDateInPast(Cooldown);
+	}
+
+	/// <summary>
+	/// Marks a hotkey as being on cooldown for a specified duration.
+	/// </summary>
+	/// <param name="slot">hotkey slot</param>
+	/// <param name="duration">cooldown duration</param>
+	public void SetHotkeyCooldown(HotkeySlot slot, TimeSpan duration)
+	{
+		var currentCooldown = _getHotkeyCooldown(slot);
+		if (currentCooldown != null)
+		{
+			_hotkeyCooldowns.Remove(currentCooldown.Value);
+		}
+		_hotkeyCooldowns.Add((slot, DateTime.Now.Add(duration)));
+	}
+
+	/// <summary>
+	/// Returns true if a hotkey slot is currently on cooldown.
+	/// </summary>
+	/// <param name="slot">hotkey slot</param>
+	/// <returns>hotkey cooldown status</returns>
+	public bool isHotkeyOnCooldown(HotkeySlot slot)
+	{
+		var cooldown = _getHotkeyCooldown(slot);
+		return cooldown == null || !_isDateInPast(cooldown.Value.Item2);
+	}
+
+	private (HotkeySlot, DateTime)? _getHotkeyCooldown(HotkeySlot slot)
+	{
+		return _hotkeyCooldowns.Find(i => i.Item1.Key == slot.Key
+		                                  && i.Item1.IsShift == slot.IsShift);
+	}
 
 	/// <summary>
 	/// Resets all properties tracked by the state.
@@ -411,6 +454,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		StartingLevel = 0;
 		PriorityCheckCount = 0;
 		Cooldown = null;
+		_hotkeyCooldowns.Clear();
 		Trace.WriteLine("Auto-combat state was fully reset");
 	}
 
@@ -433,15 +477,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	public bool IsExpired()
 	{
 		return _isDateInPast(StatusTimeout);
-	}
-
-	/// <summary>
-	/// Returns true if the current state is on a cooldown.
-	/// </summary>
-	/// <returns>cooldown state</returns>
-	public bool isOnCooldown()
-	{
-		return Cooldown != null && !_isDateInPast(Cooldown);
 	}
 
 	private static bool _isDateInPast(DateTime? time)

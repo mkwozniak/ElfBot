@@ -18,12 +18,6 @@
                 <StackPanel>
                     <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <StackPanel>
-                        <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
-                        <TextBox Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White" />
-                    </StackPanel>
-                    <StackPanel>
                         <Label Content="Attack Timeout (s)" FontWeight="Bold" Foreground="White" />
                         <TextBox Text="{Binding Path=Settings.CombatOptions.AttackTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"

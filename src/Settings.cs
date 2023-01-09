@@ -15,20 +15,22 @@ public class Settings : PropertyNotifyingClass
 
 	public List<HotkeySlot> Keybindings
 	{
-		get => _keybindings.FindAll(v => !v.IsShift);
+		get => _keybindings;
 		set
 		{
-			_keybindings = value.OrderBy(v => v.Value).ToList();
+			if (value.Count == 0) return; // likely from a config load
+			_keybindings = value;
 			NotifyPropertyChanged();
 		}
 	}
 
 	public List<HotkeySlot> ShiftKeybindings
 	{
-		get => _shiftKeybindings.FindAll(v => v.IsShift);
+		get => _shiftKeybindings;
 		set
 		{
-			_shiftKeybindings = value.OrderBy(v => v.Value).ToList();
+			if (value.Count == 0) return; // likely from a config load
+			_shiftKeybindings = value;
 			NotifyPropertyChanged();
 		}
 	}
@@ -68,7 +70,6 @@ public sealed class CombatOptions : PropertyNotifyingClass
 		}
 	}
 
-	public float CombatKeyDelay { get; set; } = 1f;
 	public float AttackTimeout { get; set; } = 60f;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
@@ -110,4 +111,9 @@ public class HotkeySlot
 	public KeybindAction Action => (KeybindAction)Value;
 	
 	[JsonProperty] public bool IsShift { get; init; }
+	
+	/// <summary>
+	/// The cooldown time, in seconds.
+	/// </summary>
+	[JsonProperty] public int Cooldown { get; set; }
 }

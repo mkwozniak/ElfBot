@@ -69,6 +69,19 @@ public sealed partial class MainWindow
 				Logger.Warn($"Settings file had no data");
 				return;
 			}
+
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+			if (settings.Keybindings == null || settings.Keybindings.Count == 0)
+			{
+				settings.Keybindings = Settings.Keybindings;
+			}
+
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+			if (settings.ShiftKeybindings == null || settings.ShiftKeybindings.Count == 0)
+			{
+				settings.ShiftKeybindings = Settings.ShiftKeybindings;
+			}
+			
 			ApplicationContext.Settings = settings;
 		}
 		catch (Exception ex) 
