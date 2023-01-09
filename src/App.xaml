@@ -2,8 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ElfBot"
-             StartupUri="src\MainWindow.xaml">
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:ApplicationContext x:Key="ApplicationContext" />
+        <local:FloatFormattingConverter x:Key="FloatFormattingConverter"/>
+        <local:NullValueConverter x:Key="NullValueConverter"/>
     </Application.Resources>
 </Application>

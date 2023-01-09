@@ -11,18 +11,18 @@ public sealed partial class MainWindow : Window
 {
     #region Timer Methods
 
-    private void ListenToTimer(Timer timer, EventHandler del)
+    public static void ListenToTimer(Timer timer, EventHandler del)
     {
         timer.Tick += new EventHandler(del);
     }
 
-    private void StartTimer(Timer timer, int msDelay)
+    public static void StartTimer(Timer timer, int msDelay)
     {
         timer.Interval = new System.TimeSpan(0, 0, 0, 0, msDelay);
         timer.Start();
     }
 
-    private void StopTimer(Timer timer)
+    public static void StopTimer(Timer timer)
     {
         timer.Stop();
     }
@@ -53,18 +53,17 @@ public sealed partial class MainWindow : Window
     /// <summary> Refreshes the log </summary>
     private void RefreshLogs()
     {
-        Level level = (Level) Enum.Parse(typeof(Level), LogLevelSelection.Text, true);
-        var logEntries = Logger.Entries.Where(e => e.Level >= level).ToList();
+        var logEntries = Logger.Entries.Where(e => e.Level >= Settings.SelectedLogLevel).ToList();
         
-        var displayedLog = SystemMsgLog.Content;
+        var displayedLog = LogsViewPanel.SystemMsgLog.Content;
         if (displayedLog is not string)
         {
-            SystemMsgLog.Content = "";
+            LogsViewPanel.SystemMsgLog.Content = "";
         }
 
         if (logEntries.Count == 0)
         {
-            SystemMsgLog.Content = "";
+            LogsViewPanel.SystemMsgLog.Content = "";
             return;
         }
 
@@ -73,7 +72,7 @@ public sealed partial class MainWindow : Window
             var date = entry.TimeStamp.ToString("hh:mm:ss tt");
             return $"({date}) {entry.Level}: {entry.Text}";
         }).ToArray();
-        SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
+        LogsViewPanel.SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
     }
 
     /// <summary> Timer tick for eating hp food </summary>
@@ -113,7 +112,7 @@ public sealed partial class MainWindow : Window
             SendKey(activeHpKeys[ranFood].KeyCode);
             _eatHPFood = false;
             // start the delay timer to press the key again
-            StartTimer(HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
+            StartTimer(ApplicationContext.HpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
         }
     }
 
@@ -154,7 +153,7 @@ public sealed partial class MainWindow : Window
             Logger.Debug($"Mana is low, eating food at slot {ranFood}", LogEntryTag.Food);
             SendKey(activeMpKeys[ranFood].KeyCode);
             // start the delay timer to press the key again
-            StartTimer(MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
+            StartTimer(ApplicationContext.MpFoodKeyTimer, (int)(Settings.FoodOptions.Cooldown * 1000));
             _eatMPFood = false;
         }
     }
@@ -165,7 +164,7 @@ public sealed partial class MainWindow : Window
     private void HpFoodKeyTimer_Tick(object? sender, EventArgs e)
     {
         _eatHPFood = true;
-        StopTimer(HpFoodKeyTimer);
+        StopTimer(ApplicationContext.HpFoodKeyTimer);
     }
 
     /// <summary> Timer tick to reset mp food key </summary>
@@ -174,7 +173,7 @@ public sealed partial class MainWindow : Window
     private void MpFoodKeyTimer_Tick(object? sender, EventArgs e)
     {
         _eatMPFood = true;
-        StopTimer(MpFoodKeyTimer);
+        StopTimer(ApplicationContext.MpFoodKeyTimer);
     }
 
     /// <summary> Timer tick for combat camera </summary>

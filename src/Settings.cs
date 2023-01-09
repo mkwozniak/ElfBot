@@ -20,6 +20,9 @@ public class Settings : PropertyNotifyingClass
 			NotifyPropertyChanged();
 		}
 	}
+
+	[JsonIgnore]
+	public Level SelectedLogLevel = Level.Info;
 }
 
 public sealed class CombatOptions : PropertyNotifyingClass

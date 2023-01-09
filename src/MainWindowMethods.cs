@@ -26,12 +26,12 @@ public sealed partial class MainWindow : Window
     private void StopWindowBehavior(object? sender, EventArgs e)
     {
 	    StopTimer(InterfaceTimer);
-        StopTimer(HpFoodTimer);
-        StopTimer(MpFoodTimer);
-        StopTimer(HpFoodKeyTimer);
-        StopTimer(MpFoodKeyTimer);
-        StopTimer(CombatCameraTimer);
-        StopTimer(CameraYawTimer);
+        StopTimer(ApplicationContext.HpFoodTimer);
+        StopTimer(ApplicationContext.MpFoodTimer);
+        StopTimer(ApplicationContext.HpFoodKeyTimer);
+        StopTimer(ApplicationContext.MpFoodKeyTimer);
+        StopTimer(ApplicationContext.CombatCameraTimer);
+        StopTimer(ApplicationContext.CameraYawTimer);
     }
 
     /// <summary> Tries to open and hook to rose online process. </summary>
@@ -82,24 +82,23 @@ public sealed partial class MainWindow : Window
     private void PrepareElfbotTimers()
     {
 	    ListenToTimer(InterfaceTimer, Interface_Tick);
-		ListenToTimer(HpFoodTimer, HpFoodTimer_Tick);
-		ListenToTimer(MpFoodTimer, MpFoodTimer_Tick);
-		ListenToTimer(HpFoodKeyTimer, HpFoodKeyTimer_Tick);
-		ListenToTimer(MpFoodKeyTimer, MpFoodKeyTimer_Tick);
-		ListenToTimer(CombatCameraTimer, CombatCameraTimer_Tick);
-		ListenToTimer(CameraYawTimer, CameraYawTimer_Tick);
-        ListenToTimer(ZHackTimer, ZHackTimer_Tick);
+		ListenToTimer(ApplicationContext.HpFoodTimer, HpFoodTimer_Tick);
+		ListenToTimer(ApplicationContext.MpFoodTimer, MpFoodTimer_Tick);
+		ListenToTimer(ApplicationContext.HpFoodKeyTimer, HpFoodKeyTimer_Tick);
+		ListenToTimer(ApplicationContext.MpFoodKeyTimer, MpFoodKeyTimer_Tick);
+		ListenToTimer(ApplicationContext.CombatCameraTimer, CombatCameraTimer_Tick);
+		ListenToTimer(ApplicationContext.CameraYawTimer, CameraYawTimer_Tick);
+        ListenToTimer(ApplicationContext.ZHackTimer, ZHackTimer_Tick);
 
 		StartTimer(InterfaceTimer, _interfaceUpdateTime);
-		StartTimer(CombatCameraTimer, _combatCameraTickTime);
-		StartTimer(CameraYawTimer, _cameraYawTickTime);
+		StartTimer(ApplicationContext.CombatCameraTimer, _combatCameraTickTime);
+		StartTimer(ApplicationContext.CameraYawTimer, _cameraYawTickTime);
 	}
 
     /// <summary> Prepares values for default interface view </summary>
     private void PrepareElfbotInterface()
     {
-		SystemMsgLog.Content = "";
-		CombatOptionsPanel.Visibility = Visibility.Visible;
+	    CombatOptionsPanel.Visibility = Visibility.Visible;
 	}
 
     /// <summary> Callback for when process has hooked. </summary>

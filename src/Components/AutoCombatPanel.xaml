@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="ElfBot.Components.AutoCombatPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+
+    <Grid Background="Black">
+        <StackPanel>
+            <CheckBox Content="Enable Auto Combat" Foreground="White"
+                      Margin="5 5 0 0"
+                      VerticalAlignment="Bottom"
+                      IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                      IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
+                      Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
+            <UniformGrid Columns="2" Width="300" Margin="0 5 0 0"
+                         HorizontalAlignment="Left">
+                <StackPanel>
+                    <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <StackPanel>
+                        <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
+                        <TextBox Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                 Background="Black" Foreground="White" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Attack Timeout (s)" FontWeight="Bold" Foreground="White" />
+                        <TextBox Text="{Binding Path=Settings.CombatOptions.AttackTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
+                                 Background="Black" Foreground="White" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Loot Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Loot After Combat"
+                              IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              HorizontalAlignment="Left" Margin="5 " Foreground="White" />
+                    <Label Content="Loot Time (s)" FontWeight="Bold" Foreground="White" />
+                    <TextBox Text="{Binding Path=Settings.LootOptions.Duration, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Left" Width="90" Margin="5 0"
+                             Background="Black" Foreground="White" />
+                </StackPanel>
+                <StackPanel Margin="0 10 0 0 ">
+                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Force Camera Zoom"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Force Camera Overhead"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Camera Yaw Wave"
+                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Target Priority" Foreground="White" FontWeight="Bold" FontSize="14" />
+                    <CheckBox Content="Priority Targeting Mode"
+                              IsChecked="{Binding Path=Settings.CombatOptions.PriorityTargetScan, Source={StaticResource ApplicationContext}}"
+                              Foreground="White" Margin="0,5,0,5" />
+                    <Label Content="Max Priority Checks" FontWeight="Bold" Foreground="White" />
+                    <TextBox Text="{Binding Path=Settings.CombatOptions.MaxPriorityChecks, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             TextWrapping="Wrap" Width="120"
+                             HorizontalAlignment="Left" Margin="5,5,0,5"
+                             Background="Black" Foreground="White" />
+                </StackPanel>
+            </UniformGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

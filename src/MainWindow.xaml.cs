@@ -38,15 +38,8 @@ public partial class MainWindow : Window
 
     // Timers
     private Timer InterfaceTimer = new();
-	private Timer HpFoodTimer = new();
-	private Timer MpFoodTimer = new();
-	private Timer HpFoodKeyTimer = new();
-	private Timer MpFoodKeyTimer = new();
-	private Timer CombatCameraTimer = new();
-	private Timer CameraYawTimer = new();
-	private Timer ZHackTimer = new();
 
-	// References
+    // References
     public static readonly Random Ran = new();
 
 	// Structures
@@ -110,6 +103,14 @@ public class ApplicationContext : PropertyNotifyingClass
 	};
 	private AutoCombatStatus _combatState = AutoCombatStatus.Inactive;
 	private bool _hooked;
+
+	public Timer HpFoodTimer = new();
+	public Timer MpFoodTimer = new();
+	public Timer HpFoodKeyTimer = new();
+	public Timer MpFoodKeyTimer = new();
+	public Timer CombatCameraTimer = new();
+	public Timer CameraYawTimer = new();
+	public Timer ZHackTimer = new();
 	
 	public readonly HashSet<string> MonsterTable = new();
 

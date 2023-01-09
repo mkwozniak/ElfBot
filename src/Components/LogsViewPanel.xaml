@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="ElfBot.Components.LogsViewPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+
+    <Grid Background="Black">
+        <Button Content="Clear"
+                Background="Black" Foreground="White"
+                Height="16" Width="45"
+                VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 2 0 0"
+                Click="ClearLogsButton_Click" />
+        <ComboBox IsReadOnly="True" SelectedIndex="1"
+                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 2 0 0"
+                  Width="60">
+            <ComboBoxItem Content="Debug" />
+            <ComboBoxItem Content="Info" />
+            <ComboBoxItem Content="Warn" />
+            <ComboBoxItem Content="Error" />
+        </ComboBox>
+        <ScrollViewer x:Name="SystemMsgLog"
+                      Background="#FF212121"
+                      Margin="10,30,0,0"
+                      HorizontalScrollBarVisibility="Auto">
+            <TextBlock TextWrapping="Wrap" Text="TextBlock" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="ElfBot.Components.Sidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="150">
+    
+    <UserControl.Resources>
+        <ControlTemplate x:Key="InformationLabel" TargetType="ContentControl">
+            <DockPanel>
+                <Label Content="{TemplateBinding Tag}" Padding="0" Foreground="White" />
+                <Label Content="{TemplateBinding Content, Converter={StaticResource NullValueConverter}}" Padding="0" Foreground="White" />
+            </DockPanel>
+        </ControlTemplate>
+    </UserControl.Resources>
+    
+    <Grid Background="Black">
+        <StackPanel>
+            <!-- char -->
+            <StackPanel Margin="5">
+                <Label Content="Character" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                <StackPanel Margin="10 0 0 0">
+                    <ContentControl Tag="Name: "
+                                    Content="{Binding Path=CharacterData.Name, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Level: "
+                                    Content="{Binding Path=CharacterData.Level, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="XP: "
+                                    Content="{Binding Path=CharacterData.Xp, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Zuly: "
+                                    Content="{Binding Path=CharacterData.Zuly, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="HP: "
+                                    Content="{Binding Path=CharacterData.HpText, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="MP: "
+                                    Content="{Binding Path=CharacterData.MpText, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                </StackPanel>
+            </StackPanel>
+            <!-- location -->
+            <StackPanel Margin="5">
+                <Label Content="Location" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                <StackPanel Margin="10 0 0 0">
+                    <ContentControl Tag="X: "
+                                    Content="{Binding Path=CharacterData.Location.X, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Y: "
+                                    Content="{Binding Path=CharacterData.Location.Y, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Z: "
+                                    Content="{Binding Path=CharacterData.Location.Z, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Map ID: "
+                                    Content="{Binding Path=CharacterData.Location.MapId, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                </StackPanel>
+            </StackPanel>
+            <!-- camera -->
+            <StackPanel Margin="5">
+                <Label Content="Camera" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                <StackPanel Margin="10 0 0 0">
+                    <ContentControl Tag="Zoom: "
+                                    Content="{Binding Path=CharacterData.Camera.Zoom, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Pitch: "
+                                    Content="{Binding Path=CharacterData.Camera.Pitch, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Yaw: "
+                                    Content="{Binding Path=CharacterData.Camera.Yaw, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                </StackPanel>
+            </StackPanel>
+            <!-- misc -->
+            <StackPanel Margin="5">
+                <Label Content="Combat" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
+                <StackPanel Margin="10 0 0 0">
+                    <ContentControl Tag="Target: "
+                                    Content="{Binding Path=AutoCombat.State.CurrentTarget, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Target ID: "
+                                    Content="{Binding Path=AutoCombat.State.CurrentTargetId, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                    <ContentControl Tag="Combat State: "
+                                    Content="{Binding Path=AutoCombat.State.Status, Source={StaticResource ApplicationContext}}"
+                                    Template="{StaticResource InformationLabel}" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

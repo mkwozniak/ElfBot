@@ -3,25 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ElfBot"
+        xmlns:components="clr-namespace:ElfBot.Components"
         mc:Ignorable="d"
         Title="ElfBot" Height="428" Width="800" FontFamily="Calibri" Background="Black" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
 
-    <Window.Resources>
-        <local:ApplicationContext x:Key="ApplicationContext" />
-        <local:FloatFormattingConverter x:Key="FloatFormattingConverter"/>
-        <local:NullValueConverter x:Key="NullValueConverter"/>
-
-        <ControlTemplate x:Key="InformationLabel" TargetType="ContentControl">
-            <DockPanel>
-                <Label Content="{TemplateBinding Tag}" Padding="0" Foreground="White"/>
-                <Label Content="{TemplateBinding Content, Converter={StaticResource NullValueConverter}}" Padding="0" Foreground="White" />
-            </DockPanel>
-        </ControlTemplate>
-    </Window.Resources>
-
-    <Grid x:Name="MainPanel" HorizontalAlignment="Center" Width="800" Background="#FF080808">
+    <Grid HorizontalAlignment="Center" Width="800" Background="#FF080808">
         <!--                            -->
         <!-- Left-hand navigation panel -->
         <!--                            -->
@@ -96,291 +83,43 @@
         <!-- Character information panel -->
         <!--                             -->
         <GroupBox Header="Information" Margin="623,0,10,10" Foreground="White">
-            <Grid>
-                <StackPanel>
-                    <!-- char -->
-                    <StackPanel Margin="5">
-                        <Label Content="Character" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
-                        <StackPanel Margin="10 0 0 0">
-                            <ContentControl Tag="Name: "
-                                            Content="{Binding Path=CharacterData.Name, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Level: "
-                                            Content="{Binding Path=CharacterData.Level, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="XP: "
-                                            Content="{Binding Path=CharacterData.Xp, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Zuly: "
-                                            Content="{Binding Path=CharacterData.Zuly, Converter={StaticResource FloatFormattingConverter}, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="HP: "
-                                            Content="{Binding Path=CharacterData.HpText, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="MP: "
-                                            Content="{Binding Path=CharacterData.MpText, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                        </StackPanel>
-                    </StackPanel>
-                    <!-- location -->
-                    <StackPanel Margin="5">
-                        <Label Content="Location" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
-                        <StackPanel Margin="10 0 0 0">
-                            <ContentControl Tag="X: "
-                                            Content="{Binding Path=CharacterData.Location.X, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Y: "
-                                            Content="{Binding Path=CharacterData.Location.Y, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Z: "
-                                            Content="{Binding Path=CharacterData.Location.Z, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Map ID: "
-                                            Content="{Binding Path=CharacterData.Location.MapId, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                        </StackPanel>
-                    </StackPanel>
-                    <!-- camera -->
-                    <StackPanel Margin="5">
-                        <Label Content="Camera" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
-                        <StackPanel Margin="10 0 0 0">
-                            <ContentControl Tag="Zoom: "
-                                            Content="{Binding Path=CharacterData.Camera.Zoom, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Pitch: "
-                                            Content="{Binding Path=CharacterData.Camera.Pitch, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Yaw: "
-                                            Content="{Binding Path=CharacterData.Camera.Yaw, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                        </StackPanel>
-                    </StackPanel>
-                    <!-- misc -->
-                    <StackPanel Margin="5">
-                        <Label Content="Combat" FontWeight="Bold" FontSize="14" Padding="0" Foreground="White" />
-                        <StackPanel Margin="10 0 0 0">
-                            <ContentControl Tag="Target: "
-                                            Content="{Binding Path=AutoCombat.State.CurrentTarget, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Target ID: "
-                                            Content="{Binding Path=AutoCombat.State.CurrentTargetId, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                            <ContentControl Tag="Combat State: "
-                                            Content="{Binding Path=AutoCombat.State.Status, Source={StaticResource ApplicationContext}}"
-                                            Template="{StaticResource InformationLabel}" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
+            <components:Sidebar />
         </GroupBox>
         <!--                   -->
         <!-- Auto combat panel -->
         <!--                   -->
         <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
-            <Grid>
-                <StackPanel>
-                    <CheckBox x:Name="AutoCombatCheckBox" Content="Enable Auto Combat" Foreground="White"
-                              Margin="5 5 0 0"
-                              VerticalAlignment="Bottom"
-                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
-                              Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
-                    <UniformGrid Columns="2" Width="300" Margin="0 5 0 0"
-                                 HorizontalAlignment="Left">
-                        <StackPanel>
-                            <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
-                            <StackPanel>
-                                <Label Content="Combat Key Delay (s)" FontWeight="Bold" Foreground="White" />
-                                <TextBox x:Name="CombatKeyDelayInputBox"
-                                         Text="{Binding Path=Settings.CombatOptions.CombatKeyDelay, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                         Background="Black" Foreground="White" />
-                            </StackPanel>
-                            <StackPanel>
-                                <Label Content="Attack Timeout (s)" FontWeight="Bold" Foreground="White" />
-                                <TextBox Text="{Binding Path=Settings.CombatOptions.AttackTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                         HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                         Background="Black" Foreground="White" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel>
-                            <Label Content="Loot Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
-                            <CheckBox x:Name="CombatLootCheckbox" Content="Loot After Combat"
-                                      IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
-                                      HorizontalAlignment="Left" Margin="5 " Foreground="White" />
-                            <Label Content="Loot Time (s)" FontWeight="Bold" Foreground="White" />
-                            <TextBox x:Name="CombatLootTimeInputBox"
-                                     Text="{Binding Path=Settings.LootOptions.Duration, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                     HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                     Background="Black" Foreground="White" />
-
-                        </StackPanel>
-                        <StackPanel Margin="0 10 0 0 ">
-                            <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
-                            <CheckBox Content="Force Camera Zoom"
-                                      IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
-                                      Margin="5 5 0 0 " Foreground="White" />
-                            <CheckBox Content="Force Camera Overhead"
-                                      IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
-                                      Margin="5 5 0 0 " Foreground="White" />
-                            <CheckBox x:Name="TimedCameraYawCheckBox" Content="Camera Yaw Wave"
-                                      IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
-                                      Margin="5 5 0 0" Foreground="White" />
-                        </StackPanel>
-                        <StackPanel>
-                            <Label Content="Target Priority" Foreground="White" FontWeight="Bold" FontSize="14"/>
-                            <CheckBox x:Name="PriorityTargettingModeCheckBox" Content="Priority Targetting Mode" 
-                                      IsChecked="{Binding Path=Settings.CombatOptions.PriorityTargetScan, Source={StaticResource ApplicationContext}}" 
-                                      Foreground="White" Margin="0,5,0,5"/>
-                            <Label Content="Max Priority Checks" FontWeight="Bold" Foreground="White"/>
-                            <TextBox x:Name="MaxPriorityChecksInputBox" TextWrapping="Wrap" Width="120" HorizontalAlignment="Left" Background="Black" 
-                                     Text="{Binding Path=Settings.CombatOptions.MaxPriorityChecks, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}" 
-                                     Foreground="White" Margin="5,5,0,5"/>
-                        </StackPanel>
-                    </UniformGrid>
-
-                </StackPanel>
-            </Grid>
+            <components:AutoCombatPanel />
         </GroupBox>
         <!--                     -->
         <!-- Monster table panel -->
         <!--                     -->
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <ScrollViewer x:Name="MonsterTableText" Content="Empty" Margin="15 15 15 50" 
-                              Background="#FF171717" FontSize="14"/>
-                <Button x:Name="LoadTableBtn" Content="Load" 
-                        Margin="15 0 0 20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="105" 
-                        Background="Black" Foreground="White" 
-                        Click="LoadMonsterTable"/>
-            </Grid>
+            <components:MonsterTablePanel />
         </GroupBox>
         <!--                    -->
         <!-- Food options panel -->
         <!--                    -->
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <StackPanel>
-                    <CheckBox x:Name="HpFoodCheckBox" Content="Auto HP"
-                              IsChecked="{Binding Path=Settings.FoodOptions.AutoHpEnabled, Source={StaticResource ApplicationContext}}"
-                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
-                              Checked="EnableHpTimer" Unchecked="DisableHpTimer"/>
-                    <DockPanel>
-                        <TextBox x:Name="FoodHpPercentInputBox" TextAlignment="Center"
-                                 Text="{Binding Path=Settings.FoodOptions.AutoHpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="5 0" Height="15" Width="31"
-                                 Background="Black" Foreground="White" />
-                        <Label Content="%" Foreground="White" FontSize="16" />
-                    </DockPanel>
-
-                    <CheckBox x:Name="MpFoodCheckBox" Content="Auto MP"
-                              IsChecked="{Binding Path=Settings.FoodOptions.AutoMpEnabled, Source={StaticResource ApplicationContext}}"
-                              HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White" 
-                              Checked="EnableMpTimer" Unchecked="DisableMpTimer"/>
-                    <DockPanel>
-                        <TextBox x:Name="FoodMpPercentInputBox" TextAlignment="Center"
-                                 Text="{Binding Path=Settings.FoodOptions.AutoMpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="5 0" Height="15" Width="31"
-                                 Background="Black" Foreground="White" />
-                        <Label Content="%" Foreground="White" FontSize="16" />
-                    </DockPanel>
-
-                    <Label Content="Check Frequency (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="FoodDelayInputBox"
-                             Text="{Binding Path=Settings.FoodOptions.CheckFrequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Background="Black" Foreground="White" />
-
-                    <Label Content="Consume Cooldown (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="EatKeyDelayInputBox"
-                             Text="{Binding Path=Settings.FoodOptions.Cooldown, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Background="Black" Foreground="White" />
-                </StackPanel>
-            </Grid>
+            <components:FoodOptionsPanel />
         </GroupBox>
         <!--                      -->
         <!-- Z-hack options panel -->
         <!--                      -->
         <GroupBox x:Name="ZHackOptionsPanel" Header="ZHack Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <StackPanel>
-                    <CheckBox x:Name="TimedZHackCheckBox" Content="Enable ZHack"
-                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White"
-                              Checked="EnableZHack" Unchecked="DisableZHack" />
-
-                    <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox x:Name="TimedZHackDelayInputBox"
-                             Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-
-                    <Label Content="Time ZHack Amount" FontWeight="Bold" Foreground="White"/>
-                    <TextBox x:Name="TimedZHackAmountInputBox" 
-                             Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-                    <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
-                               HorizontalAlignment="Left" Margin="5 0" Width="98"
-                               FontStyle="Italic" Foreground="#FFEFBD0A" />
-                </StackPanel>
-            </Grid>
+            <components:ZHackOptionsPanel />
         </GroupBox>
         <!--                      -->
         <!-- Keybind config panel -->
         <!--                      -->
         <GroupBox x:Name="KeybindOptionsPanel" Header="Keybind Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <StackPanel Margin="5 5 0 0">
-                    <DockPanel>
-                        <Label Content="Slot" Foreground="White" FontSize="14" FontWeight="Bold"></Label>
-                        <Label Content="Action" Foreground="White" FontSize="14" FontWeight="Bold" Margin="83 0 0 0"></Label>
-                    </DockPanel>
-
-                    <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=Settings.Keybindings}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type local:Keybinding}">
-                                <UniformGrid Columns="2" MaxWidth="250" HorizontalAlignment="Left">
-                                    <Label Content="{Binding Key}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                           Foreground="White"
-                                           Margin="0 0 0 0">
-                                    </Label>
-                                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="100"
-                                              IsReadOnly="True" SelectedIndex="{Binding Path=Value}"
-                                              Margin="10 0 0 0">
-                                        <ComboBoxItem Content="None" />
-                                        <ComboBoxItem Content="Attack" />
-                                        <ComboBoxItem Content="Skill" />
-                                        <ComboBoxItem Content="HP (Food)" />
-                                        <ComboBoxItem Content="HP (Instant)" />
-                                        <ComboBoxItem Content="MP (Food)" />
-                                        <ComboBoxItem Content="MP (Instant)" />
-                                    </ComboBox>
-                                </UniformGrid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </Grid>
+            <components:KeybindingsPanel />
         </GroupBox>
         <!--                   -->
         <!-- Logs viewer panel -->
         <!--                   -->
         <GroupBox x:Name="LoggingOptionsPanel" Header="Logs" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <Grid>
-                <Button x:Name="ClearLogsButton" Background="Black" Content="Clear" Foreground="White" Height="16" Width="45"
-                        VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 2 0 0" Click="ClearLogsButton_Click" />
-                <ComboBox x:Name="LogLevelSelection" HorizontalAlignment="Left" VerticalAlignment="Top" Width="60" Margin="10 2 0 0" IsReadOnly="True" SelectedIndex="1">
-                    <ComboBoxItem Content="Debug"/>
-                    <ComboBoxItem Content="Info"/>
-                    <ComboBoxItem Content="Warn"/>
-                    <ComboBoxItem Content="Error"/>
-                </ComboBox>
-                <ScrollViewer x:Name="SystemMsgLog" Margin="10,30,0,0" Background="#FF212121" HorizontalScrollBarVisibility="Auto">
-                    <TextBlock TextWrapping="Wrap" Text="TextBlock"/>
-                </ScrollViewer>
-            </Grid>
+            <components:LogsViewPanel x:Name="LogsViewPanel" />
         </GroupBox>
     </Grid>
 </Window>

@@ -24,34 +24,7 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    /// <summary> Loads a monster table </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void LoadMonsterTable(object sender, RoutedEventArgs e)
-    {
-	    var dialog = new OpenFileDialog();
-	    dialog.Filter = "Plain Text (*.txt)|*.txt";
-	    if (dialog.ShowDialog() is not true) return;
-
-	    try
-	    {
-		    using var reader = new StreamReader(dialog.FileName);
-		    var contents = reader.ReadToEnd();
-		    var monsters = contents.Split(',');
-
-		    ApplicationContext.MonsterTable.Clear();
-		    ApplicationContext.MonsterTable.UnionWith(monsters);
-
-		    MonsterTableText.Content = monsters.Length == 0 ? "Empty" : string.Join("\n", monsters);
-	    }
-	    catch (System.Security.SecurityException ex)
-	    {
-		    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
-		                    $"Details:\n\n{ex.StackTrace}");
-	    }
-    }
-
-	/// <summary> Loads a config to file </summary>
+    /// <summary> Loads a config to file </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
 	private void SaveConfiguration(object sender, RoutedEventArgs e)
@@ -120,68 +93,12 @@ public sealed partial class MainWindow : Window
 		target.Visibility = Visibility.Visible;
 	}
 
-	/// <summary> Clears the log </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void ClearLogsButton_Click(object sender, EventArgs e)
-	{
-		Logger.Clear();
-		SystemMsgLog.Content = "";
-	}
 
 	#endregion
 	
 	#region Checkbox Events
 
-	private void StartAutoCombat(object sender, RoutedEventArgs e)
-	{
-		ApplicationContext.AutoCombat.Start();
-	}
-
-	private void StopAutoCombat(object sender, RoutedEventArgs e)
-	{
-		ApplicationContext.AutoCombat.Stop();
-	}
 	
-	private void EnableHpTimer(object sender, RoutedEventArgs e)
-	{
-		StopTimer(HpFoodTimer); // just in case it's already running
-		StartTimer(HpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
-		Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
-	}
-
-	private void DisableHpTimer(object sender, RoutedEventArgs e)
-	{
-		StopTimer(HpFoodTimer);
-		Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
-	}
-
-	private void EnableMpTimer(object sender, RoutedEventArgs e)
-	{
-		StopTimer(MpFoodTimer); // just in case it's already running
-		StartTimer(MpFoodTimer, (int) (Settings.FoodOptions.CheckFrequency * 1000));
-		Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
-	}
-
-	private void DisableMpTimer(object sender, RoutedEventArgs e)
-	{
-		StopTimer(MpFoodTimer);
-		Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
-	}
-
-	private void EnableZHack(object sender, RoutedEventArgs e)
-    {
-	    StopTimer(ZHackTimer); 
-	    StartTimer(ZHackTimer, (int)(Settings.ZHackOptions.Frequency * 1000));
-	    Logger.Info("Enabled Timed ZHack", LogEntryTag.Combat);
-    }
-
-    private void DisableZHack(object sender, RoutedEventArgs e)
-    {
-	    StopTimer(ZHackTimer);
-	    Logger.Info("Disabled Timed ZHack", LogEntryTag.Combat);
-    }
-
 	#endregion
 
 }
