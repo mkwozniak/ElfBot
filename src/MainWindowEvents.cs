@@ -7,9 +7,8 @@ using Newtonsoft.Json;
 namespace ElfBot;
 
 using System.Windows;
-using EventArgs = System.EventArgs;
 
-public sealed partial class MainWindow : Window
+public sealed partial class MainWindow 
 {
     #region Button Events
 
@@ -18,10 +17,7 @@ public sealed partial class MainWindow : Window
     /// <param name="e"></param>
     private void HookBtn_Click(object sender, RoutedEventArgs e)
     {
-        if (!TryOpenProcess()) 
-        { 
-            return; 
-        }
+	    TryOpenProcess();
     }
 
     /// <summary> Loads a config to file </summary>
@@ -94,11 +90,6 @@ public sealed partial class MainWindow : Window
 	}
 
 
-	#endregion
-	
-	#region Checkbox Events
-
-	
 	#endregion
 
 }

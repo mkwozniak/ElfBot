@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Threading;
 using Memory;
 
 namespace ElfBot;
-
-using System.Windows;
-using Random = System.Random;
-using TextBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.TextBox>;
-using CheckBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.CheckBox>;
-using ComboBoxDict = System.Collections.Generic.Dictionary<string, System.Windows.Controls.ComboBox>;
-using Timer = System.Windows.Threading.DispatcherTimer;
 
 using System.Runtime.InteropServices;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow
 {
 	public ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
 	public Settings? Settings => ApplicationContext?.Settings;
-	
-	public static readonly Mem TargetApplicationMemory = new Mem();
-	public static readonly Logger Logger = new Logger();
+
+	public static readonly Mem TargetApplicationMemory = new();
+	public static readonly Logger Logger = new();
 
 	[DllImport("ROSE_Input.dll")]
 	private static extern void SendKey(int key);
@@ -36,11 +30,11 @@ public partial class MainWindow : Window
 	// Events
 	private FinishedHooking? OnFinishHook;
 
-    // Timers
-    private Timer InterfaceTimer = new();
+	// Timers
+	private DispatcherTimer InterfaceTimer = new();
 
-    // References
-    public static readonly Random Ran = new();
+	// References
+	public static readonly Random Ran = new();
 
 	// Structures
 
@@ -61,17 +55,17 @@ public partial class MainWindow : Window
 	};
 
 	// Values
-    private bool _eatHPFood = true;
-    private bool _eatMPFood = true;
+	private bool _eatHPFood = true;
+	private bool _eatMPFood = true;
 
-    private int _playerMaxMP = 0;
-    private int _playerMP = 0;
-    private int _playerMaxHP = 0;
-    private int _playerHP = 0;
-    private int _interfaceUpdateTime = 60;
-    private int _combatCameraTickTime = 500;
+	private int _playerMaxMP = 0;
+	private int _playerMP = 0;
+	private int _playerMaxHP = 0;
+	private int _playerHP = 0;
+	private int _interfaceUpdateTime = 60;
+	private int _combatCameraTickTime = 500;
 	private int _cameraYawTickTime = 50;
-    private int _yawMouseScrollCounter = 0;
+	private int _yawMouseScrollCounter = 0;
 	private int _yawMouseScrollCounterMax = 50;
 
 	private const float CameraMaxZoom = 100f;
@@ -101,17 +95,17 @@ public class ApplicationContext : PropertyNotifyingClass
 			new() { Key = "=", Value = 0 }
 		}
 	};
-	private AutoCombatStatus _combatState = AutoCombatStatus.Inactive;
+
 	private bool _hooked;
 
-	public Timer HpFoodTimer = new();
-	public Timer MpFoodTimer = new();
-	public Timer HpFoodKeyTimer = new();
-	public Timer MpFoodKeyTimer = new();
-	public Timer CombatCameraTimer = new();
-	public Timer CameraYawTimer = new();
-	public Timer ZHackTimer = new();
-	
+	public DispatcherTimer HpFoodTimer = new();
+	public DispatcherTimer MpFoodTimer = new();
+	public DispatcherTimer HpFoodKeyTimer = new();
+	public DispatcherTimer MpFoodKeyTimer = new();
+	public DispatcherTimer CombatCameraTimer = new();
+	public DispatcherTimer CameraYawTimer = new();
+	public DispatcherTimer ZHackTimer = new();
+
 	public readonly HashSet<string> MonsterTable = new();
 
 	public ApplicationContext()
@@ -144,16 +138,6 @@ public class ApplicationContext : PropertyNotifyingClass
 			NotifyPropertyChanged();
 		}
 	}
-	public bool UseSecondClient { get; set; }
 
-	/// <summary>
-	/// Checks whether the hooked ROSE process is in
-	/// the foreground (selected/active window).
-	/// </summary>
-	/// <returns>true if the ROSE window is selected</returns>
-	public bool IsHookedProcessInForeground()
-	{
-		var foreground = RoseProcess.getForegroundProcess();
-		return foreground != null && foreground.Id == HookedProcessId;
-	}
+	public bool UseSecondClient { get; set; }
 }

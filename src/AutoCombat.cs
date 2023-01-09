@@ -323,17 +323,14 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	private string? _currentTarget;
 	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoCombatStatus _status = AutoCombatStatus.Inactive;
-	private DateTime? _cooldown;
 
 	public bool ScanningForPriority { get; set; } = true;
-	public int PriorityCheckCount { get; set; } = 0;
-
-	public int FirstTargetIDSelected = 0;
+	public int PriorityCheckCount { get; set; }
 
 	public AutoCombatStatus Status
 	{
 		get => _status;
-		set
+		private set
 		{
 			if (_status == value) return;
 			_status = value;
@@ -341,8 +338,8 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		}
 	}
 
-	public DateTime? StatusTimeout { get; private set; }
-	public DateTime? Cooldown => _cooldown; // cooldown for the current state
+	private DateTime? StatusTimeout { get; set; }
+	private DateTime? Cooldown { get; set; }
 
 	public int StartingXp { get; set; }
 
@@ -380,7 +377,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	{
 		Status = status;
 		StatusTimeout = duration == null ? null : DateTime.Now.Add(duration.Value);
-		_cooldown = null;
+		Cooldown = null;
 		Trace.WriteLine($"Auto-combat status changed to {status} (duration={duration})");
 	}
 
@@ -392,7 +389,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	public void SetCooldown(TimeSpan duration)
 	{
 		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
-		_cooldown = DateTime.Now.Add(duration);
+		Cooldown = DateTime.Now.Add(duration);
 	}
 
 	/// <summary>
@@ -405,7 +402,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		StartingXp = 0;
 		StartingLevel = 0;
 		PriorityCheckCount = 0;
-		_cooldown = null;
+		Cooldown = null;
 		Trace.WriteLine("Auto-combat state was fully reset");
 	}
 
@@ -436,7 +433,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// <returns>cooldown state</returns>
 	public bool isOnCooldown()
 	{
-		return Cooldown != null && !_isDateInPast(_cooldown);
+		return Cooldown != null && !_isDateInPast(Cooldown);
 	}
 
 	private static bool _isDateInPast(DateTime? time)
