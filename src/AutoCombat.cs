@@ -223,8 +223,14 @@ public sealed class AutoCombat
 	{
 		_state.StartingXp = _context.CharacterData.Xp;
 		_state.StartingLevel = _context.CharacterData.Level;
-		_state.ChangeStatus(AutoCombatStatus.Attacking,
-			TimeSpan.FromSeconds(_context.Settings.CombatOptions.AttackTimeout));
+		var attackDuration = _context.Settings.CombatOptions.AttackTimeout;
+		if (_context.Settings.CombatOptions.DelayBeforeAttack > 0)
+		{
+			_state.SetCooldown(TimeSpan.FromSeconds(_context.Settings.CombatOptions.DelayBeforeAttack));
+			attackDuration += _context.Settings.CombatOptions.DelayBeforeAttack;
+		}
+
+		_state.ChangeStatus(AutoCombatStatus.Attacking, TimeSpan.FromSeconds(attackDuration));
 		return true;
 	}
 
