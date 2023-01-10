@@ -27,10 +27,12 @@ public sealed class AutoCombat
 {
 	public SendingKey? OnSendKey;
 
-	private ApplicationContext _context;
-	private AutoCombatState _state = new();
-	private int _tabKeyCode = 0x09;
-	private int _lootKeyCode = 0x54;
+	private readonly ApplicationContext _context;
+	private readonly AutoCombatState _state = new();
+	private readonly int _tabKeyCode = 0x09;
+	private readonly int _lootKeyCode = 0x54;
+
+	private CombatOptions CombatOptions => CombatOptions;
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{
@@ -60,7 +62,7 @@ public sealed class AutoCombat
 	/// </summary>
 	public void Stop()
 	{
-		_context.Settings.CombatOptions.AutoCombatEnabled = false;
+		CombatOptions.AutoCombatEnabled = false;
 		_state.Reset();
 		_autoCombatTimer.Stop();
 	}
@@ -71,7 +73,7 @@ public sealed class AutoCombat
 	private void Tick(object? sender, EventArgs e)
 	{
 		if (!_context.Hooked
-		    || !_context.Settings.CombatOptions.AutoCombatEnabled
+		    || !CombatOptions.AutoCombatEnabled
 		    || _state.Status == AutoCombatStatus.Inactive
 		    || _context.MonsterTable.Count == 0)
 		{
@@ -166,9 +168,9 @@ public sealed class AutoCombat
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
 
-		if(_context.Settings.CombatOptions.PriorityTargetScan && _state.ScanningForPriority) 
+		if(CombatOptions.PriorityTargetScan && _state.ScanningForPriority) 
 		{
-			if (_state.PriorityCheckCount > _context.Settings.CombatOptions.MaxPriorityChecks)
+			if (_state.PriorityCheckCount > CombatOptions.MaxPriorityChecks)
 			{
 				Trace.WriteLine("Priority target selection expired");
 				_state.ScanningForPriority = false;
@@ -179,7 +181,7 @@ public sealed class AutoCombat
 				return false;
 			}
 
-			Trace.WriteLine($"Priority Target Check: {_state.PriorityCheckCount} / {_context.Settings.CombatOptions.MaxPriorityChecks}");
+			Trace.WriteLine($"Priority Target Check: {_state.PriorityCheckCount} / {CombatOptions.MaxPriorityChecks}");
 			// If the selected monster is not whitelisted in the monster table,
 			// we need to restart our target search.
 			if (_context.MonsterTable.Contains($"*{name.Trim()}"))
@@ -223,11 +225,11 @@ public sealed class AutoCombat
 	{
 		_state.StartingXp = _context.CharacterData.Xp;
 		_state.StartingLevel = _context.CharacterData.Level;
-		var attackDuration = _context.Settings.CombatOptions.AttackTimeout;
-		if (_context.Settings.CombatOptions.DelayBeforeAttack > 0)
+		var attackDuration = CombatOptions.AttackTimeout;
+		if (CombatOptions.DelayBeforeAttack > 0)
 		{
-			_state.SetCooldown(TimeSpan.FromSeconds(_context.Settings.CombatOptions.DelayBeforeAttack));
-			attackDuration += _context.Settings.CombatOptions.DelayBeforeAttack;
+			_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
+			attackDuration += CombatOptions.DelayBeforeAttack;
 		}
 
 		_state.ChangeStatus(AutoCombatStatus.Attacking, TimeSpan.FromSeconds(attackDuration));
@@ -272,7 +274,7 @@ public sealed class AutoCombat
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 			}
 
-			if(_context.Settings.CombatOptions.PriorityTargetScan)
+			if(CombatOptions.PriorityTargetScan)
 			{
 				_state.PriorityCheckCount = 0;
 				_state.ScanningForPriority = true;
