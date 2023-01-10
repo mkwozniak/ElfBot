@@ -81,7 +81,8 @@ public sealed class HotkeyCooldownTracker : CooldownTracker<HotkeySlot>
 {
 	protected override (HotkeySlot, Cooldown)? GetCooldown(HotkeySlot slot)
 	{
-		return Cooldowns.Find(i => i.Item1.Key == slot.Key
-		                           && i.Item1.IsShift == slot.IsShift);
+		var index = Cooldowns.FindIndex(i => i.Item1.Key == slot.Key
+		                                     && i.Item1.IsShift == slot.IsShift);
+		return index < 0 ? null : Cooldowns[index];
 	}
 }
