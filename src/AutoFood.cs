@@ -133,12 +133,12 @@ public sealed class AutoFood
 			return;
 		}
 
-		if (_shouldTrigger(mp, maxMp, FoodOptions.HpSlowFoodThresholdPercent))
+		if (_shouldTrigger(mp, maxMp, FoodOptions.MpSlowFoodThresholdPercent))
 		{
 			_runAction(KeybindAction.MpFood);
 		}
 
-		if (_shouldTrigger(mp, maxMp, FoodOptions.HpInstantFoodThresholdPercent))
+		if (_shouldTrigger(mp, maxMp, FoodOptions.MpInstantFoodThresholdPercent))
 		{
 			_runAction(KeybindAction.MpInstant);
 		}
@@ -183,6 +183,6 @@ public sealed class AutoFood
 	{
 		var percent = value / (float)maxValue;
 		var thresholdPercent = threshold / 100;
-		return percent > thresholdPercent;
+		return percent <= thresholdPercent;
 	}
 }
