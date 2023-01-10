@@ -54,7 +54,7 @@ public partial class MainWindow
 		{ "9", 0x39 },
 		{ "0", 0x30 },
 		{ "-", 0xBD },
-		{ "=", 0x6B }
+		{ "=", 0xBB }
 	};
 
 	// Values
