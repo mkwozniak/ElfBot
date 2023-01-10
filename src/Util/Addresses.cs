@@ -5,7 +5,7 @@
     public static class Addresses
     {
         // General Character Information
-        public static readonly StringField CharacterName = new StringField("trose.exe", "10C1918");
+        public static readonly StringField CharacterName = new StringField("trose.exe", "10C1918");//updated 2023-01-10
         public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BE100", "0x3AD8");//updated 2023-01-10
 		public static readonly IntField Xp = new IntField("trose.exe", "10BE100", "0x3AD4");//updated 2023-01-10
 		public static readonly IntField Zuly = new IntField("trose.exe", "10BE100", "0x3D38");//updated 2023-01-10
