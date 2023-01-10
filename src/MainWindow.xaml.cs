@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Memory;
+using Microsoft.Win32;
+using Newtonsoft.Json;
 
 namespace ElfBot;
 
@@ -26,9 +32,6 @@ public partial class MainWindow
 
 	[DllImport("ROSE_Input.dll")]
 	private static extern void MouseMove(int x, int y);
-
-	// Events
-	private FinishedHooking? OnFinishHook;
 
 	// Timers
 	private DispatcherTimer InterfaceTimer = new();
@@ -73,6 +76,118 @@ public partial class MainWindow
 
 	private double _yawCounter = 0;
 	private double _yawCounterIncrement = 0.05;
+	
+	/// <summary>
+	/// Navigates to another panel when a properly configured button
+	/// is clicked. The button must have the 'Tag' attribute set
+	/// and bound to the target Panel.
+	/// </summary>
+	private void NavigatePanel(object sender, RoutedEventArgs e)
+	{
+		if (sender is not Button { Tag: UIElement target }) return;
+		HideAllPanels();
+		target.Visibility = Visibility.Visible;
+	}
+
+	/// <summary>
+	/// Called when the hook button is clicked. Attempts to find the
+	/// ROSE (trose.exe) application and access its memory.
+	/// </summary>
+	private void HookApplication(object sender, RoutedEventArgs e)
+	{
+		var pid = RoseProcess.GetProcIdFromName("trose", ApplicationContext.UseSecondClient);
+		var brushConverter = new BrushConverter();
+		
+		if (pid <= 0)
+		{
+			Logger.Warn($"The ROSE process was not found when attempting to hook trose.exe", LogEntryTag.System);
+			HookBtn.Content = "F A I L E D";
+			HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString("#D60B00");
+			return;
+		}
+
+		TargetApplicationMemory.OpenProcess(pid);
+		ApplicationContext.HookedProcessId = pid;
+		ApplicationContext.Hooked = true;
+		HookBtn.Content = "H O O K E D";
+		HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString(" #1F7D1F ");
+		Logger.Info($"Hooked ROSE process with PID {pid}", LogEntryTag.System);
+	}
+
+	/// <summary> Loads a config to file </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void SaveConfiguration(object sender, RoutedEventArgs e)
+	{
+		var dialog = new SaveFileDialog()
+		{
+			Filter = "JSON (*.json)|*.json",
+			FileName = "config.json"
+		};
+		
+		if (dialog.ShowDialog() == true)
+		{
+			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented);
+			File.WriteAllText(dialog.FileName, json);
+		}
+		else
+		{
+			Logger.Warn("Failed to show save configuration dialog");
+		}
+	}
+
+	/// <summary> Saves the current config to file </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void LoadConfiguration(object sender, RoutedEventArgs e)
+	{
+		var dialog = new OpenFileDialog()
+		{
+			Filter = "Json files (*.json)|*.json"
+		};
+
+		if (!dialog.ShowDialog() == true)
+		{
+			Logger.Warn("Failed to show open configuration dialog");
+			return;
+		}
+
+		Settings? settings;
+		try
+		{
+			using var reader = new StreamReader(dialog.FileName);
+			var json = reader.ReadToEnd();
+			settings = JsonConvert.DeserializeObject<Settings>(json);
+		}
+		catch (Exception ex)
+		{
+			Logger.Error($"Failed to load config file: {ex.Message}");
+			return;
+		}
+
+		if (settings is null)
+		{
+			Logger.Warn($"Settings file had no data");
+			return;
+		}
+		
+		if (Settings != null)
+		{
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+			if (settings.Keybindings == null || settings.Keybindings.Count == 0)
+			{
+				settings.Keybindings = Settings.Keybindings;
+			}
+
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+			if (settings.ShiftKeybindings == null || settings.ShiftKeybindings.Count == 0)
+			{
+				settings.ShiftKeybindings = Settings.ShiftKeybindings;
+			}
+		}
+
+		ApplicationContext.Settings = settings;
+	}
 }
 
 public class ApplicationContext : PropertyNotifyingClass

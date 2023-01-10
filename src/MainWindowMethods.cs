@@ -34,38 +34,15 @@ public sealed partial class MainWindow : Window
         StopTimer(ApplicationContext.CameraYawTimer);
     }
 
-    /// <summary> Tries to open and hook to rose online process. </summary>
-    /// <returns>True if the process was successfully hooked.</returns>
-    private bool TryOpenProcess()
-    {
-        int pID = RoseProcess.GetProcIdFromName("trose", ApplicationContext.UseSecondClient);
-
-        if (pID > 0)
-        {
-            TargetApplicationMemory.OpenProcess(pID);
-            Logger.Info($"Successfully hooked ROSE process with PID {pID}", LogEntryTag.System);
-            OnFinishHook?.Invoke();
-            ApplicationContext.HookedProcessId = pID;
-            ApplicationContext.Hooked = true;
-            return true;
-        }
-        
-        Logger.Warn($"Process PID {pID} was invalid and could not be hooked", LogEntryTag.System);
-        HookBtn.Content = "Hook Failed :(";
-        return false;
-    }
-
-	#endregion
+    #endregion
 
 	#region Bot Methods
 
 	/// <summary> Prepares the bot for starting </summary>
 	public void PrepareElfBot(object sender, RoutedEventArgs e)
     {
-		// listen to hook event
-        OnFinishHook += FinishHook;
 
-		// listen auto combat send key event
+	    // listen auto combat send key event
 		ApplicationContext.AutoCombat.OnSendKey += SendKey; 
 
         // prepare the initial interface view
@@ -100,12 +77,6 @@ public sealed partial class MainWindow : Window
     {
 	    CombatOptionsPanel.Visibility = Visibility.Visible;
 	}
-
-    /// <summary> Callback for when process has hooked. </summary>
-	private void FinishHook()
-    {
-        HookBtn.Content = "Process Hooked!";
-    }
 
     /// <summary> Hides all panels visibility and controls. </summary>
     private void HideAllPanels()

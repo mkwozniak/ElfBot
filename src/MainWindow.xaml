@@ -25,12 +25,12 @@
                      HorizontalAlignment="Left" HorizontalContentAlignment="Center">
                 <Button x:Name="HookBtn" Content="H O O K"
                         Height="20" Width="128" HorizontalAlignment="Center"
-                        Background="Black" Foreground="White"
-                        Click="HookBtn_Click" />
+                        Background="#5B8899" Foreground="White"
+                        Click="HookApplication" />
                 <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
                           Margin="5 5 0 0"
                           IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
-                <!--                    -->
+                <!--        #D60B00  #1F7D1F          --> 
                 <!-- Navigation buttons -->
                 <!--                    -->
                 <Separator Margin="0 5 0 5"/>
