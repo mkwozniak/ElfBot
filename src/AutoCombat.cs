@@ -32,7 +32,7 @@ public sealed class AutoCombat
 	private readonly int _tabKeyCode = 0x09;
 	private readonly int _lootKeyCode = 0x54;
 
-	private CombatOptions CombatOptions => CombatOptions;
+	private CombatOptions CombatOptions => _context.Settings.CombatOptions;
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{

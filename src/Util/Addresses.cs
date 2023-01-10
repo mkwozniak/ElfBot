@@ -5,32 +5,32 @@
     public static class Addresses
     {
         // General Character Information
-        public static readonly StringField CharacterName = new StringField("trose.exe", "10CAFF8");//updated working
-        public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BF100", "0x3AD8");//updated working
-        public static readonly IntField Xp = new IntField("trose.exe", "10BF100", "0x3AD4");//updated working
-        public static readonly IntField Zuly = new IntField("trose.exe", "10BF100", "0x3D38");//updated working
-        // Player Stats
-        public static readonly IntField Hp = new IntField("trose.exe", "10BF100", "0x3ACC");//updated  working
-        public static readonly IntField MaxHp = new IntField("trose.exe", "10BF100", "0x4600");//updated working
-        public static readonly IntField Mp = new IntField("trose.exe", "10BF100", "0x3AD0");//updated working
-        public static readonly IntField MaxMp = new IntField("trose.exe", "10BF100", "0x4604");//updated working
+        public static readonly StringField CharacterName = new StringField("trose.exe", "10CAFF8");
+        public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BE100", "0x3AD8");//updated 2023-01-10
+		public static readonly IntField Xp = new IntField("trose.exe", "10BE100", "0x3AD4");//updated 2023-01-10
+		public static readonly IntField Zuly = new IntField("trose.exe", "10BE100", "0x3D38");//updated 2023-01-10
+																							  // Player Stats
+		public static readonly IntField Hp = new IntField("trose.exe", "10BE100", "0x3ACC");//updated 2023-01-10
+		public static readonly IntField MaxHp = new IntField("trose.exe", "10BE100", "0x4600");//updated 2023-01-10
+		public static readonly IntField Mp = new IntField("trose.exe", "10BE100", "0x3AD0");//updated 2023-01-10
+		public static readonly IntField MaxMp = new IntField("trose.exe", "10BE100", "0x4604");//updated 2023-01-10
         // Position
         public static readonly FloatField PositionX =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1B8");//updated working
-        public static readonly FloatField PositionY =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1BC");//updated working
-        public static readonly FloatField PositionZ =
-            new FloatField("trose.exe", "010BF100", "0x258", "0x370", "0xA0", "0x380", "0x1C0");//updated working
+            new FloatField("trose.exe", "010BE100", "0x258", "0x370", "0xA0", "0x380", "0x1B8");//updated 2023-01-10
+		public static readonly FloatField PositionY =
+            new FloatField("trose.exe", "010BE100", "0x258", "0x370", "0xA0", "0x380", "0x1BC");//updated 2023-01-10
+		public static readonly FloatField PositionZ =
+            new FloatField("trose.exe", "010BE100", "0x258", "0x370", "0xA0", "0x380", "0x1C0");//updated 2023-01-10
         // Camera
-        public static readonly FloatField CameraZoom = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C4");//updated working
-        public static readonly FloatField CameraPitch = new FloatField("trose.exe", "010D3520", "0xD70", "0x6C0");//updated working
-        public static readonly FloatField CameraYaw = new FloatField("trose.exe", "010D3520", "0xD70", "0x6BC");//updated working
-        // Misc
-        public static readonly IntField MapId = new IntField("trose.exe", "10C5AE4");//updated working
-        public static readonly StringField Target = new StringField("trose.exe", "10D9C10");//updated working
-        public static readonly IntField TargetId = new IntField("trose.exe", "10C1458", "0x8");//updated working
-        public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C6950");//updated working (on load into game it actually stores player name)
-    }
+        public static readonly FloatField CameraZoom = new FloatField("trose.exe", "010D2520", "0xD70", "0x6C4");//updated 2023-01-10
+		public static readonly FloatField CameraPitch = new FloatField("trose.exe", "010D2520", "0xD70", "0x6C0");//updated 2023-01-10
+		public static readonly FloatField CameraYaw = new FloatField("trose.exe", "010D2520", "0xD70", "0x6BC");//updated 2023-01-10
+		// Misc
+		public static readonly IntField MapId = new IntField("trose.exe", "10C4AE4");//updated 2023-01-10
+        public static readonly StringField Target = new StringField("trose.exe", "10D8C10");//updated 2023-01-10
+		public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");//updated 2023-01-10
+		public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C5950");//updated 2023-01-10
+	}
 
     /// <summary>
     /// Represents a value of a given type stored in memory. 
