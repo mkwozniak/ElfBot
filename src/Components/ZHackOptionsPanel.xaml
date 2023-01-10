@@ -17,7 +17,7 @@
                      HorizontalAlignment="Left" Margin="5 0" Width="98"
                      Foreground="White" Background="Black" />
 
-            <Label Content="Time ZHack Amount" FontWeight="Bold" Foreground="White" />
+            <Label Content="Z-axis Increase Amount" FontWeight="Bold" Foreground="White" />
             <TextBox Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalAlignment="Left" Margin="5 0" Width="98"
                      Foreground="White" Background="Black" />
