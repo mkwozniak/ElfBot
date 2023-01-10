@@ -17,7 +17,7 @@
                 <Image Source="/Assets/elfbot-icon-large.png"
                        Height="50" Width="50"
                        HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                <Label Content="ELFBOT 0.0.7"
+                <Label Content="ELFBOT 0.0.9"
                        Foreground="White" Padding="0"
                        VerticalAlignment="Bottom" />
             </DockPanel>
