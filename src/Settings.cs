@@ -35,7 +35,8 @@ public class Settings : PropertyNotifyingClass
 		}
 	}
 
-	[JsonIgnore] public Level SelectedLogLevel = Level.Info;
+	[JsonIgnore] public int SelectedLogLevelIndex { get; init; } = 1;
+	[JsonIgnore] public Level SelectedLogLevel => (Level)SelectedLogLevelIndex;
 
 	/// <summary>
 	/// Finds all keybindings for a specified keybind action.

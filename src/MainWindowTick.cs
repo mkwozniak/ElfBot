@@ -53,17 +53,17 @@ public sealed partial class MainWindow : Window
     /// <summary> Refreshes the log </summary>
     private void RefreshLogs()
     {
-        var logEntries = Logger.Entries.Where(e => e.Level >= Settings.SelectedLogLevel).ToList();
+        var logEntries = Logger.Entries.Where(e => (int)e.Level >= (int)Settings.SelectedLogLevel).ToList();
         
-        var displayedLog = LogsViewPanel.SystemMsgLog.Content;
+        var displayedLog = LogsViewPanel.SystemMsgLog.Text;
         if (displayedLog is not string)
         {
-            LogsViewPanel.SystemMsgLog.Content = "";
+            LogsViewPanel.SystemMsgLog.Text = "";
         }
 
         if (logEntries.Count == 0)
         {
-            LogsViewPanel.SystemMsgLog.Content = "";
+            LogsViewPanel.SystemMsgLog.Text = "";
             return;
         }
 
@@ -72,7 +72,7 @@ public sealed partial class MainWindow : Window
             var date = entry.TimeStamp.ToString("hh:mm:ss tt");
             return $"({date}) {entry.Level}: {entry.Text}";
         }).ToArray();
-        LogsViewPanel.SystemMsgLog.Content = string.Join(Environment.NewLine, lines);
+        LogsViewPanel.SystemMsgLog.Text = string.Join(Environment.NewLine, lines);
     }
 
     /// <summary> Timer tick for eating hp food </summary>

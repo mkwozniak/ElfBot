@@ -15,6 +15,6 @@ public partial class LogsViewPanel
 	private void ClearLogsButton_Click(object sender, EventArgs e)
 	{
 		MainWindow.Logger.Clear();
-		SystemMsgLog.Content = "";
+		SystemMsgLog.Text = "";
 	}
 }

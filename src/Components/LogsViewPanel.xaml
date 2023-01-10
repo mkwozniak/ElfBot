@@ -11,7 +11,8 @@
                 Height="16" Width="45"
                 VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 2 0 0"
                 Click="ClearLogsButton_Click" />
-        <ComboBox IsReadOnly="True" SelectedIndex="1"
+        <ComboBox IsReadOnly="True" 
+                  SelectedIndex="{Binding Source={StaticResource ApplicationContext}, Path=Settings.SelectedLogLevelIndex}"
                   HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 2 0 0"
                   Width="60">
             <ComboBoxItem Content="Debug" />
@@ -19,11 +20,10 @@
             <ComboBoxItem Content="Warn" />
             <ComboBoxItem Content="Error" />
         </ComboBox>
-        <ScrollViewer x:Name="SystemMsgLog"
-                      Background="#FF212121"
+        <ScrollViewer Background="#FF212121"
                       Margin="10,30,0,0"
                       HorizontalScrollBarVisibility="Auto">
-            <TextBlock TextWrapping="Wrap" Text="TextBlock" />
+            <TextBlock x:Name="SystemMsgLog" TextWrapping="Wrap" Text="No logs have been created yet" Foreground="White" />
         </ScrollViewer>
     </Grid>
 </UserControl>
