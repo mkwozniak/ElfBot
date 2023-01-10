@@ -161,7 +161,7 @@ public sealed class AutoCombat
 		// If a target is not yet found, we may need to wait more time
 		// for the addresses to update. Otherwise, we may time out and 
 		// attempt to select a new monster.
-		if (id == 0) return false;
+		if (id == 0 || name == null) return false;
 
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
@@ -182,7 +182,7 @@ public sealed class AutoCombat
 			Trace.WriteLine($"Priority Target Check: {_state.PriorityCheckCount} / {_context.Settings.CombatOptions.MaxPriorityChecks}");
 			// If the selected monster is not whitelisted in the monster table,
 			// we need to restart our target search.
-			if (_context.MonsterTable.Contains($"*{name}"))
+			if (_context.MonsterTable.Contains($"*{name.Trim()}"))
 			{
 				// A whitelisted monster was finally targeted, so we can 
 				// now move to start attacking it.
@@ -200,7 +200,7 @@ public sealed class AutoCombat
 
 		// If the selected monster is not whitelisted in the monster table,
 		// we need to restart our target search.
-		if (!_context.MonsterTable.Contains(name))
+		if (!_context.MonsterTable.Contains(name.Trim()))
 		{
 			Trace.WriteLine("Monster name not in table");
 			_state.ResetTarget();
