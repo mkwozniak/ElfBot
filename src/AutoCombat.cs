@@ -190,6 +190,10 @@ public sealed class AutoCombat
 				// now move to start attacking it.
 				Trace.WriteLine("Found priority monster to attack");
 				_state.ChangeStatus(AutoCombatStatus.StartAttack);
+				if (CombatOptions.DelayBeforeAttack > 0)
+				{
+					_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
+				}
 				return true;
 			}
 
@@ -214,6 +218,10 @@ public sealed class AutoCombat
 		// now move to start attacking it.
 		Trace.WriteLine("Found monster to attack");
 		_state.ChangeStatus(AutoCombatStatus.StartAttack);
+		if (CombatOptions.DelayBeforeAttack > 0)
+		{
+			_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
+		}
 		return true;
 	}
 
@@ -226,12 +234,6 @@ public sealed class AutoCombat
 		_state.StartingXp = _context.CharacterData.Xp;
 		_state.StartingLevel = _context.CharacterData.Level;
 		var attackDuration = CombatOptions.AttackTimeout;
-		if (CombatOptions.DelayBeforeAttack > 0)
-		{
-			_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
-			attackDuration += CombatOptions.DelayBeforeAttack;
-		}
-
 		_state.ChangeStatus(AutoCombatStatus.Attacking, TimeSpan.FromSeconds(attackDuration));
 		return true;
 	}
