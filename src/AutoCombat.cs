@@ -240,6 +240,7 @@ public sealed class AutoCombat
 			Trace.WriteLine("Canceling attack due to expiration or target ID changing");
 			_state.Reset();
 			_state.ChangeStatus(AutoCombatStatus.Starting);
+			_state.SetCooldown(TimeSpan.FromSeconds(3));
 			return false;
 		}
 
