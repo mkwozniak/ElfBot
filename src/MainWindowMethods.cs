@@ -44,6 +44,7 @@ public sealed partial class MainWindow : Window
 
 	    // listen auto combat send key event
 		ApplicationContext.AutoCombat.OnSendKey += SendKey; 
+		ApplicationContext.AutoFood.OnSendKey += SendKey; 
 
         // prepare the initial interface view
         PrepareElfbotInterface();
@@ -59,10 +60,6 @@ public sealed partial class MainWindow : Window
     private void PrepareElfbotTimers()
     {
 	    ListenToTimer(InterfaceTimer, Interface_Tick);
-		ListenToTimer(ApplicationContext.HpFoodTimer, HpFoodTimer_Tick);
-		ListenToTimer(ApplicationContext.MpFoodTimer, MpFoodTimer_Tick);
-		ListenToTimer(ApplicationContext.HpFoodKeyTimer, HpFoodKeyTimer_Tick);
-		ListenToTimer(ApplicationContext.MpFoodKeyTimer, MpFoodKeyTimer_Tick);
 		ListenToTimer(ApplicationContext.CombatCameraTimer, CombatCameraTimer_Tick);
 		ListenToTimer(ApplicationContext.CameraYawTimer, CameraYawTimer_Tick);
         ListenToTimer(ApplicationContext.ZHackTimer, ZHackTimer_Tick);

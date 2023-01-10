@@ -6,40 +6,79 @@
              mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
 
     <Grid Background="Black">
-        <StackPanel>
-            <CheckBox Content="Auto HP"
-                      IsChecked="{Binding Path=Settings.FoodOptions.AutoHpEnabled, Source={StaticResource ApplicationContext}}"
-                      HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White"
-                      Checked="EnableHpTimer" Unchecked="DisableHpTimer" />
-            <DockPanel>
-                <TextBox Text="{Binding Path=Settings.FoodOptions.AutoHpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                         TextAlignment="Center"
-                         Margin="5 0" Height="15" Width="31"
-                         Background="Black" Foreground="White" />
-                <Label Content="%" Foreground="White" FontSize="16" />
-            </DockPanel>
-
-            <CheckBox Content="Auto MP"
-                      IsChecked="{Binding Path=Settings.FoodOptions.AutoMpEnabled, Source={StaticResource ApplicationContext}}"
-                      HorizontalAlignment="Left" Margin="5 5 0 0" Foreground="White"
-                      Checked="EnableMpTimer" Unchecked="DisableMpTimer" />
-            <DockPanel>
-                <TextBox Text="{Binding Path=Settings.FoodOptions.AutoMpThresholdPercent, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                         TextAlignment="Center"
-                         Margin="5 0" Height="15" Width="31"
-                         Background="Black" Foreground="White" />
-                <Label Content="%" Foreground="White" FontSize="16" />
-            </DockPanel>
-
-            <Label Content="Check Frequency (s)" FontWeight="Bold" Foreground="White" />
-            <TextBox Text="{Binding Path=Settings.FoodOptions.CheckFrequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                     HorizontalAlignment="Left" Margin="5 0" Width="98"
-                     Background="Black" Foreground="White" />
-
-            <Label Content="Consume Cooldown (s)" FontWeight="Bold" Foreground="White" />
-            <TextBox Text="{Binding Path=Settings.FoodOptions.Cooldown, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                     HorizontalAlignment="Left" Margin="5 0" Width="98"
-                     Background="Black" Foreground="White" />
-        </StackPanel>
+        <UniformGrid Columns="2" Width="400" Height="240"
+                     Margin="0 5 0 0"
+                     HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel>
+                <Label Content="Auto HP" Foreground="White" FontSize="14" FontWeight="Bold" />
+                <CheckBox Content="Enable" Foreground="White"
+                          Margin="5 5 0 0"
+                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsChecked="{Binding Path=Settings.FoodOptions.AutoHpEnabled, Source={StaticResource ApplicationContext}}"
+                          Checked="EnableAutoFood" Unchecked="CheckDisableAutoFood" />
+                <StackPanel>
+                    <Label Content="Slow Food Threshold (%)" ToolTip="Test"
+                           FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=HpSlowFoodThreshold, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="40" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="HpSlowFoodThreshold"
+                                Value="{Binding Path=Settings.FoodOptions.HpSlowFoodThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Instant Food Threshold (%)" FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=HpInstantFoodThreshold, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="40" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="HpInstantFoodThreshold"
+                                Value="{Binding Path=Settings.FoodOptions.HpInstantFoodThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Auto MP" Foreground="White" FontSize="14" FontWeight="Bold" />
+                <CheckBox Content="Enable" Foreground="White"
+                          Margin="5 5 0 0"
+                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsChecked="{Binding Path=Settings.FoodOptions.AutoMpEnabled, Source={StaticResource ApplicationContext}}"
+                          Checked="EnableAutoFood" Unchecked="CheckDisableAutoFood" />
+                <StackPanel>
+                    <Label Content="Slow Food Threshold (%)"
+                           FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=MpSlowFoodThreshold, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="40" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="MpSlowFoodThreshold"
+                                Value="{Binding Path=Settings.FoodOptions.MpSlowFoodThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Instant Food Threshold (%)" FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=MpInstantFoodThreshold, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="100" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="MpInstantFoodThreshold"
+                                Value="{Binding Path=Settings.FoodOptions.MpInstantFoodThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
+        </UniformGrid>
     </Grid>
 </UserControl>

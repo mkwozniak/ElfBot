@@ -241,6 +241,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	public ApplicationContext()
 	{
 		AutoCombat = new AutoCombat(this);
+		AutoFood = new AutoFood(this);
 	}
 
 	public Settings Settings
@@ -256,6 +257,8 @@ public class ApplicationContext : PropertyNotifyingClass
 	public CharacterData CharacterData { get; } = new();
 
 	public AutoCombat AutoCombat { get; }
+	
+	public AutoFood AutoFood { get; }
 
 	public int HookedProcessId { get; set; }
 

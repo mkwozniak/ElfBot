@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
+using ElfBot.Util;
 
 namespace ElfBot;
 
@@ -341,7 +341,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	private string? _currentTarget;
 	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoCombatStatus _status = AutoCombatStatus.Inactive;
-	private List<(HotkeySlot, DateTime)> _hotkeyCooldowns = new(); // List of hotkey->cooldown expirations
+	private HotkeyCooldownTracker _hotkeyCooldowns = new();
 
 	public bool ScanningForPriority { get; set; } = true;
 	public int PriorityCheckCount { get; set; }
@@ -427,12 +427,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// <param name="duration">cooldown duration</param>
 	public void SetHotkeyCooldown(HotkeySlot slot, TimeSpan duration)
 	{
-		var currentCooldown = _getHotkeyCooldown(slot);
-		if (currentCooldown != null)
-		{
-			_hotkeyCooldowns.Remove(currentCooldown.Value);
-		}
-		_hotkeyCooldowns.Add((slot, DateTime.Now.Add(duration)));
+		_hotkeyCooldowns.SetCooldown(slot, duration);
 	}
 
 	/// <summary>
@@ -442,14 +437,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// <returns>hotkey cooldown status</returns>
 	public bool isHotkeyOnCooldown(HotkeySlot slot)
 	{
-		var cooldown = _getHotkeyCooldown(slot);
-		return cooldown == null || !_isDateInPast(cooldown.Value.Item2);
-	}
-
-	private (HotkeySlot, DateTime)? _getHotkeyCooldown(HotkeySlot slot)
-	{
-		return _hotkeyCooldowns.Find(i => i.Item1.Key == slot.Key
-		                                  && i.Item1.IsShift == slot.IsShift);
+		return _hotkeyCooldowns.isOnCooldown(slot);
 	}
 
 	/// <summary>

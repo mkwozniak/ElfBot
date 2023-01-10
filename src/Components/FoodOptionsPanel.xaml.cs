@@ -11,31 +11,29 @@ public partial class FoodOptionsPanel
 		InitializeComponent();
 	}
 
-	private void EnableHpTimer(object sender, RoutedEventArgs e)
+	/// <summary>
+	/// Enables auto food if either auto-hp or auto-mp are selected.
+	/// </summary>
+	private void EnableAutoFood(object sender, RoutedEventArgs e)
 	{
-		MainWindow.StopTimer(ApplicationContext.HpFoodTimer); // just in case it's already running
-		MainWindow.StartTimer(ApplicationContext.HpFoodTimer,
-			(int)(ApplicationContext.Settings.FoodOptions.CheckFrequency * 1000));
-		MainWindow.Logger.Info("Enabled auto-HP food consumption", LogEntryTag.Food);
+		if (!ApplicationContext.AutoFood.IsStarted())
+		{
+			ApplicationContext.AutoFood.Start();	
+		}
 	}
 
-	private void DisableHpTimer(object sender, RoutedEventArgs e)
+	/// <summary>
+	/// Checks to see if the auto-food timer can be disabled.
+	///
+	/// Since auto-food is under 1 main loop, it is disabled only if auto-hp
+	/// and auto-mp are disabled.
+	/// </summary>
+	private void CheckDisableAutoFood(object sender, RoutedEventArgs e)
 	{
-		MainWindow.StopTimer(ApplicationContext.HpFoodTimer);
-		MainWindow.Logger.Info("Disabled auto-HP food consumption", LogEntryTag.Food);
-	}
-
-	private void EnableMpTimer(object sender, RoutedEventArgs e)
-	{
-		MainWindow.StopTimer(ApplicationContext.MpFoodTimer); // just in case it's already running
-		MainWindow.StartTimer(ApplicationContext.MpFoodTimer,
-			(int)(ApplicationContext.Settings.FoodOptions.CheckFrequency * 1000));
-		MainWindow.Logger.Info("Enabled auto-MP food consumption", LogEntryTag.Food);
-	}
-
-	private void DisableMpTimer(object sender, RoutedEventArgs e)
-	{
-		MainWindow.StopTimer(ApplicationContext.MpFoodTimer);
-		MainWindow.Logger.Info("Disabled auto-MP food consumption", LogEntryTag.Food);
+		var opts = ApplicationContext.Settings.FoodOptions;
+		if (!opts.AutoHpEnabled && !opts.AutoMpEnabled)
+		{
+			ApplicationContext.AutoFood.Stop();
+		}
 	}
 }

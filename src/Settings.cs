@@ -86,14 +86,40 @@ public sealed class LootOptions
 	public bool LootAfterCombatEnabled { get; set; }
 }
 
-public sealed class FoodOptions
+public sealed class FoodOptions : PropertyNotifyingClass
 {
-	public bool AutoHpEnabled { get; set; }
-	public float AutoHpThresholdPercent { get; set; } = 50f;
-	public bool AutoMpEnabled { get; set; }
-	public float AutoMpThresholdPercent { get; set; } = 50f;
-	public float CheckFrequency { get; set; } = 1f;
-	public float Cooldown { get; set; } = 7f;
+	private bool _autoHpEnabled;
+	private bool _autoMpEnabled;
+
+	[JsonIgnore]
+	public bool AutoHpEnabled
+	{
+		get => _autoHpEnabled;
+		set
+		{
+			if (_autoHpEnabled == value) return;
+			_autoHpEnabled = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public float HpSlowFoodThresholdPercent { get; set; } = 50f;
+	public float HpInstantFoodThresholdPercent { get; set; } = 50f;
+
+	[JsonIgnore]
+	public bool AutoMpEnabled
+	{
+		get => _autoMpEnabled;
+		set
+		{
+			if (_autoMpEnabled == value) return;
+			_autoMpEnabled = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public float MpSlowFoodThresholdPercent { get; set; } = 50f;
+	public float MpInstantFoodThresholdPercent { get; set; } = 50f;
 }
 
 public sealed class ZHackOptions
@@ -111,11 +137,12 @@ public class HotkeySlot
 
 	[JsonProperty] public int Value { get; set; }
 	public KeybindAction Action => (KeybindAction)Value;
-	
+
 	[JsonProperty] public bool IsShift { get; init; }
-	
+
 	/// <summary>
 	/// The cooldown time, in seconds.
 	/// </summary>
-	[JsonProperty] public int Cooldown { get; set; }
+	[JsonProperty]
+	public int Cooldown { get; set; }
 }
