@@ -1,6 +1,8 @@
 ﻿namespace ElfBot
 {
     using System;
+    using System.Diagnostics;
+    using System.Printing.IndexedProperties;
 
     public static class Addresses
     {
@@ -9,7 +11,7 @@
         public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BE100", "0x3AD8");//updated 2023-01-10
 		public static readonly IntField Xp = new IntField("trose.exe", "10BE100", "0x3AD4");//updated 2023-01-10
 		public static readonly IntField Zuly = new IntField("trose.exe", "10BE100", "0x3D38");//updated 2023-01-10
-																							  // Player Stats
+		// Player Stats
 		public static readonly IntField Hp = new IntField("trose.exe", "10BE100", "0x3ACC");//updated 2023-01-10
 		public static readonly IntField MaxHp = new IntField("trose.exe", "10BE100", "0x4600");//updated 2023-01-10
 		public static readonly IntField Mp = new IntField("trose.exe", "10BE100", "0x3AD0");//updated 2023-01-10
@@ -30,6 +32,9 @@
         public static readonly StringField Target = new StringField("trose.exe", "10D8C10");//updated 2023-01-10
 		public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");//updated 2023-01-10
 		public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C5950");//updated 2023-01-10
+
+        public static readonly ByteArrayField NoClipOn = new ByteArrayField(new byte[] { 0xc3, 0x90 }, 0x7FF7454B4D70); // updated 2023-01-11
+		public static readonly ByteArrayField NoClipOff = new ByteArrayField(new byte[] { 0x40, 0x57 }, 0x7FF7454B2040); // updated 2023-01-11
 	}
 
     /// <summary>
@@ -140,4 +145,45 @@
         {
         }
     }
+
+	public class ByteArrayField
+	{
+        private byte[] _bytes;
+        private long _address;
+
+		public ByteArrayField(byte[] bytes, long address)
+		{
+            _bytes = bytes;
+            _address = address;
+		}
+
+		public byte[] GetValue()
+		{
+			return _bytes;
+		}
+
+		public bool Write()
+		{
+            if (_bytes == null)
+                return false;
+
+			int bytesWritten = 0;
+
+			RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle, 
+                (IntPtr)0x7FF7454B4D70, new byte[] { 0xc3, 0x90}, ref bytesWritten);
+
+			//RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
+	            //(IntPtr)0x7FF7454B4D70, new byte[] { 0x40, 0x57 }, ref bytesWritten);
+
+			//RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
+	            //(IntPtr)_address, _bytes, ref bytesWritten);
+
+			Trace.WriteLine(bytesWritten);
+
+			if (bytesWritten > 0)
+				return true;
+
+            return false;
+		}
+	}
 }

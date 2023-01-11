@@ -77,6 +77,7 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
 	public bool PriorityTargetScan { get; set; } = true;
+	public bool NoClip { get; set; } = false;
 	public int MaxPriorityChecks { get; set; } = 10;
 }
 

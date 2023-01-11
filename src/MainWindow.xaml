@@ -92,7 +92,7 @@
         <!-- Navigation target panels -->
         <!--                          -->
         <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
-            <components:AutoCombatPanel />
+            <components:AutoCombatPanel/>
         </GroupBox>
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:MonsterTablePanel />

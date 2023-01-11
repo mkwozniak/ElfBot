@@ -11,7 +11,9 @@ using Newtonsoft.Json;
 
 namespace ElfBot;
 
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -76,7 +78,7 @@ public partial class MainWindow
 
 	private double _yawCounter = 0;
 	private double _yawCounterIncrement = 0.05;
-	
+
 	/// <summary>
 	/// Navigates to another panel when a properly configured button
 	/// is clicked. The button must have the 'Tag' attribute set
