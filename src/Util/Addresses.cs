@@ -33,8 +33,8 @@
 		public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");//updated 2023-01-10
 		public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C5950");//updated 2023-01-10
 
-        public static readonly ByteArrayField NoClipOn = new ByteArrayField(new byte[] { 0xc3, 0x90 }, 0x7FF7454B4D70); // updated 2023-01-11
-		public static readonly ByteArrayField NoClipOff = new ByteArrayField(new byte[] { 0x40, 0x57 }, 0x7FF7454B2040); // updated 2023-01-11
+        public static readonly ByteArrayField NoClipOn = new ByteArrayField(new byte[] { 0xC3, 0x90 }); // updated 2023-01-11
+		public static readonly ByteArrayField NoClipOff = new ByteArrayField(new byte[] { 0x40, 0x57 }); // updated 2023-01-11
 	}
 
     /// <summary>
@@ -149,12 +149,10 @@
 	public class ByteArrayField
 	{
         private byte[] _bytes;
-        private long _address;
 
-		public ByteArrayField(byte[] bytes, long address)
+		public ByteArrayField(byte[] bytes)
 		{
             _bytes = bytes;
-            _address = address;
 		}
 
 		public byte[] GetValue()
@@ -162,23 +160,16 @@
 			return _bytes;
 		}
 
-		public bool Write()
+		public bool Write(Int64 address)
 		{
             if (_bytes == null)
                 return false;
 
 			int bytesWritten = 0;
 
-			RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle, 
-                (IntPtr)0x7FF7454B4D70, new byte[] { 0xc3, 0x90}, ref bytesWritten);
+			RoseProcess.WriteBytes((IntPtr)address, _bytes, ref bytesWritten);
 
-			//RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
-	            //(IntPtr)0x7FF7454B4D70, new byte[] { 0x40, 0x57 }, ref bytesWritten);
-
-			//RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
-	            //(IntPtr)_address, _bytes, ref bytesWritten);
-
-			Trace.WriteLine(bytesWritten);
+			Trace.WriteLine("NoClip Test Bytes Written: " + bytesWritten);
 
 			if (bytesWritten > 0)
 				return true;

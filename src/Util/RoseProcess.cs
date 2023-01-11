@@ -76,8 +76,8 @@ public static class RoseProcess
 	/// <param name="MemoryAddress"> The int memory address to write to. </param>
 	/// <param name="bytesToWrite"> The bytes to write into the address. </param>
 	/// <param name="bytesWritten"> Stores the amount of bytes written after the operation. </param>
-	public static void WriteBytes(IntPtr processHandle, IntPtr MemoryAddress, byte[] bytesToWrite, ref int bytesWritten)
+	public static void WriteBytes(IntPtr MemoryAddress, byte[] bytesToWrite, ref int bytesWritten)
 	{
-		WriteProcessMemory(processHandle, MemoryAddress, bytesToWrite, (int)bytesToWrite.Length, ref bytesWritten);
+		WriteProcessMemory(CurrentProcessHandle, MemoryAddress, bytesToWrite, (int)bytesToWrite.Length, ref bytesWritten);
 	}
 }

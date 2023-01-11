@@ -27,43 +27,29 @@ public partial class AutoCombatPanel
 	{
 		if (!ApplicationContext.Hooked)
 			return;
-
-		int bytesWritten = 0;
-		RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
-			(IntPtr)0x7FF7454B4D70, new byte[] { 0xc3, 0x90 }, ref bytesWritten);
-
-		Trace.WriteLine("Enabled NoClip with bytes written: " + bytesWritten);
-
-		/*
-		if(Addresses.NoClipOn.Write())
+	
+		if(Addresses.NoClipOn.Write(0x7FF7454B4D70))
 		{
 			MainWindow.Logger.Debug("Successfully enabled NoClip.");
 			return;
 		}
 
 		MainWindow.Logger.Debug("Could not enable NoClip.");
-		*/
+		
 	}
 
 	private void DisableNoClip(object sender, RoutedEventArgs e)
 	{
 		if (!ApplicationContext.Hooked)
 			return;
-
-		int bytesWritten = 0;
-		RoseProcess.WriteBytes(RoseProcess.CurrentProcessHandle,
-		(IntPtr)0x7FF7454B4D70, new byte[] { 0x40, 0x57 }, ref bytesWritten);
-
-		Trace.WriteLine("Disabled NoClip with bytes written: " + bytesWritten);
-
-		/*
-		if (Addresses.NoClipOff.Write())
+	
+		if (Addresses.NoClipOff.Write(0x7FF7454B4D70))
 		{
 			MainWindow.Logger.Debug("Successfully disabled NoClip.");
 			return;
 		}
 
 		MainWindow.Logger.Debug("Could not disable NoClip.");
-		*/
+		
 	}
 }
