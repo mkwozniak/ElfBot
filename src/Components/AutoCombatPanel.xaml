@@ -12,7 +12,7 @@
                       IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
                       IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
                       Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
-            <UniformGrid Columns="2" Width="400" Height="240" 
+            <UniformGrid Columns="2" Width="400" Height="240"
                          Margin="0 5 0 0"
                          HorizontalAlignment="Left">
                 <StackPanel>
@@ -64,11 +64,12 @@
                              Background="Black" Foreground="White" />
                 </StackPanel>
             </UniformGrid>
-            <StackPanel Height="100">
-                <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold"/>
+            <StackPanel>
+                <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
                 <CheckBox Content="Enable NoClip" Foreground="White" Margin="5,5,5,5"
-                      IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
-                      Checked="EnableNoClip" Unchecked="DisableNoClip"/>
+                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
+                          Checked="EnableNoClip" Unchecked="DisableNoClip" />
             </StackPanel>
         </StackPanel>
     </Grid>
