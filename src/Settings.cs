@@ -58,6 +58,7 @@ public class Settings : PropertyNotifyingClass
 public sealed class CombatOptions : PropertyNotifyingClass
 {
 	private bool _autoCombatEnabled;
+	private bool _noClipEnabled;
 
 	[JsonIgnore]
 	public bool AutoCombatEnabled
@@ -77,7 +78,18 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
 	public bool PriorityTargetScan { get; set; } = true;
-	public bool NoClip { get; set; } = false;
+
+	public bool NoClip
+	{
+		get => _noClipEnabled;
+		set
+		{
+			if (_noClipEnabled == value) return;
+			_noClipEnabled = value;
+			NotifyPropertyChanged();
+		}
+	}
+
 	public int MaxPriorityChecks { get; set; } = 10;
 }
 

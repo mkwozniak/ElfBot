@@ -112,10 +112,10 @@ public partial class MainWindow
 	/// </summary>
 	private void HookApplication(object sender, RoutedEventArgs e)
 	{
-		var pid = RoseProcess.GetProcIdFromName("trose", ApplicationContext.UseSecondClient);
 		var brushConverter = new BrushConverter();
+		Process process = RoseProcess.GetProcess(ApplicationContext.UseSecondClient);
 		
-		if (pid <= 0)
+		if (process == null)
 		{
 			Logger.Warn($"The ROSE process was not found when attempting to hook trose.exe", LogEntryTag.System);
 			HookBtn.Content = "F A I L E D";
@@ -123,12 +123,18 @@ public partial class MainWindow
 			return;
 		}
 
-		TargetApplicationMemory.OpenProcess(pid);
-		ApplicationContext.HookedProcessId = pid;
+		TargetApplicationMemory.OpenProcess(process.Id);
+		RoseProcess.HookedProcess = process;
 		ApplicationContext.Hooked = true;
 		HookBtn.Content = "H O O K E D";
 		HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString(" #1F7D1F ")!;
-		Logger.Info($"Hooked ROSE process with PID {pid}", LogEntryTag.System);
+		Logger.Info($"Hooked ROSE process with PID {process.Id}", LogEntryTag.System);
+	}
+
+	private void _onRoseUnhook()
+	{
+		HookBtn.Content = "H O O K";
+		HookBtn.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(" #36719E ")!;
 	}
 
 	/// <summary> Loads a config to file </summary>
@@ -207,6 +213,11 @@ public partial class MainWindow
 	}
 }
 
+/// <summary>
+/// Delegate method to call once the ROSE process unhooks.
+/// </summary>
+public delegate void OnRoseUnhook();
+
 public class ApplicationContext : PropertyNotifyingClass
 {
 	private Settings _settings = new()
@@ -244,6 +255,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	};
 
 	private bool _hooked;
+	public OnRoseUnhook? RoseUnhookDelegate { get; set; }
 
 	public DispatcherTimer HpFoodTimer = new();
 	public DispatcherTimer MpFoodTimer = new();
@@ -277,14 +289,26 @@ public class ApplicationContext : PropertyNotifyingClass
 	
 	public AutoFood AutoFood { get; }
 
-	public int HookedProcessId { get; set; }
-
 	public bool Hooked
 	{
-		get => _hooked;
+		get
+		{
+			if (RoseProcess.HookedProcess == null) return false;
+			// ReSharper disable once InvertIf
+			if (RoseProcess.HookedProcess.HasExited)
+			{
+				RoseProcess.HookedProcess = null;
+				Hooked = false;
+				return false;
+			}
+			return true;
+		}
 		set
 		{
+			if (_hooked == value) return;
 			_hooked = value;
+			if (!value && RoseUnhookDelegate != null) 
+				RoseUnhookDelegate.Invoke();
 			NotifyPropertyChanged();
 		}
 	}

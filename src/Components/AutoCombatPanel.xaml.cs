@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System;
+﻿using System;
 using System.Windows;
 
 namespace ElfBot.Components;
@@ -25,31 +24,60 @@ public partial class AutoCombatPanel
 
 	private void EnableNoClip(object sender, RoutedEventArgs e)
 	{
-		if (!ApplicationContext.Hooked)
-			return;
-	
-		if(Addresses.NoClipOn.Write(0x7FF7454B4D70))
+		if (!ApplicationContext.Hooked) return;
+
+		if (!_writeNoClip(new byte[] { 0xC3, 0x90 }))
 		{
-			MainWindow.Logger.Debug("Successfully enabled NoClip.");
+			MainWindow.Logger.Warn("Failed to enable no-clip, could not write to memory");
+			ApplicationContext.Settings.CombatOptions.NoClip = false;
 			return;
 		}
 
-		MainWindow.Logger.Debug("Could not enable NoClip.");
-		
+		MainWindow.Logger.Info("Enable no-clip");
 	}
 
 	private void DisableNoClip(object sender, RoutedEventArgs e)
 	{
-		if (!ApplicationContext.Hooked)
-			return;
-	
-		if (Addresses.NoClipOff.Write(0x7FF7454B4D70))
+		if (!ApplicationContext.Hooked) return;
+
+		if (!_writeNoClip(new byte[] { 0x40, 0x57 }))
 		{
-			MainWindow.Logger.Debug("Successfully disabled NoClip.");
+			MainWindow.Logger.Warn("Failed to disable no-clip, could not write to memory");
+			ApplicationContext.Settings.CombatOptions.NoClip = true;
 			return;
 		}
 
-		MainWindow.Logger.Debug("Could not disable NoClip.");
-		
+		MainWindow.Logger.Info("Disabled no-clip");
+	}
+
+	private bool _writeNoClip(byte[] bytes)
+	{
+		if (RoseProcess.HookedProcess == null
+		    || RoseProcess.HookedProcess.MainModule == null) return false;
+		if (bytes.Length != 2)
+		{
+			throw new ArgumentException("Bytes array must have a length of 2");
+		}
+
+		var baseAddress = RoseProcess.HookedProcess.MainModule.BaseAddress;
+		var withOffset = baseAddress + Addresses.NoClipOffset;
+		var bytesWritten = 0;
+		try
+		{
+			RoseProcess.WriteProcessMemory(RoseProcess.HookedProcess.Handle, withOffset,
+				bytes, bytes.Length, ref bytesWritten);
+			return bytesWritten > 0;
+		}
+		catch (Exception ex)
+		{
+			MainWindow.Logger.Error($"An exception occurred when attempting write no clip bytes {bytes}");
+			MainWindow.Logger.Error(ex.Message);
+			if (ex.StackTrace != null)
+			{
+				MainWindow.Logger.Error(ex.StackTrace);
+			}
+
+			return false;
+		}
 	}
 }

@@ -30,7 +30,7 @@
                 <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
                           Margin="5 5 0 0"
                           IsChecked="{Binding Path=UseSecondClient, Source={StaticResource ApplicationContext}}" />
-                <!--        #D60B00  #1F7D1F          --> 
+                <!--                    --> 
                 <!-- Navigation buttons -->
                 <!--                    -->
                 <Separator Margin="0 5 0 5"/>

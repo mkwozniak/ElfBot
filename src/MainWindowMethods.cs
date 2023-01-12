@@ -13,6 +13,7 @@ public sealed partial class MainWindow : Window
     {
         Closed += StopWindowBehavior;
         Loaded += PrepareElfBot;
+        ApplicationContext.RoseUnhookDelegate += _onRoseUnhook;
         InitializeComponent();
     }
 

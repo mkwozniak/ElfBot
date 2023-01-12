@@ -1,11 +1,11 @@
 ﻿namespace ElfBot
 {
     using System;
-    using System.Diagnostics;
-    using System.Printing.IndexedProperties;
 
     public static class Addresses
     {
+        public static int NoClipOffset = 0xB4D70; 
+        
         // General Character Information
         public static readonly StringField CharacterName = new StringField("trose.exe", "10C1918");//updated 2023-01-10
         public static readonly TwoByteField Level = new TwoByteField("trose.exe", "10BE100", "0x3AD8");//updated 2023-01-10
@@ -32,10 +32,7 @@
         public static readonly StringField Target = new StringField("trose.exe", "10D8C10");//updated 2023-01-10
 		public static readonly IntField TargetId = new IntField("trose.exe", "10C0458", "0x8");//updated 2023-01-10
 		public static readonly StringField TargetDefeatedMessage = new StringField("trose.exe", "10C5950");//updated 2023-01-10
-
-        public static readonly ByteArrayField NoClipOn = new ByteArrayField(new byte[] { 0xC3, 0x90 }); // updated 2023-01-11
-		public static readonly ByteArrayField NoClipOff = new ByteArrayField(new byte[] { 0x40, 0x57 }); // updated 2023-01-11
-	}
+    }
 
     /// <summary>
     /// Represents a value of a given type stored in memory. 
@@ -145,36 +142,4 @@
         {
         }
     }
-
-	public class ByteArrayField
-	{
-        private byte[] _bytes;
-
-		public ByteArrayField(byte[] bytes)
-		{
-            _bytes = bytes;
-		}
-
-		public byte[] GetValue()
-		{
-			return _bytes;
-		}
-
-		public bool Write(Int64 address)
-		{
-            if (_bytes == null)
-                return false;
-
-			int bytesWritten = 0;
-
-			RoseProcess.WriteBytes((IntPtr)address, _bytes, ref bytesWritten);
-
-			Trace.WriteLine("NoClip Test Bytes Written: " + bytesWritten);
-
-			if (bytesWritten > 0)
-				return true;
-
-            return false;
-		}
-	}
 }
