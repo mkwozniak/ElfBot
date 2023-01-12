@@ -76,8 +76,6 @@ public sealed class AutoFood
 
 		try
 		{
-			_context.CharacterData.Update(); // Ensure character data is up to date
-
 			if (FoodOptions.AutoHpEnabled)
 			{
 				_autoHealth();
@@ -104,8 +102,8 @@ public sealed class AutoFood
 
 	private void _autoHealth()
 	{
-		var hp = _context.CharacterData.Hp;
-		var maxHp = _context.CharacterData.MaxHp;
+		var hp = _context.ActiveCharacter.Hp;
+		var maxHp = _context.ActiveCharacter.MaxHp;
 
 		if (hp == 0 || maxHp == 0)
 		{
@@ -125,8 +123,8 @@ public sealed class AutoFood
 
 	private void _autoMana()
 	{
-		var mp = _context.CharacterData.Mp;
-		var maxMp = _context.CharacterData.MaxMp;
+		var mp = _context.ActiveCharacter.Mp;
+		var maxMp = _context.ActiveCharacter.MaxMp;
 
 		if (mp == 0 || maxMp == 0)
 		{

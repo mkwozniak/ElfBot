@@ -91,7 +91,6 @@ public sealed class AutoCombat
 
 		try
 		{
-			_context.CharacterData.Update(); // Make sure character data is up to date
 			_ = _state.Status switch
 			{
 				AutoCombatStatus.Starting => _start(),
@@ -156,8 +155,8 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		var name = _context.CharacterData.CurrentTarget.Name;
-		var id = _context.CharacterData.CurrentTarget.Id;
+		var name = _context.ActiveCharacter.TargetName;
+		var id = _context.ActiveCharacter.LastTargetId;
 		Trace.WriteLine($"Target name is {name} with id {id}");
 
 		// If a target is not yet found, we may need to wait more time
@@ -174,8 +173,6 @@ public sealed class AutoCombat
 			{
 				Trace.WriteLine("Priority target selection expired");
 				_state.ScanningForPriority = false;
-				Addresses.Target.writeValue("");
-				Addresses.TargetId.writeValue(0);
 				_state.ResetTarget();
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 				return false;
@@ -231,8 +228,8 @@ public sealed class AutoCombat
 	/// <returns>true if attacking will begin</returns>
 	private bool _prepareAttacking()
 	{
-		_state.StartingXp = _context.CharacterData.Xp;
-		_state.StartingLevel = _context.CharacterData.Level;
+		_state.StartingXp = _context.ActiveCharacter.Xp;
+		_state.StartingLevel = _context.ActiveCharacter.Level;
 		var attackDuration = CombatOptions.AttackTimeout;
 		_state.ChangeStatus(AutoCombatStatus.Attacking, TimeSpan.FromSeconds(attackDuration));
 		return true;
@@ -245,7 +242,7 @@ public sealed class AutoCombat
 	private bool _attack()
 	{
 		if (_state.IsExpired()
-		    || _state.CurrentTargetId != _context.CharacterData.CurrentTarget.Id)
+		    || _state.CurrentTargetId != _context.ActiveCharacter.LastTargetId)
 		{
 			Trace.WriteLine("Canceling attack due to expiration or target ID changing");
 			_state.Reset();
@@ -258,12 +255,12 @@ public sealed class AutoCombat
 		// is the best current method we have, and in the future this will change
 		// to checking the monsters HP or alive status. When the monster has died,
 		// we need to move into either looting or restart the cycle.
-		if (_context.CharacterData.Xp > _state.StartingXp
-		    || _context.CharacterData.Level > _state.StartingLevel)
+		if (_context.ActiveCharacter.Xp > _state.StartingXp
+		    || _context.ActiveCharacter.Level > _state.StartingLevel)
 		{
 			Trace.WriteLine($"Character XP or level changed. " +
 			                $"Previous had {_state.StartingXp} XP at level {_state.StartingLevel} " +
-			                $"and now has {_context.CharacterData.Xp} XP at level {_context.CharacterData.Level}");
+			                $"and now has {_context.ActiveCharacter.Xp} XP at level {_context.ActiveCharacter.Level}");
 
 			if (_context.Settings.LootOptions.LootAfterCombatEnabled)
 			{

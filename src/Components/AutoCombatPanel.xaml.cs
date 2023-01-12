@@ -60,7 +60,7 @@ public partial class AutoCombatPanel
 		}
 
 		var baseAddress = RoseProcess.HookedProcess.MainModule.BaseAddress;
-		var withOffset = baseAddress + Addresses.NoClipOffset;
+		var withOffset = baseAddress + StaticOffsets.NoClipFunction;
 		var bytesWritten = 0;
 		try
 		{

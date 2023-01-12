@@ -13,7 +13,6 @@ namespace ElfBot;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -255,6 +254,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	};
 
 	private bool _hooked;
+	private Character _hookedCharacterMemRef = new();
 	public OnRoseUnhook? RoseUnhookDelegate { get; set; }
 
 	public DispatcherTimer HpFoodTimer = new();
@@ -271,6 +271,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	{
 		AutoCombat = new AutoCombat(this);
 		AutoFood = new AutoFood(this);
+		UiData = new UiData(this);
 	}
 
 	public Settings Settings
@@ -283,7 +284,9 @@ public class ApplicationContext : PropertyNotifyingClass
 		}
 	}
 
-	public CharacterData CharacterData { get; } = new();
+	public Character? ActiveCharacter => Hooked && _hookedCharacterMemRef.IsValid() ? _hookedCharacterMemRef : null;
+
+	public UiData UiData { get; }
 
 	public AutoCombat AutoCombat { get; }
 	
@@ -314,4 +317,38 @@ public class ApplicationContext : PropertyNotifyingClass
 	}
 
 	public bool UseSecondClient { get; set; }
+}
+
+public class UiData : PropertyNotifyingClass
+{
+	private readonly ApplicationContext _context;
+
+	public string Name => _context.ActiveCharacter?.Name ?? "N/A";
+	public int Level => _context.ActiveCharacter?.Level ?? -1;
+	public int Xp => _context.ActiveCharacter?.Xp ?? -1;
+	public int Zuly => _context.ActiveCharacter?.Zuly ?? -1;
+	public string HpText => $"{_context.ActiveCharacter?.Hp ?? 0} / {_context.ActiveCharacter?.MaxHp ?? 0}";
+	public string MpText => $"{_context.ActiveCharacter?.Mp ?? 0} / {_context.ActiveCharacter?.MaxMp ?? 0}";
+	public string? CurrentTargetName => _context.ActiveCharacter?.TargetName ?? "N/A";
+	public int LastTargetId => _context.ActiveCharacter?.LastTargetId ?? -1;
+	public float PositionX => _context.ActiveCharacter?.PositionX ?? 0f;
+	public float PositionY => _context.ActiveCharacter?.PositionY ?? 0f;
+	public float PositionZ => _context.ActiveCharacter?.PositionZ ?? 0f;
+	public int MapId => _context.ActiveCharacter?.MapId ?? -1;
+	public float CameraZoom => _context.ActiveCharacter?.Camera.Zoom ?? 0f;
+	public float CameraPitch => _context.ActiveCharacter?.Camera.Pitch ?? 0f;
+	public float CameraYaw => _context.ActiveCharacter?.Camera.Yaw ?? 0f;
+
+	public UiData(ApplicationContext context)
+	{
+		_context = context;
+	}
+
+	public void Update()
+	{
+		foreach (var property in GetType().GetProperties())
+		{
+			NotifyPropertyChanged(property.Name);
+		}
+	}
 }

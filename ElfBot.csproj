@@ -8,9 +8,8 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
 	<DebugType>embedded</DebugType>
   </PropertyGroup>
-
-
-	<ItemGroup>
+  
+  <ItemGroup>
     <None Remove="elfbot-icon-large.png" />
     <None Remove="elfbot-icon.ico" />
     <None Remove="ROSE_Input.dll" />
