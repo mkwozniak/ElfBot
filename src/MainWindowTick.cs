@@ -84,11 +84,11 @@ public sealed partial class MainWindow : Window
 
         if (Settings.CombatOptions.ForceCameraOverhead)
         {
-            Addresses.CameraPitch.writeValue(CameraMaxPitch);
+            Addresses.CameraPitch.WriteValue(CameraMaxPitch);
         }
         if (Settings.CombatOptions.ForceCameraZoom)
         {
-            Addresses.CameraZoom.writeValue(CameraMaxZoom);
+            Addresses.CameraZoom.WriteValue(CameraMaxZoom);
         }
     }
 
@@ -101,7 +101,7 @@ public sealed partial class MainWindow : Window
             return;
 
         float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
-        Addresses.CameraYaw.writeValue(waveform);
+        Addresses.CameraYaw.WriteValue(waveform);
         _yawCounter += _yawCounterIncrement;
 
         _yawMouseScrollCounter++;
@@ -109,7 +109,7 @@ public sealed partial class MainWindow : Window
         if (_yawMouseScrollCounter > _yawMouseScrollCounterMax)
         {
             _yawMouseScrollCounter = 0;
-            Addresses.CameraZoom.writeValue(Addresses.CameraZoom.GetValue() + 10f);
+            Addresses.CameraZoom.WriteValue(Addresses.CameraZoom.GetValue() + 10f);
             // Sim.Mouse.VerticalScroll(-1);
         }
     }
@@ -123,7 +123,7 @@ public sealed partial class MainWindow : Window
 			return;
 
 		Logger.Debug("ZHack Timer Tick", LogEntryTag.System);
-		Addresses.PositionZ.writeValue(Addresses.PositionZ.GetValue() + Settings.ZHackOptions.Amount);
+		Addresses.PositionZ.WriteValue(Addresses.PositionZ.GetValue() + Settings.ZHackOptions.Amount);
 	}
 
     #endregion

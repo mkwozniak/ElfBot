@@ -174,8 +174,8 @@ public sealed class AutoCombat
 			{
 				Trace.WriteLine("Priority target selection expired");
 				_state.ScanningForPriority = false;
-				Addresses.Target.writeValue("");
-				Addresses.TargetId.writeValue(0);
+				Addresses.Target.WriteValue("");
+				Addresses.TargetId.WriteValue(0);
 				_state.ResetTarget();
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 				return false;
