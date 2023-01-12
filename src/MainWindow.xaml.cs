@@ -87,8 +87,23 @@ public partial class MainWindow
 	private void NavigatePanel(object sender, RoutedEventArgs e)
 	{
 		if (sender is not Button { Tag: UIElement target }) return;
-		HideAllPanels();
+		// Reset visibility & colors of all panels + navigation buttons
+		CombatOptionsPanel.Visibility = Visibility.Hidden;
+		FoodOptionsPanel.Visibility = Visibility.Hidden;
+		MonsterTablePanel.Visibility = Visibility.Hidden;
+		KeybindOptionsPanel.Visibility = Visibility.Hidden;
+		LoggingOptionsPanel.Visibility = Visibility.Hidden;
+		ZHackOptionsPanel.Visibility = Visibility.Hidden;
+		AutoCombatPanelButton.Background = Brushes.Black;
+		MonsterTablePanelButton.Background = Brushes.Black;
+		FoodOptionsPanelButton.Background = Brushes.Black;
+		BuffOptionsPanelButton.Background = Brushes.Black;
+		ZHackPanelButton.Background = Brushes.Black;
+		KeybindingsPanelButton.Background = Brushes.Black;
+		LogsViewPanelButton.Background = Brushes.Black;
+		// Show the newly selected panel and highlight the button to indicate it is selected
 		target.Visibility = Visibility.Visible;
+		((Button)sender).Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#468cc0")!;
 	}
 
 	/// <summary>
@@ -104,7 +119,7 @@ public partial class MainWindow
 		{
 			Logger.Warn($"The ROSE process was not found when attempting to hook trose.exe", LogEntryTag.System);
 			HookBtn.Content = "F A I L E D";
-			HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString("#D60B00");
+			HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString("#D60B00")!;
 			return;
 		}
 
@@ -112,7 +127,7 @@ public partial class MainWindow
 		ApplicationContext.HookedProcessId = pid;
 		ApplicationContext.Hooked = true;
 		HookBtn.Content = "H O O K E D";
-		HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString(" #1F7D1F ");
+		HookBtn.Background = (SolidColorBrush)brushConverter.ConvertFromString(" #1F7D1F ")!;
 		Logger.Info($"Hooked ROSE process with PID {pid}", LogEntryTag.System);
 	}
 

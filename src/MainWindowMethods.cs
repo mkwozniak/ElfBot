@@ -75,16 +75,5 @@ public sealed partial class MainWindow : Window
 	    CombatOptionsPanel.Visibility = Visibility.Visible;
 	}
 
-    /// <summary> Hides all panels visibility and controls. </summary>
-    private void HideAllPanels()
-    {
-	    CombatOptionsPanel.Visibility = Visibility.Hidden;
-	    FoodOptionsPanel.Visibility = Visibility.Hidden;
-	    MonsterTablePanel.Visibility = Visibility.Hidden;
-	    KeybindOptionsPanel.Visibility = Visibility.Hidden;
-	    LoggingOptionsPanel.Visibility = Visibility.Hidden;
-	    ZHackOptionsPanel.Visibility = Visibility.Hidden;
-    }
-
     #endregion
 }

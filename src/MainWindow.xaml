@@ -25,7 +25,7 @@
                      HorizontalAlignment="Left" HorizontalContentAlignment="Center">
                 <Button x:Name="HookBtn" Content="H O O K"
                         Height="20" Width="128" HorizontalAlignment="Center"
-                        Background="#5B8899" Foreground="White"
+                        Background="#36719E" Foreground="White"
                         Click="HookApplication" />
                 <CheckBox x:Name="SecondClientCheckBox" Content="2nd Client" Foreground="White"
                           Margin="5 5 0 0"
@@ -34,34 +34,34 @@
                 <!-- Navigation buttons -->
                 <!--                    -->
                 <Separator Margin="0 5 0 5"/>
-                <Button Content="Auto Combat"
-                        Background="Black" Foreground="White"
+                <Button x:Name="AutoCombatPanelButton" Content="Auto Combat"
+                        Background="#468cc0" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=CombatOptionsPanel}"
                         Click="NavigatePanel" />
-                <Button Content="Monster Table"
+                <Button x:Name="MonsterTablePanelButton" Content="Monster Table"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=MonsterTablePanel}"
                         Click="NavigatePanel" />
-                <Button Content="Food"
+                <Button x:Name="FoodOptionsPanelButton" Content="Food"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=FoodOptionsPanel}"
                         Click="NavigatePanel" />
                 <!-- buffs button is currently disabled until implemented -->
-                <Button x:Name="BuffOptionsBtn" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
-                <Button Content="ZHack"
+                <Button x:Name="BuffOptionsPanelButton" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
+                <Button x:Name="ZHackPanelButton" Content="ZHack"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=ZHackOptionsPanel}"
                         Click="NavigatePanel" />
-                <Button Content="Keybindings"
+                <Button x:Name="KeybindingsPanelButton" Content="Keybindings"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=KeybindOptionsPanel}"
                         Click="NavigatePanel" />
-                <Button Content="Logs"
+                <Button x:Name="LogsViewPanelButton" Content="Logs"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=LoggingOptionsPanel}"
