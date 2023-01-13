@@ -235,6 +235,12 @@ public class Character : Entity
 	{
 		return Name.Trim().Length > 0;
 	}
+
+	public void ResetTargetMemory()
+	{
+		_targetIdField.WriteValue(0);
+		_targetNameField.WriteValue("");
+	}
 }
 
 /// <summary>

@@ -184,6 +184,7 @@ public sealed class AutoCombat
 			{
 				Trace.WriteLine("Priority target selection expired");
 				_state.ScanningForPriority = false;
+				_context.ActiveCharacter.ResetTargetMemory();
 				_state.ResetTarget();
 				_state.ChangeStatus(AutoCombatStatus.Targeting);
 				return false;
