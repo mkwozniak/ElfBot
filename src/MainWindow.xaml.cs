@@ -71,6 +71,7 @@ public partial class MainWindow
 
 	private void _exit(object? sender, EventArgs e)
 	{
+		RoseProcess.DisableNoClip();
 		InterfaceTimer.Stop();
 		ApplicationContext.CombatCameraTimer.Stop();
 		ApplicationContext.CameraYawTimer.Stop();
