@@ -7,7 +7,41 @@
 
     <Grid Background="Black">
         <StackPanel>
-            <DockPanel Width="300" HorizontalAlignment="Left">
+            <UniformGrid Columns="2" Width="350" HorizontalAlignment="Left">
+                <StackPanel>
+                    <Label Content="ZHack" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Enable"
+                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White"
+                              Checked="EnableZHack" Unchecked="DisableZHack" />
+
+                    <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
+                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Left" Margin="5 0" Width="98"
+                             Foreground="White" Background="Black" />
+
+                    <Label Content="Z-axis Increase Amount" FontWeight="Bold" Foreground="White" />
+                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                             HorizontalAlignment="Left" Margin="5 0" Width="98"
+                             Foreground="White" Background="Black" />
+                    <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
+                               HorizontalAlignment="Left" Margin="5 0" Width="150"
+                               FontStyle="Italic" Foreground="#FFEFBD0A" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Force Camera Zoom"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Force Camera Overhead"
+                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Camera Yaw Wave"
+                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White" />
+                </StackPanel>
+            </UniformGrid>
+            <DockPanel Margin="0 5 0 0" Width="305" HorizontalAlignment="Left">
                 <StackPanel>
                     <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
@@ -28,42 +62,6 @@
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
-            <UniformGrid Columns="2" Margin="0 15 0 0 " 
-                         Width="350" HorizontalAlignment="Left">
-                <StackPanel HorizontalAlignment="Left">
-                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Force Camera Zoom"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Force Camera Overhead"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Camera Yaw Wave"
-                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White" />
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Right">
-                    <Label Content="ZHack" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Enable"
-                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White"
-                              Checked="EnableZHack" Unchecked="DisableZHack" />
-
-                    <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-
-                    <Label Content="Z-axis Increase Amount" FontWeight="Bold" Foreground="White" />
-                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-                    <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
-                               HorizontalAlignment="Left" Margin="5 0" Width="150"
-                               FontStyle="Italic" Foreground="#FFEFBD0A" />
-                </StackPanel>
-            </UniformGrid>
         </StackPanel>
     </Grid>
 </UserControl>
