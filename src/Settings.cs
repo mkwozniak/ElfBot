@@ -73,7 +73,6 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	}
 
 	public float DelayBeforeAttack { get; set; }
-	public float AttackTimeout { get; set; } = 60f;
 	public int BuffFrequency { get; set; } = 60;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }

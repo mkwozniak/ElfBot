@@ -16,13 +16,7 @@
                          Margin="0 5 0 0"
                          HorizontalAlignment="Left">
                 <StackPanel>
-                    <Label Content="Timing" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <StackPanel>
-                        <Label Content="Attack Timeout (s)" FontWeight="Bold" Foreground="White" />
-                        <TextBox Text="{Binding Path=Settings.CombatOptions.AttackTimeout, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalAlignment="Left" Width="90" Margin="5 0"
-                                 Background="Black" Foreground="White" />
-                    </StackPanel>
+                    <Label Content="General" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <StackPanel>
                         <Label Content="Delay Before Attacking (s)" FontWeight="Bold" Foreground="White" />
                         <TextBox Text="{Binding Path=Settings.CombatOptions.DelayBeforeAttack, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
