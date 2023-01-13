@@ -266,7 +266,6 @@ public class ApplicationContext : PropertyNotifyingClass
 	public DispatcherTimer CombatCameraTimer = new();
 	public DispatcherTimer CameraYawTimer = new();
 	public DispatcherTimer ZHackTimer = new();
-	public DispatcherTimer BuffsExpiredTimer = new();
 
 	public readonly HashSet<string> MonsterTable = new();
 

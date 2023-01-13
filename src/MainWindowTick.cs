@@ -126,18 +126,6 @@ public sealed partial class MainWindow : Window
 
         ApplicationContext.ActiveCharacter.PositionZ += Settings.ZHackOptions.Amount;
 	}
-
-	/// <summary> Timer tick for buffs expired </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	private void BuffsExpiredTimer_Tick(object? sender, EventArgs e)
-	{
-		if (!ApplicationContext.Hooked)
-			return;
-
-		Logger.Debug("Buffs Expired Tick", LogEntryTag.System);
-        ApplicationContext.AutoCombat.State.BuffsExpired = true;
-	}
-
+    
 	#endregion
 }

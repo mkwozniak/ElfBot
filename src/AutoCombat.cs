@@ -29,11 +29,11 @@ public sealed class AutoCombat
 	public SendingKey? OnSendKey;
 
 	private readonly ApplicationContext _context;
-	private readonly AutoCombatState _state = new();
+	private readonly AutoCombatState _state;
 	private readonly int _tabKeyCode = 0x09;
 	private readonly int _lootKeyCode = 0x54;
 
-	private CombatOptions CombatOptions => _context.Settings.CombatOptions;
+	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{
@@ -44,6 +44,7 @@ public sealed class AutoCombat
 	{
 		_context = context;
 		_autoCombatTimer.Tick += Tick;
+		_state = new AutoCombatState(this);
 	}
 
 	public AutoCombatState State => _state;
@@ -83,11 +84,6 @@ public sealed class AutoCombat
 			                       "a monster table is loaded");
 			Stop();
 			return;
-		}
-
-		if(_context.ActiveCharacter.TargetEntity != null)
-		{
-			//Trace.WriteLine(_context.ActiveCharacter.TargetEntity.Hp);
 		}
 
 		if (_state.isOnCooldown())
@@ -130,9 +126,8 @@ public sealed class AutoCombat
 	{
 		_state.Reset();
 
-		if (CombatOptions.BuffsEnabled && _state.BuffsExpired)
+		if (_state.CanApplyBuffs()) 
 		{
-			_state.CurrentCastingBuff = 0;
 			Trace.WriteLine("Buffing Before combat.");
 			_state.ChangeStatus(AutoCombatStatus.Buffing);
 			return true;
@@ -148,13 +143,6 @@ public sealed class AutoCombat
 	/// <returns>whether the tab key was pressed</returns>
 	private bool _selectNewTarget()
 	{
-		if(CombatOptions.BuffsEnabled && _state.BuffsExpired)
-		{
-			_state.CurrentCastingBuff = 0;
-			_state.ChangeStatus(AutoCombatStatus.Buffing);
-			return true;
-		}
-
 		_state.ResetTarget();
 		OnSendKey?.Invoke(_tabKeyCode);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
@@ -253,7 +241,6 @@ public sealed class AutoCombat
 	{
 		_state.StartingXp = _context.ActiveCharacter.Xp;
 		_state.StartingLevel = _context.ActiveCharacter.Level;
-		var attackDuration = CombatOptions.AttackTimeout;
 		_state.ChangeStatus(AutoCombatStatus.Attacking);
 		return true;
 	}
@@ -264,7 +251,7 @@ public sealed class AutoCombat
 	/// <returns>whether an attack will be performed</returns>
 	private bool _attack()
 	{
-		if(_state.IsExpired() || _context.ActiveCharacter.TargetEntity == null)
+		if(_context.ActiveCharacter?.TargetEntity == null)
 		{
 			Trace.WriteLine("Canceling attack due to expiration or invalid target.");
 			_state.Reset();
@@ -277,9 +264,7 @@ public sealed class AutoCombat
 		// is the best current method we have, and in the future this will change
 		// to checking the monsters HP or alive status. When the monster has died,
 		// we need to move into either looting or restart the cycle.
-		if (_context.ActiveCharacter.Xp > _state.StartingXp
-			|| _context.ActiveCharacter.Level > _state.StartingLevel 
-			|| _context.ActiveCharacter.TargetEntity.Hp <= 0)
+		if (_context.ActiveCharacter.TargetEntity?.Hp <= 0)
 		{
 			Trace.WriteLine($"Character XP or level changed. " +
 			                $"Previous had {_state.StartingXp} XP at level {_state.StartingLevel} " +
@@ -293,10 +278,10 @@ public sealed class AutoCombat
 			else
 			{
 				_state.Reset();
-				_state.ChangeStatus(AutoCombatStatus.Targeting);
+				_state.ChangeStatus(AutoCombatStatus.Starting);
 			}
 
-			if(CombatOptions.PriorityTargetScan)
+			if (CombatOptions.PriorityTargetScan)
 			{
 				_state.PriorityCheckCount = 0;
 				_state.ScanningForPriority = true;
@@ -359,19 +344,13 @@ public sealed class AutoCombat
 
 	private bool _buff()
 	{
-		if(_state.isOnCooldown() || _state.IsExpired())
-		{
-			Trace.WriteLine("Canceling buffs due to state cooldown or expiration.");
-			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			return false;
-		}
-
 		var activeBuffKeys = _context.Settings.FindKeybindings(KeybindAction.Buff);
 		if (activeBuffKeys.Count == 0)
 		{
 			Trace.WriteLine("No buff keys have been set");
 			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
+			_state.Reset();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
 			return false;
 		}
 
@@ -398,11 +377,9 @@ public sealed class AutoCombat
 		_state.CurrentCastingBuff++;
 		if (_state.CurrentCastingBuff >= activeBuffKeys.Count)
 		{
-			_state.BuffsExpired = false;
+			_state.LastBuffTime = DateTime.Now;
 			_state.Reset();
 			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			MainWindow.StopTimer(_context.BuffsExpiredTimer);
-			MainWindow.StartTimer(_context.BuffsExpiredTimer, CombatOptions.BuffCooldown);
 		}
 		return true;
 	}
@@ -410,13 +387,18 @@ public sealed class AutoCombat
 
 public sealed class AutoCombatState : PropertyNotifyingClass
 {
+	private readonly AutoCombat _autoCombat;
 	private string? _currentTarget;
 	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoCombatStatus _status = AutoCombatStatus.Inactive;
 	private HotkeyCooldownTracker _hotkeyCooldowns = new();
 
+	public AutoCombatState(AutoCombat autoCombat)
+	{
+		_autoCombat = autoCombat;
+	}
+
 	public bool ScanningForPriority { get; set; } = true;
-	public bool BuffsExpired { get; set; } = true;
 	public int PriorityCheckCount { get; set; }
 
 	public AutoCombatStatus Status
@@ -437,6 +419,17 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 
 	public int StartingLevel { get; set; }
 
+	/// <summary>
+	/// Tracks the last time buffs were applied.
+	/// </summary>
+	public DateTime? LastBuffTime { get; set; }
+	
+	/// <summary>
+	/// During buffing, tracks the current buff being cast.
+	///
+	/// As auto-combat ticks, it increments the buff count so that each
+	/// buff keybind is ran only 1 time.
+	/// </summary>
 	public int CurrentCastingBuff { get; set; }
 
 	public string? CurrentTarget // might not need this
@@ -525,6 +518,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		StartingXp = 0;
 		StartingLevel = 0;
 		PriorityCheckCount = 0;
+		CurrentCastingBuff = 0;
 		Cooldown = null;
 		_hotkeyCooldowns.Clear();
 		Trace.WriteLine("Auto-combat state was fully reset");
@@ -539,7 +533,17 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		_currentTargetId = 0;
 		Trace.WriteLine("Auto-combat target was reset");
 	}
-
+	
+	/// <summary>
+	/// Returns true if buffs are able to be applied.
+	/// </summary>
+	/// <returns>buff readiness status</returns>
+	public bool CanApplyBuffs()
+	{
+		return _autoCombat.CombatOptions.BuffsEnabled
+			&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCombat.CombatOptions.BuffFrequency));
+	}
+	
 	/// <summary>
 	/// Returns true if this state has timed out. If the state
 	/// does not have a timeout set, this method will always
@@ -550,7 +554,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	{
 		return _isDateInPast(StatusTimeout);
 	}
-
+	
 	private static bool _isDateInPast(DateTime? time)
 	{
 		var now = DateTime.Now;
