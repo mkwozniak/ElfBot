@@ -41,18 +41,6 @@
                              Background="Black" Foreground="White" />
                 </StackPanel>
                 <StackPanel>
-                    <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Force Camera Zoom"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Force Camera Overhead"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Camera Yaw Wave"
-                              IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White" />
-                </StackPanel>
-                <StackPanel>
                     <Label Content="Target Priority" Foreground="White" FontWeight="Bold" FontSize="14"/>
                     <CheckBox Content="Priority Targeting Mode" Foreground="White" 
                               IsChecked="{Binding Path=Settings.CombatOptions.PriorityTargetScan, Source={StaticResource ApplicationContext}}"
@@ -64,13 +52,6 @@
                              Background="Black" Foreground="White" />
                 </StackPanel>
             </UniformGrid>
-            <StackPanel>
-                <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
-                <CheckBox Content="Enable NoClip" Foreground="White" Margin="5,5,5,5"
-                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                          IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
-                          Checked="EnableNoClip" Unchecked="DisableNoClip" />
-            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

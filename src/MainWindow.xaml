@@ -34,8 +34,13 @@
                 <!-- Navigation buttons -->
                 <!--                    -->
                 <Separator Margin="0 5 0 5"/>
-                <Button x:Name="AutoCombatPanelButton" Content="Auto Combat"
+                <Button x:Name="GeneralPanelButton" Content="General"
                         Background="#468cc0" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=GeneralOptionsPanel}"
+                        Click="NavigatePanel" />
+                <Button x:Name="AutoCombatPanelButton" Content="Auto Combat"
+                        Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=CombatOptionsPanel}"
                         Click="NavigatePanel" />
@@ -50,18 +55,6 @@
                         Tag="{Binding ElementName=FoodOptionsPanel}"
                         Click="NavigatePanel" />
                 <!-- buffs button is currently disabled until implemented -->
-                <Button x:Name="BuffOptionsPanelButton" 
-                        Background="Black" 
-                        Content="Buffs" 
-                        Foreground="White" 
-                        Height="19" Width="128" 
-                        Tag="{Binding ElementName=BuffOptionsPanel}"
-                        Click="NavigatePanel"/>
-                <Button x:Name="ZHackPanelButton" Content="ZHack"
-                        Background="Black" Foreground="White"
-                        Height="20" Width="128"
-                        Tag="{Binding ElementName=ZHackOptionsPanel}"
-                        Click="NavigatePanel" />
                 <Button x:Name="KeybindingsPanelButton" Content="Keybindings"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
@@ -97,7 +90,10 @@
         <!--                          -->
         <!-- Navigation target panels -->
         <!--                          -->
-        <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
+        <GroupBox x:Name="GeneralOptionsPanel" Header="General" Margin="158,0,182,10" Foreground="White" Visibility="Visible">
+            <components:GeneralOptionsPanel/>
+        </GroupBox>
+        <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:AutoCombatPanel/>
         </GroupBox>
         <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
@@ -106,17 +102,11 @@
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:FoodOptionsPanel />
         </GroupBox>
-        <GroupBox x:Name="ZHackOptionsPanel" Header="ZHack Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <components:ZHackOptionsPanel />
-        </GroupBox>
         <GroupBox x:Name="KeybindOptionsPanel" Header="Keybind Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:KeybindingsPanel />
         </GroupBox>
         <GroupBox x:Name="LoggingOptionsPanel" Header="Logs" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:LogsViewPanel x:Name="LogsViewPanel" />
-        </GroupBox>
-        <GroupBox x:Name="BuffOptionsPanel" Header="Buff Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <components:BuffOptionsPanel />
         </GroupBox>
     </Grid>
 </Window>

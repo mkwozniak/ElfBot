@@ -98,18 +98,16 @@ public partial class MainWindow
 	{
 		if (sender is not Button { Tag: UIElement target } button) return;
 		// Reset visibility & colors of all panels + navigation buttons
+		GeneralOptionsPanel.Visibility = Visibility.Hidden;
 		CombatOptionsPanel.Visibility = Visibility.Hidden;
 		FoodOptionsPanel.Visibility = Visibility.Hidden;
 		MonsterTablePanel.Visibility = Visibility.Hidden;
 		KeybindOptionsPanel.Visibility = Visibility.Hidden;
 		LoggingOptionsPanel.Visibility = Visibility.Hidden;
-		ZHackOptionsPanel.Visibility = Visibility.Hidden;
-		BuffOptionsPanel.Visibility = Visibility.Hidden;
 		AutoCombatPanelButton.Background = Brushes.Black;
 		MonsterTablePanelButton.Background = Brushes.Black;
 		FoodOptionsPanelButton.Background = Brushes.Black;
-		BuffOptionsPanelButton.Background = Brushes.Black;
-		ZHackPanelButton.Background = Brushes.Black;
+		GeneralPanelButton.Background = Brushes.Black;
 		KeybindingsPanelButton.Background = Brushes.Black;
 		LogsViewPanelButton.Background = Brushes.Black;
 		// Show the newly selected panel and highlight the button to indicate it is selected
