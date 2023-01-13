@@ -5,7 +5,7 @@ namespace ElfBot.Components;
 
 public partial class AutoCombatPanel
 {
-	private ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
+	private ApplicationContext ApplicationContext => (TryFindResource("ApplicationContext") as ApplicationContext)!;
 
 	public AutoCombatPanel()
 	{

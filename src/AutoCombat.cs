@@ -74,7 +74,7 @@ public sealed class AutoCombat
 	/// </summary>
 	private void Tick(object? sender, EventArgs e)
 	{
-		if (!_context.Hooked
+		if (_context.ActiveCharacter == null
 		    || !CombatOptions.AutoCombatEnabled
 		    || _state.Status == AutoCombatStatus.Inactive
 		    || _context.MonsterTable.Count == 0)
@@ -166,7 +166,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		var name = _context.ActiveCharacter.TargetName;
+		var name = _context.ActiveCharacter!.TargetName;
 		var id = _context.ActiveCharacter.LastTargetId;
 		Trace.WriteLine($"Target name is {name} with id {id}");
 
@@ -240,7 +240,7 @@ public sealed class AutoCombat
 	/// <returns>true if attacking will begin</returns>
 	private bool _prepareAttacking()
 	{
-		_state.StartingXp = _context.ActiveCharacter.Xp;
+		_state.StartingXp = _context.ActiveCharacter!.Xp;
 		_state.StartingLevel = _context.ActiveCharacter.Level;
 		_state.ChangeStatus(AutoCombatStatus.Attacking);
 		return true;

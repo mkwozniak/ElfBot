@@ -66,10 +66,10 @@ public sealed class AutoFood
 	/// </summary>
 	private void Tick(object? sender, EventArgs e)
 	{
-		if (!_context.Hooked)
+		if (_context.ActiveCharacter == null)
 		{
-			Trace.WriteLine("Canceled auto-food due to missing hook");
-			MainWindow.Logger.Warn("Auto-food disabled, please ensure that ROSE is hooked");
+			Trace.WriteLine("Canceled auto-food due to missing player");
+			MainWindow.Logger.Warn("Auto-food disabled, please ensure that your character is signed in");
 			Stop();
 			return;
 		}
@@ -102,7 +102,7 @@ public sealed class AutoFood
 
 	private void _autoHealth()
 	{
-		var hp = _context.ActiveCharacter.Hp;
+		var hp = _context.ActiveCharacter!.Hp;
 		var maxHp = _context.ActiveCharacter.MaxHp;
 
 		if (hp == 0 || maxHp == 0)
@@ -123,7 +123,7 @@ public sealed class AutoFood
 
 	private void _autoMana()
 	{
-		var mp = _context.ActiveCharacter.Mp;
+		var mp = _context.ActiveCharacter!.Mp;
 		var maxMp = _context.ActiveCharacter.MaxMp;
 
 		if (mp == 0 || maxMp == 0)

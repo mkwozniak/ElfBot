@@ -13,15 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ElfBot.Components
-{
-	public partial class BuffOptionsPanel
-	{
-		private ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
+namespace ElfBot.Components;
 
-		public BuffOptionsPanel()
-		{
-			InitializeComponent();
-		}
+public partial class BuffOptionsPanel
+{
+	public BuffOptionsPanel()
+	{
+		InitializeComponent();
 	}
 }

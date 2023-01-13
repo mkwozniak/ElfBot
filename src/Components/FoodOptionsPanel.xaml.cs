@@ -4,8 +4,7 @@ namespace ElfBot.Components;
 
 public partial class FoodOptionsPanel
 {
-	private ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
-
+	private ApplicationContext ApplicationContext => (TryFindResource("ApplicationContext") as ApplicationContext)!;
 	public FoodOptionsPanel()
 	{
 		InitializeComponent();

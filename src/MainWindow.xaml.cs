@@ -19,8 +19,8 @@ using System.Diagnostics;
 /// </summary>
 public partial class MainWindow
 {
-	public ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
-	public Settings? Settings => ApplicationContext?.Settings;
+	private ApplicationContext ApplicationContext => (TryFindResource("ApplicationContext") as ApplicationContext)!;
+	private Settings Settings => ApplicationContext.Settings;
 
 	public static readonly Mem TargetApplicationMemory = new();
 	public static readonly Logger Logger = new();
@@ -123,7 +123,7 @@ public partial class MainWindow
 	private void HookApplication(object sender, RoutedEventArgs e)
 	{
 		var brushConverter = new BrushConverter();
-		Process process = RoseProcess.GetProcess(ApplicationContext.UseSecondClient);
+		Process? process = RoseProcess.GetProcess(ApplicationContext.UseSecondClient);
 		
 		if (process == null)
 		{
@@ -203,20 +203,17 @@ public partial class MainWindow
 			Logger.Warn($"Settings file had no data");
 			return;
 		}
-		
-		if (Settings != null)
-		{
-			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-			if (settings.Keybindings == null || settings.Keybindings.Count == 0)
-			{
-				settings.Keybindings = Settings.Keybindings;
-			}
 
-			// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-			if (settings.ShiftKeybindings == null || settings.ShiftKeybindings.Count == 0)
-			{
-				settings.ShiftKeybindings = Settings.ShiftKeybindings;
-			}
+		// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+		if (settings.Keybindings == null || settings.Keybindings.Count == 0)
+		{
+			settings.Keybindings = Settings.Keybindings;
+		}
+
+		// ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+		if (settings.ShiftKeybindings == null || settings.ShiftKeybindings.Count == 0)
+		{
+			settings.ShiftKeybindings = Settings.ShiftKeybindings;
 		}
 
 		ApplicationContext.Settings = settings;
@@ -264,7 +261,7 @@ public partial class MainWindow
 
     private void CombatCameraTimer_Tick(object? sender, EventArgs e)
     {
-        if (!ApplicationContext.Hooked)
+        if (ApplicationContext.ActiveCharacter == null)
             return;
 
         if (Settings.CombatOptions.ForceCameraOverhead)
@@ -279,9 +276,9 @@ public partial class MainWindow
 
     private void CameraYawTimer_Tick(object? sender, EventArgs e)
     {
-		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled) return;
+		if (ApplicationContext.ActiveCharacter == null || !Settings.CombatOptions.CameraYawWaveEnabled) return;
 
-        float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
+        var waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
         ApplicationContext.ActiveCharacter.Camera.Yaw = waveform;
         _yawCounter += _yawCounterIncrement;
 

@@ -6,7 +6,7 @@ namespace ElfBot.Components;
 
 public partial class MonsterTablePanel
 {
-	private ApplicationContext? ApplicationContext => TryFindResource("ApplicationContext") as ApplicationContext;
+	private ApplicationContext ApplicationContext => (TryFindResource("ApplicationContext") as ApplicationContext)!;
 
 	public MonsterTablePanel()
 	{
