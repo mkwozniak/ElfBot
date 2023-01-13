@@ -64,6 +64,7 @@ public sealed partial class MainWindow : Window
 		ListenToTimer(ApplicationContext.CombatCameraTimer, CombatCameraTimer_Tick);
 		ListenToTimer(ApplicationContext.CameraYawTimer, CameraYawTimer_Tick);
         ListenToTimer(ApplicationContext.ZHackTimer, ZHackTimer_Tick);
+        ListenToTimer(ApplicationContext.BuffsExpiredTimer, BuffsExpiredTimer_Tick);
 
 		StartTimer(InterfaceTimer, _interfaceUpdateTime);
 		StartTimer(ApplicationContext.CombatCameraTimer, _combatCameraTickTime);

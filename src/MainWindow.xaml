@@ -50,7 +50,13 @@
                         Tag="{Binding ElementName=FoodOptionsPanel}"
                         Click="NavigatePanel" />
                 <!-- buffs button is currently disabled until implemented -->
-                <Button x:Name="BuffOptionsPanelButton" Background="Black" Content="Buffs" Foreground="#FF6B6B6B" Height="19" Width="128" />
+                <Button x:Name="BuffOptionsPanelButton" 
+                        Background="Black" 
+                        Content="Buffs" 
+                        Foreground="#FF6B6B6B" 
+                        Height="19" Width="128" 
+                        Tag="{Binding ElementName=BuffOptionsPanel}"
+                        Click="NavigatePanel"/>
                 <Button x:Name="ZHackPanelButton" Content="ZHack"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
@@ -108,6 +114,9 @@
         </GroupBox>
         <GroupBox x:Name="LoggingOptionsPanel" Header="Logs" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:LogsViewPanel x:Name="LogsViewPanel" />
+        </GroupBox>
+        <GroupBox x:Name="BuffOptionsPanel" Header="Buff Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <components:BuffOptionsPanel />
         </GroupBox>
     </Grid>
 </Window>

@@ -134,8 +134,8 @@ public class Character : Entity
 		_xpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AD4));
 		_zulyField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3D38));
 		_hpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3ACC));
-		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4600));
-		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AD0));
+		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AD0));
+		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4600));
 		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4604));
 		_mapIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentMapId));
 		_targetIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTarget, 0x8));

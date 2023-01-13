@@ -42,6 +42,7 @@
                                             <ComboBoxItem Content="HP (Instant)" />
                                             <ComboBoxItem Content="MP (Food)" />
                                             <ComboBoxItem Content="MP (Instant)" />
+                                            <ComboBoxItem Content="Buff" />
                                         </ComboBox>
                                         <DockPanel VerticalAlignment="Center">
                                             <Label Content="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" 

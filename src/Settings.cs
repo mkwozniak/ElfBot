@@ -74,10 +74,13 @@ public sealed class CombatOptions : PropertyNotifyingClass
 
 	public float DelayBeforeAttack { get; set; }
 	public float AttackTimeout { get; set; } = 60f;
+	public int BuffCooldown { get; set; } = 60000;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
 	public bool PriorityTargetScan { get; set; } = true;
+
+	public bool BuffsEnabled { get; set; } = true;
 
 	public bool NoClip
 	{

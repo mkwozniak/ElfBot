@@ -93,6 +93,7 @@ public partial class MainWindow
 		KeybindOptionsPanel.Visibility = Visibility.Hidden;
 		LoggingOptionsPanel.Visibility = Visibility.Hidden;
 		ZHackOptionsPanel.Visibility = Visibility.Hidden;
+		BuffOptionsPanel.Visibility = Visibility.Hidden;
 		AutoCombatPanelButton.Background = Brushes.Black;
 		MonsterTablePanelButton.Background = Brushes.Black;
 		FoodOptionsPanelButton.Background = Brushes.Black;
@@ -100,6 +101,7 @@ public partial class MainWindow
 		ZHackPanelButton.Background = Brushes.Black;
 		KeybindingsPanelButton.Background = Brushes.Black;
 		LogsViewPanelButton.Background = Brushes.Black;
+		BuffOptionsPanel.Background = Brushes.Black;
 		// Show the newly selected panel and highlight the button to indicate it is selected
 		target.Visibility = Visibility.Visible;
 		((Button)sender).Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#468cc0")!;
@@ -264,6 +266,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	public DispatcherTimer CombatCameraTimer = new();
 	public DispatcherTimer CameraYawTimer = new();
 	public DispatcherTimer ZHackTimer = new();
+	public DispatcherTimer BuffsExpiredTimer = new();
 
 	public readonly HashSet<string> MonsterTable = new();
 

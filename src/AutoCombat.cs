@@ -17,6 +17,7 @@ public enum AutoCombatStatus
 	StartAttack,
 	Attacking,
 	Looting,
+	Buffing,
 }
 
 /// <summary>
@@ -104,6 +105,7 @@ public sealed class AutoCombat
 				AutoCombatStatus.StartAttack => _prepareAttacking(),
 				AutoCombatStatus.Attacking => _attack(),
 				AutoCombatStatus.Looting => _loot(),
+				AutoCombatStatus.Buffing => _buff(),
 				_ => true
 			};
 		}
@@ -127,6 +129,15 @@ public sealed class AutoCombat
 	private bool _start()
 	{
 		_state.Reset();
+
+		if (CombatOptions.BuffsEnabled && _state.BuffsExpired)
+		{
+			_state.CurrentCastingBuff = 0;
+			Trace.WriteLine("Buffing Before combat.");
+			_state.ChangeStatus(AutoCombatStatus.Buffing);
+			return true;
+		}
+
 		_state.ChangeStatus(AutoCombatStatus.Targeting);
 		return true;
 	}
@@ -137,6 +148,13 @@ public sealed class AutoCombat
 	/// <returns>whether the tab key was pressed</returns>
 	private bool _selectNewTarget()
 	{
+		if(CombatOptions.BuffsEnabled && _state.BuffsExpired)
+		{
+			_state.CurrentCastingBuff = 0;
+			_state.ChangeStatus(AutoCombatStatus.Buffing);
+			return true;
+		}
+
 		_state.ResetTarget();
 		OnSendKey?.Invoke(_tabKeyCode);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
@@ -338,6 +356,56 @@ public sealed class AutoCombat
 		Trace.WriteLine("Sent 'T' keypress to loot, waiting 250ms");
 		return true;
 	}
+
+	private bool _buff()
+	{
+		if(_state.isOnCooldown() || _state.IsExpired())
+		{
+			Trace.WriteLine("Canceling buffs due to state cooldown or expiration.");
+			_state.Reset();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			return false;
+		}
+
+		var activeBuffKeys = _context.Settings.FindKeybindings(KeybindAction.Buff);
+		if (activeBuffKeys.Count == 0)
+		{
+			Trace.WriteLine("No buff keys have been set");
+			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
+			return false;
+		}
+
+		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
+		var nextKey = _state.CurrentCastingBuff;
+		var chosenKey = activeBuffKeys[nextKey];
+		if (_state.isHotkeyOnCooldown(chosenKey))
+		{
+			Trace.WriteLine("Attempted buff was on cooldown");
+			MainWindow.Logger.Warn("Attempted buff was on cooldown");
+			return false;
+		}
+
+		if (chosenKey.IsShift)
+		{
+			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for buff in slot {chosenKey.Key}");
+			// TODO: Implementation for shift-hotkeys required
+			return false;
+		}
+
+		OnSendKey?.Invoke(chosenKey.KeyCode);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
+		Trace.WriteLine($"Running buff in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		_state.CurrentCastingBuff++;
+		if (_state.CurrentCastingBuff >= activeBuffKeys.Count)
+		{
+			_state.BuffsExpired = false;
+			_state.Reset();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			MainWindow.StopTimer(_context.BuffsExpiredTimer);
+			MainWindow.StartTimer(_context.BuffsExpiredTimer, CombatOptions.BuffCooldown);
+		}
+		return true;
+	}
 }
 
 public sealed class AutoCombatState : PropertyNotifyingClass
@@ -348,6 +416,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	private HotkeyCooldownTracker _hotkeyCooldowns = new();
 
 	public bool ScanningForPriority { get; set; } = true;
+	public bool BuffsExpired { get; set; } = true;
 	public int PriorityCheckCount { get; set; }
 
 	public AutoCombatStatus Status
@@ -367,6 +436,8 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	public int StartingXp { get; set; }
 
 	public int StartingLevel { get; set; }
+
+	public int CurrentCastingBuff { get; set; }
 
 	public string? CurrentTarget // might not need this
 	{
