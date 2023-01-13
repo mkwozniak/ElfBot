@@ -26,8 +26,8 @@ public enum AutoCombatStatus
 /// </summary>
 public sealed class AutoCombat
 {
-	public SendingKey? OnSendKey;
-
+	public static readonly Random Random = new();
+	
 	private readonly ApplicationContext _context;
 	private readonly AutoCombatState _state;
 	private readonly int _tabKeyCode = 0x09;
@@ -144,7 +144,7 @@ public sealed class AutoCombat
 	private bool _selectNewTarget()
 	{
 		_state.ResetTarget();
-		OnSendKey?.Invoke(_tabKeyCode);
+		RoseProcess.SendKey(_tabKeyCode);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
 		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
 		return true;
@@ -306,7 +306,7 @@ public sealed class AutoCombat
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var randomKeyIndex = MainWindow.Ran.Next(0, notOnCooldown.Count);
+		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
 		var chosenKey = notOnCooldown[randomKeyIndex];
 
 		if (chosenKey.IsShift)
@@ -316,7 +316,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		OnSendKey?.Invoke(chosenKey.KeyCode);
+		RoseProcess.SendKey(chosenKey.KeyCode);
 		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
@@ -336,7 +336,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		OnSendKey?.Invoke(_lootKeyCode);
+		RoseProcess.SendKey(_lootKeyCode);
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250));
 		Trace.WriteLine("Sent 'T' keypress to loot, waiting 250ms");
 		return true;
@@ -371,7 +371,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		OnSendKey?.Invoke(chosenKey.KeyCode);
+		RoseProcess.SendKey(chosenKey.KeyCode);
 		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		Trace.WriteLine($"Running buff in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.CurrentCastingBuff++;

@@ -162,3 +162,15 @@ public class HotkeySlot
 	[JsonProperty]
 	public int Cooldown { get; set; }
 }
+
+public enum KeybindAction
+{
+	None,
+	Attack,
+	Skill,
+	HpFood,
+	HpInstant,
+	MpFood,
+	MpInstant,
+	Buff,
+}

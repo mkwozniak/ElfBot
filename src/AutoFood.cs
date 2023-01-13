@@ -12,7 +12,7 @@ namespace ElfBot;
 /// </summary>
 public sealed class AutoFood
 {
-	public SendingKey? OnSendKey;
+	public static readonly Random Random = new();
 
 	private readonly ApplicationContext _context;
 	private readonly HotkeyCooldownTracker _cooldownTracker = new();
@@ -149,7 +149,7 @@ public sealed class AutoFood
 
 		if (hotkey == null) return false;
 
-		OnSendKey?.Invoke(hotkey.KeyCode);
+		RoseProcess.SendKey(hotkey.KeyCode);
 		_cooldownTracker.SetCooldown(hotkey, TimeSpan.FromSeconds(hotkey.Cooldown));
 		Trace.WriteLine($"Consuming food for action {action} in slot {hotkey.Key} " +
 		                $"by pressing keycode {hotkey.KeyCode}.");
@@ -164,7 +164,7 @@ public sealed class AutoFood
 		if (notOnCooldown.Count == 0) return null;
 
 		// Select a random slot to use
-		var randomKeyIndex = MainWindow.Ran.Next(0, notOnCooldown.Count);
+		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
 		var chosenKey = notOnCooldown[randomKeyIndex];
 
 		if (!chosenKey.IsShift) return chosenKey;

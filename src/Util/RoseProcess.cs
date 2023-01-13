@@ -8,6 +8,9 @@ public static class RoseProcess
 {
 	public static Process? HookedProcess { get; set; }
 
+	[DllImport("ROSE_Input.dll")]
+	public static extern void SendKey(int key);
+	
 	[DllImport("kernel32.dll")]
 	public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
 		byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesWritten);
