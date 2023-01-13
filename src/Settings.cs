@@ -138,9 +138,21 @@ public sealed class FoodOptions : PropertyNotifyingClass
 	public float MpInstantFoodThresholdPercent { get; set; } = 50f;
 }
 
-public sealed class ZHackOptions
+public sealed class ZHackOptions : PropertyNotifyingClass
 {
-	public bool Enabled { get; set; }
+	[JsonIgnore]
+	private bool _enabled;
+	
+	public bool Enabled
+	{
+		get => _enabled;
+		set
+		{
+			_enabled = value;
+			NotifyPropertyChanged();
+		}
+	}
+
 	public float Frequency { get; set; } = 5f;
 	public float Amount { get; set; } = 7f;
 }

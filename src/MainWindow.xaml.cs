@@ -296,7 +296,19 @@ public partial class MainWindow
 
 	private void ZHackTimer_Tick(object? sender, EventArgs e)
 	{
-		if (!ApplicationContext.Hooked) return;
+		if (ApplicationContext.ActiveCharacter == null)
+		{
+			Settings.ZHackOptions.Enabled = false;
+			ApplicationContext.ZHackTimer.Stop();
+			Logger.Warn("ZHack was disabled because an active character could not be found");
+			return;
+		}
+
+		if (ApplicationContext.ActiveCharacter.IsOnMount)
+		{
+			return;
+		}
+		
 		ApplicationContext.ActiveCharacter.PositionZ += Settings.ZHackOptions.Amount;
 	}
 }
