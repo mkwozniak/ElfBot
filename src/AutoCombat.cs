@@ -83,7 +83,12 @@ public sealed class AutoCombat
 			Stop();
 			return;
 		}
-		
+
+		if(_context.ActiveCharacter.TargetEntity != null)
+		{
+			//Trace.WriteLine(_context.ActiveCharacter.TargetEntity.Hp);
+		}
+
 		if (_state.isOnCooldown())
 		{
 			return;
@@ -231,7 +236,7 @@ public sealed class AutoCombat
 		_state.StartingXp = _context.ActiveCharacter.Xp;
 		_state.StartingLevel = _context.ActiveCharacter.Level;
 		var attackDuration = CombatOptions.AttackTimeout;
-		_state.ChangeStatus(AutoCombatStatus.Attacking, TimeSpan.FromSeconds(attackDuration));
+		_state.ChangeStatus(AutoCombatStatus.Attacking);
 		return true;
 	}
 
@@ -241,10 +246,9 @@ public sealed class AutoCombat
 	/// <returns>whether an attack will be performed</returns>
 	private bool _attack()
 	{
-		if (_state.IsExpired()
-		    || _state.CurrentTargetId != _context.ActiveCharacter.LastTargetId)
+		if(_state.IsExpired() || _context.ActiveCharacter.TargetEntity == null)
 		{
-			Trace.WriteLine("Canceling attack due to expiration or target ID changing");
+			Trace.WriteLine("Canceling attack due to expiration or invalid target.");
 			_state.Reset();
 			_state.ChangeStatus(AutoCombatStatus.Starting);
 			_state.SetCooldown(TimeSpan.FromSeconds(3));
@@ -256,7 +260,8 @@ public sealed class AutoCombat
 		// to checking the monsters HP or alive status. When the monster has died,
 		// we need to move into either looting or restart the cycle.
 		if (_context.ActiveCharacter.Xp > _state.StartingXp
-		    || _context.ActiveCharacter.Level > _state.StartingLevel)
+			|| _context.ActiveCharacter.Level > _state.StartingLevel 
+			|| _context.ActiveCharacter.TargetEntity.Hp <= 0)
 		{
 			Trace.WriteLine($"Character XP or level changed. " +
 			                $"Previous had {_state.StartingXp} XP at level {_state.StartingLevel} " +
