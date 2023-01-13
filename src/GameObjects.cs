@@ -72,6 +72,9 @@ public enum Command
 /// </summary>
 public abstract class Entity
 {
+	private readonly FloatValue _rawPosXField;
+	private readonly FloatValue _rawPosYField;
+	private readonly FloatValue _rawPosZField;
 	private readonly FloatValue _posXField;
 	private readonly FloatValue _posYField;
 	private readonly FloatValue _posZField;
@@ -82,13 +85,13 @@ public abstract class Entity
 	private readonly ByteValue _runMode;
 	private readonly ByteValue _moveMode;
 
-	public float PositionX => _posXField.GetValue();
+	public float PositionX => IsOnMount ? _rawPosXField.GetValue() / 100f : _posXField.GetValue();
 
-	public float PositionY => _posYField.GetValue();
+	public float PositionY => IsOnMount ? _rawPosYField.GetValue() / 100f : _posYField.GetValue();
 
 	public float PositionZ
 	{
-		get => _posZField.GetValue();
+		get => IsOnMount ? _rawPosZField.GetValue() / 100f : _posZField.GetValue();
 		set => _posZField.WriteValue(value);
 	}
 
@@ -124,6 +127,9 @@ public abstract class Entity
 	protected Entity(IMemoryAddress baseAddress)
 	{
 		_idField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x1C));
+		_rawPosXField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x10));
+		_rawPosYField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x14));
+		_rawPosZField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x18));
 		_posXField = new FloatValue(new WrappedMemoryAddress(baseAddress,
 			0x258, 0x370, 0xA0, 0x380, 0x1B8));
 		_posYField = new FloatValue(new WrappedMemoryAddress(baseAddress,
