@@ -381,6 +381,10 @@ public sealed class AutoCombat
 			_state.Reset();
 			_state.ChangeStatus(AutoCombatStatus.Targeting);
 		}
+		else
+		{
+			_state.SetCooldown(TimeSpan.FromSeconds(2));
+		}
 		return true;
 	}
 }
