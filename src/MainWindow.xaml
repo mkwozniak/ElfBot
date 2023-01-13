@@ -53,7 +53,7 @@
                 <Button x:Name="BuffOptionsPanelButton" 
                         Background="Black" 
                         Content="Buffs" 
-                        Foreground="#FF6B6B6B" 
+                        Foreground="White" 
                         Height="19" Width="128" 
                         Tag="{Binding ElementName=BuffOptionsPanel}"
                         Click="NavigatePanel"/>
