@@ -2,16 +2,70 @@
 
 namespace ElfBot;
 
+// @formatter:off
 internal static class StaticOffsets
 {
-	public const int PlayerObject = 0x10BE100; // type: pointer
+	public const int PlayerObject       = 0x10BE100;  // type: pointer
 	public const int ClientCameraObject = 0x010D2520; // type: pointer
-	public const int CurrentMapId = 0x10C4AE4; // type: 4 bytes/int
-	public const int CurrentTarget = 0x10C0458; // type: pointer
-	public const int CurrentTargetName = 0x10D8C10; // type: pointer, name at 0x8
-	public const int EntityList = 0x10C0FF0; // type: ptr/list
-	public const int NoClipFunction = 0xB4D70; // type: function, requires kernel32.dll
+	public const int CurrentMapId       = 0x10C4AE4;  // type: 4 bytes/int
+	public const int CurrentTarget      = 0x10C0458;  // type: pointer
+	public const int CurrentTargetName  = 0x10D8C10;  // type: pointer, name at 0x8
+	public const int EntityList         = 0x10C0FF0;  // type: ptr/list
+	public const int NoClipFunction     = 0xB4D70;    // type: function, requires kernel32.dll
 }
+// @formatter:on
+
+/// <summary>
+/// Current method of transportation.
+/// </summary>
+// @formatter:off
+public enum MoveMode
+{
+	Walk      = 0x00, // Walking (slowly)
+	Run       = 0x01, // Running
+	Driving   = 0x02, // Driving a vehicle or mount
+	Passenger = 0x04  // Passenger of a vehicle (i.e., cart)
+}
+// @formatter:on
+
+/// <summary>
+/// Possible state of an entity.
+/// </summary>
+// @formatter:off
+public enum State
+{
+	Idle               = 0x0000, // Not doing anything
+	Moving             = 0x2101, // Moving to another location
+	Attacking          = 0xD002, // Using normal attack
+	TakingCriticalDmg  = 0xD003, // Received critical damage (in hit animation).
+	SittingDown        = 0xD005, // Animation to sit down.
+	Sitting            = 0x1006, // Seemingly unused - falling down animation.
+	StandingUp         = 0xD007, // Animation to stand up.
+	AttackWithSkill    = 0xD008, // Attacking with a skill.
+	FinishSkillAttack  = 0xD209, // Skill animation ending.
+	Dead               = 0xD010, // Currently dead.
+	CastingSkill       = 0xD211  // Casting a non-attack skill such as a buff or summon.
+}
+// @formatter:on
+
+/// <summary>
+/// Current command an entity is executing.
+/// </summary>
+// @formatter:off
+public enum Command
+{
+	None           = 0x0000, // No active command.
+	Move           = 0x0001, // Moving to another location.
+	Attack         = 0x0002, // Using normal attack
+	Die            = 0x0003, // Dead
+	LootItem       = 0x0004, // Looting an item
+	SkillSelf      = 0x0006, // Casting a skill on self
+	SkillTarget    = 0x0007, // Casting a skill on a target
+	SkillPosition  = 0x0008, // Casting a skill on a position
+	RunAway        = 0x8009, // Running away
+	Sit            = 0x000a  // Sitting down
+}
+// @formatter:on
 
 /// <summary>
 /// Represents an entity in the game.
@@ -22,6 +76,11 @@ public abstract class Entity
 	private readonly FloatValue _posYField;
 	private readonly FloatValue _posZField;
 	private readonly TwoByteValue _idField;
+	private readonly TwoByteValue _currentStateField;
+	private readonly TwoByteValue _currentCommandField;
+	private readonly IntValue _activeObjectId;
+	private readonly ByteValue _runMode;
+	private readonly ByteValue _moveMode;
 
 	public float PositionX => _posXField.GetValue();
 
@@ -34,6 +93,29 @@ public abstract class Entity
 	}
 
 	public int Id => _idField.GetValue();
+
+	public State State => (State)_currentStateField.GetValue();
+
+	public Command CurrentCommand => (Command)_currentCommandField.GetValue();
+
+	public bool IsDead => State == State.Dead && CurrentCommand == Command.Die;
+
+	public bool IsSitting => State is State.SittingDown or State.Sitting or State.StandingUp
+	                         || CurrentCommand == Command.Sit;
+
+	public bool IsAttacking => State is State.Attacking or State.AttackWithSkill or State.FinishSkillAttack
+	                           || CurrentCommand is Command.Attack;
+
+	/// <summary>
+	/// The ID of the last object or entity this entity interacted with.
+	/// </summary>
+	public int ActiveObjectId => _activeObjectId.GetValue();
+
+	public bool IsRunning => _runMode.GetValue() == 0x01;
+
+	public MoveMode MoveMode => (MoveMode)_moveMode.GetValue();
+
+	public bool IsOnMount => MoveMode is MoveMode.Driving or MoveMode.Passenger;
 
 	protected Entity(int[] baseOffset) : this(new MemoryAddress("trose.exe", baseOffset))
 	{
@@ -48,6 +130,11 @@ public abstract class Entity
 			0x258, 0x370, 0xA0, 0x380, 0x1BC));
 		_posZField = new FloatValue(new WrappedMemoryAddress(baseAddress,
 			0x258, 0x370, 0xA0, 0x380, 0x1C0));
+		_currentStateField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x58));
+		_currentCommandField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x5A));
+		_activeObjectId = new IntValue(new WrappedMemoryAddress(baseAddress, 0x7C));
+		_runMode = new ByteValue(new WrappedMemoryAddress(baseAddress, 0xC4));
+		_moveMode = new ByteValue(new WrappedMemoryAddress(baseAddress, 0xC5));
 	}
 
 	/// <summary>
@@ -74,7 +161,7 @@ public class Character : Entity
 	private readonly IntValue _mapIdField;
 	private readonly IntValue _targetIdField;
 	private readonly StringValue _targetNameField;
-	
+
 	private TargetedEntity? _target;
 
 	public string Name => _nameField.GetValue();
@@ -96,6 +183,7 @@ public class Character : Entity
 	}
 
 	public string? TargetName => LastTargetId != 0 ? _targetNameField.GetValue() : null;
+
 	public TargetedEntity? TargetEntity
 	{
 		get
@@ -106,7 +194,8 @@ public class Character : Entity
 			// Reset the target entity if it doesn't exist, or the selected
 			// ID has changed.
 			if (_target == null || !_target.IsValid()
-			    || _target.Id != targetId) {
+			                    || _target.Id != targetId)
+			{
 				_target = new TargetedEntity(targetId);
 			}
 
@@ -120,7 +209,7 @@ public class Character : Entity
 
 			return _target;
 		}
-	} 
+	}
 
 	public Character() : this(new MemoryAddress("trose.exe",
 		StaticOffsets.PlayerObject))
@@ -165,10 +254,11 @@ public class TargetedEntity : Entity
 	public int Mp => _mpField.GetValue();
 	public int MaxMp => _maxMpField.GetValue();
 
-	public TargetedEntity(int id) : this(id, new MemoryAddress("trose.exe", StaticOffsets.EntityList, _createBaseOffset(id)))
+	public TargetedEntity(int id) : this(id,
+		new MemoryAddress("trose.exe", StaticOffsets.EntityList, _createBaseOffset(id)))
 	{
 	}
-	
+
 	private TargetedEntity(int id, IMemoryAddress baseAddress) : base(baseAddress)
 	{
 		_originalId = id;
@@ -177,7 +267,7 @@ public class TargetedEntity : Entity
 		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0xF0));
 		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0xF4));
 	}
-	
+
 	public override bool IsValid()
 	{
 		return Id == _originalId;

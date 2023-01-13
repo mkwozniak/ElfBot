@@ -194,3 +194,23 @@ public class TwoByteValue : AddressValue<int>
 	{
 	}
 }
+
+/// <summary>
+/// Value at an address which contains a byte value.
+/// </summary>
+public class ByteValue : AddressValue<byte>
+{
+	public override byte GetValue()
+	{
+		return (byte) MainWindow.TargetApplicationMemory.ReadByte(Address.Address);
+	}
+
+	public override bool WriteValue(byte value)
+	{
+		return MainWindow.TargetApplicationMemory.WriteMemory(Address.Address, "byte", value.ToString());
+	}
+
+	public ByteValue(IMemoryAddress address) : base(address)
+	{
+	}
+}
