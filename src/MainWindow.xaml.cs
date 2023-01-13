@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,7 +13,6 @@ using Newtonsoft.Json;
 namespace ElfBot;
 
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -25,20 +25,11 @@ public partial class MainWindow
 	public static readonly Mem TargetApplicationMemory = new();
 	public static readonly Logger Logger = new();
 
-	[DllImport("ROSE_Input.dll")]
-	private static extern void SendKey(int key);
-
-	[DllImport("ROSE_Input.dll")]
-	private static extern void LeftClickOnWin(int x, int y);
-
-	[DllImport("ROSE_Input.dll")]
-	private static extern void MouseMove(int x, int y);
-
 	// Timers
-	private DispatcherTimer InterfaceTimer = new();
-
-	// References
-	public static readonly Random Ran = new();
+	private DispatcherTimer InterfaceTimer = new()
+	{
+		Interval = TimeSpan.FromMilliseconds(60)
+	};
 
 	// Structures
 
@@ -59,16 +50,6 @@ public partial class MainWindow
 	};
 
 	// Values
-	private bool _eatHPFood = true;
-	private bool _eatMPFood = true;
-
-	private int _playerMaxMP = 0;
-	private int _playerMP = 0;
-	private int _playerMaxHP = 0;
-	private int _playerHP = 0;
-	private int _interfaceUpdateTime = 60;
-	private int _combatCameraTickTime = 500;
-	private int _cameraYawTickTime = 50;
 	private int _yawMouseScrollCounter = 0;
 	private int _yawMouseScrollCounterMax = 50;
 
@@ -77,7 +58,36 @@ public partial class MainWindow
 
 	private double _yawCounter = 0;
 	private double _yawCounterIncrement = 0.05;
+	
+	
+	/// <summary> Form Constructor </summary>
+	public MainWindow()
+	{
+		Closed += _exit;
+		Loaded += _init;
+		ApplicationContext.RoseUnhookDelegate += _onRoseUnhook;
+		InitializeComponent();
+	}
 
+	private void _exit(object? sender, EventArgs e)
+	{
+		InterfaceTimer.Stop();
+		ApplicationContext.CombatCameraTimer.Stop();
+		ApplicationContext.CameraYawTimer.Stop();
+	}
+
+	private void _init(object sender, RoutedEventArgs e)
+	{
+		InterfaceTimer.Tick += Interface_Tick;
+		ApplicationContext.CombatCameraTimer.Tick += CombatCameraTimer_Tick;
+		ApplicationContext.CameraYawTimer.Tick += CameraYawTimer_Tick;
+		ApplicationContext.ZHackTimer.Tick += ZHackTimer_Tick;
+
+		InterfaceTimer.Start();
+		ApplicationContext.CombatCameraTimer.Start();
+		ApplicationContext.CameraYawTimer.Start();
+	}
+	
 	/// <summary>
 	/// Navigates to another panel when a properly configured button
 	/// is clicked. The button must have the 'Tag' attribute set
@@ -85,7 +95,7 @@ public partial class MainWindow
 	/// </summary>
 	private void NavigatePanel(object sender, RoutedEventArgs e)
 	{
-		if (sender is not Button { Tag: UIElement target }) return;
+		if (sender is not Button { Tag: UIElement target } button) return;
 		// Reset visibility & colors of all panels + navigation buttons
 		CombatOptionsPanel.Visibility = Visibility.Hidden;
 		FoodOptionsPanel.Visibility = Visibility.Hidden;
@@ -101,10 +111,9 @@ public partial class MainWindow
 		ZHackPanelButton.Background = Brushes.Black;
 		KeybindingsPanelButton.Background = Brushes.Black;
 		LogsViewPanelButton.Background = Brushes.Black;
-		BuffOptionsPanel.Background = Brushes.Black;
 		// Show the newly selected panel and highlight the button to indicate it is selected
 		target.Visibility = Visibility.Visible;
-		((Button)sender).Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#468cc0")!;
+		button.Background = (SolidColorBrush)new BrushConverter().ConvertFromString("#468cc0")!;
 	}
 
 	/// <summary>
@@ -212,114 +221,84 @@ public partial class MainWindow
 
 		ApplicationContext.Settings = settings;
 	}
-}
-
-/// <summary>
-/// Delegate method to call once the ROSE process unhooks.
-/// </summary>
-public delegate void OnRoseUnhook();
-
-public class ApplicationContext : PropertyNotifyingClass
-{
-	private Settings _settings = new()
-	{
-		Keybindings = new List<HotkeySlot>
-		{
-			new() { Key = "1", Value = 0 },
-			new() { Key = "2", Value = 0 },
-			new() { Key = "3", Value = 0 },
-			new() { Key = "4", Value = 0 },
-			new() { Key = "5", Value = 0 },
-			new() { Key = "6", Value = 0 },
-			new() { Key = "7", Value = 0 },
-			new() { Key = "8", Value = 0 },
-			new() { Key = "9", Value = 0 },
-			new() { Key = "0", Value = 0 },
-			new() { Key = "-", Value = 0 },
-			new() { Key = "=", Value = 0 }
-		},
-		ShiftKeybindings = new List<HotkeySlot>
-		{
-			new() { Key = "1", Value = 0, IsShift = true },
-			new() { Key = "2", Value = 0, IsShift = true },
-			new() { Key = "3", Value = 0, IsShift = true },
-			new() { Key = "4", Value = 0, IsShift = true },
-			new() { Key = "5", Value = 0, IsShift = true },
-			new() { Key = "6", Value = 0, IsShift = true },
-			new() { Key = "7", Value = 0, IsShift = true },
-			new() { Key = "8", Value = 0, IsShift = true },
-			new() { Key = "9", Value = 0, IsShift = true },
-			new() { Key = "0", Value = 0, IsShift = true },
-			new() { Key = "-", Value = 0, IsShift = true },
-			new() { Key = "=", Value = 0, IsShift = true }
-		}
-	};
-
-	private bool _hooked;
-	private Character _hookedCharacterMemRef = new();
-	public OnRoseUnhook? RoseUnhookDelegate { get; set; }
-
-	public DispatcherTimer HpFoodTimer = new();
-	public DispatcherTimer MpFoodTimer = new();
-	public DispatcherTimer HpFoodKeyTimer = new();
-	public DispatcherTimer MpFoodKeyTimer = new();
-	public DispatcherTimer CombatCameraTimer = new();
-	public DispatcherTimer CameraYawTimer = new();
-	public DispatcherTimer ZHackTimer = new();
-	public DispatcherTimer BuffsExpiredTimer = new();
-
-	public readonly HashSet<string> MonsterTable = new();
-
-	public ApplicationContext()
-	{
-		AutoCombat = new AutoCombat(this);
-		AutoFood = new AutoFood(this);
-		UiData = new UiData(this);
-	}
-
-	public Settings Settings
-	{
-		get => _settings;
-		set
-		{
-			_settings = value;
-			NotifyPropertyChanged();
-		}
-	}
-
-	public Character? ActiveCharacter => Hooked && _hookedCharacterMemRef.IsValid() ? _hookedCharacterMemRef : null;
-
-	public UiData UiData { get; }
-
-	public AutoCombat AutoCombat { get; }
 	
-	public AutoFood AutoFood { get; }
+    private void Interface_Tick(object? sender, EventArgs e)
+    {
+	    if (LoggingOptionsPanel.Visibility == Visibility.Visible)
+        {
+            _refreshLogs();
+        }
 
-	public bool Hooked
+        if (!ApplicationContext.Hooked)
+        {
+            return;
+        }
+
+        ApplicationContext.UiData.Update();
+    }
+
+    /// <summary> Refreshes the log </summary>
+    private void _refreshLogs()
+    {
+        var logEntries = Logger.Entries.Where(e => (int)e.Level >= (int)Settings.SelectedLogLevel).ToList();
+        
+        var displayedLog = LogsViewPanel.SystemMsgLog.Text;
+        if (displayedLog is not string)
+        {
+            LogsViewPanel.SystemMsgLog.Text = "";
+        }
+
+        if (logEntries.Count == 0)
+        {
+            LogsViewPanel.SystemMsgLog.Text = "";
+            return;
+        }
+
+        var lines = logEntries.Select(entry =>
+        {
+            var date = entry.TimeStamp.ToString("hh:mm:ss tt");
+            return $"({date}) {entry.Level}: {entry.Text}";
+        }).ToArray();
+        LogsViewPanel.SystemMsgLog.Text = string.Join(Environment.NewLine, lines);
+    }
+
+    private void CombatCameraTimer_Tick(object? sender, EventArgs e)
+    {
+        if (!ApplicationContext.Hooked)
+            return;
+
+        if (Settings.CombatOptions.ForceCameraOverhead)
+        {
+            ApplicationContext.ActiveCharacter.Camera.Pitch = CameraMaxPitch;
+        }
+        if (Settings.CombatOptions.ForceCameraZoom)
+        {
+            ApplicationContext.ActiveCharacter.Camera.Zoom = CameraMaxZoom;
+        }
+    }
+
+    private void CameraYawTimer_Tick(object? sender, EventArgs e)
+    {
+		if (!ApplicationContext.Hooked || !Settings.CombatOptions.CameraYawWaveEnabled) return;
+
+        float waveform = (float)(Math.PI * Math.Sin(0.25 * _yawCounter));
+        ApplicationContext.ActiveCharacter.Camera.Yaw = waveform;
+        _yawCounter += _yawCounterIncrement;
+
+        _yawMouseScrollCounter++;
+
+        if (_yawMouseScrollCounter > _yawMouseScrollCounterMax)
+        {
+            _yawMouseScrollCounter = 0;
+            ApplicationContext.ActiveCharacter.Camera.Zoom += 10f;
+        }
+    }
+
+	private void ZHackTimer_Tick(object? sender, EventArgs e)
 	{
-		get
-		{
-			if (RoseProcess.HookedProcess == null) return false;
-			// ReSharper disable once InvertIf
-			if (RoseProcess.HookedProcess.HasExited)
-			{
-				RoseProcess.HookedProcess = null;
-				Hooked = false;
-				return false;
-			}
-			return true;
-		}
-		set
-		{
-			if (_hooked == value) return;
-			_hooked = value;
-			if (!value && RoseUnhookDelegate != null) 
-				RoseUnhookDelegate.Invoke();
-			NotifyPropertyChanged();
-		}
+		if (!ApplicationContext.Hooked) return;
+		ApplicationContext.ActiveCharacter.PositionZ += Settings.ZHackOptions.Amount;
 	}
-
-	public bool UseSecondClient { get; set; }
 }
 
 public class UiData : PropertyNotifyingClass

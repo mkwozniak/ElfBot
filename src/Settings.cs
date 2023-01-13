@@ -74,7 +74,7 @@ public sealed class CombatOptions : PropertyNotifyingClass
 
 	public float DelayBeforeAttack { get; set; }
 	public float AttackTimeout { get; set; } = 60f;
-	public int BuffCooldown { get; set; } = 60000;
+	public int BuffFrequency { get; set; } = 60;
 	public bool ForceCameraZoom { get; set; }
 	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
@@ -161,4 +161,16 @@ public class HotkeySlot
 	/// </summary>
 	[JsonProperty]
 	public int Cooldown { get; set; }
+}
+
+public enum KeybindAction
+{
+	None,
+	Attack,
+	Skill,
+	HpFood,
+	HpInstant,
+	MpFood,
+	MpInstant,
+	Buff,
 }

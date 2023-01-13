@@ -12,7 +12,7 @@
                       Margin="5 5 0 0" Foreground="White" />
 
             <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
-            <TextBox Text="{Binding Path=Settings.CombatOptions.BuffCooldown, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding Path=Settings.CombatOptions.BuffFrequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                      HorizontalAlignment="Left" Margin="5 0" Width="98"
                      Foreground="White" Background="Black" />
         </StackPanel>
