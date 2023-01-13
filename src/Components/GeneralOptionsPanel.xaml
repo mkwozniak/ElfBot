@@ -43,11 +43,36 @@
             </UniformGrid>
             <DockPanel Margin="0 5 0 0" Width="305" HorizontalAlignment="Left">
                 <StackPanel>
-                    <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <Label Content="Summons" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
-                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=Settings.GeneralOptions.SummonsEnabled, Source={StaticResource ApplicationContext}}"
                               Checked="EnableNoClip" Unchecked="DisableNoClip" />
+                    <StackPanel>
+                        <Label Content="Summon Cost" FontWeight="Bold" Foreground="White" />
+                        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                            <Label Content="{Binding ElementName=SummonCost, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                   DockPanel.Dock="Right"
+                                   Width="40" Margin="0 -5 0 0"
+                                   Foreground="White" />
+                            <Slider Maximum="150" Name="SummonCost"
+                                    Value="{Binding Path=Settings.GeneralOptions.SummonCost, Source={StaticResource ApplicationContext}}"
+                                    IsSnapToTickEnabled="True" TickFrequency="5"
+                                    Width="100" />
+                        </DockPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Max Summon Meter" FontWeight="Bold" Foreground="White" />
+                        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                            <Label Content="{Binding ElementName=MaxSummonMeter, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                   DockPanel.Dock="Right"
+                                   Width="40" Margin="0 -5 0 0"
+                                   Foreground="White" />
+                            <Slider Maximum="100" Name="MaxSummonMeter"
+                                    Value="{Binding Path=Settings.GeneralOptions.MaxSummonCount, Source={StaticResource ApplicationContext}}"
+                                    IsSnapToTickEnabled="True" TickFrequency="5"
+                                    Width="100" />
+                        </DockPanel>
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Right">
                     <Label Content="Auto Buff" Foreground="White" FontSize="14" FontWeight="Bold" />
@@ -62,6 +87,13 @@
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
+            <StackPanel Margin="0 5 0 0">
+                <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
+                <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
+                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
+                          Checked="EnableNoClip" Unchecked="DisableNoClip" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

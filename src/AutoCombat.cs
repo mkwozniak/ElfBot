@@ -12,12 +12,13 @@ public enum AutoCombatStatus
 {
 	Inactive,
 	Starting,
+	Summoning,
+	Buffing,
 	Targeting,
 	CheckTarget,
 	StartAttack,
 	Attacking,
 	Looting,
-	Buffing,
 }
 
 /// <summary>
@@ -96,12 +97,13 @@ public sealed class AutoCombat
 			_ = _state.Status switch
 			{
 				AutoCombatStatus.Starting => _start(),
+				AutoCombatStatus.Summoning => _summons(),
+				AutoCombatStatus.Buffing => _buff(),
 				AutoCombatStatus.Targeting => _selectNewTarget(),
 				AutoCombatStatus.CheckTarget => _checkTarget(),
 				AutoCombatStatus.StartAttack => _prepareAttacking(),
 				AutoCombatStatus.Attacking => _attack(),
 				AutoCombatStatus.Looting => _loot(),
-				AutoCombatStatus.Buffing => _buff(),
 				_ => true
 			};
 		}
@@ -126,15 +128,72 @@ public sealed class AutoCombat
 	{
 		_state.Reset();
 
+		if (_context.Settings.GeneralOptions.SummonsEnabled && _canSummon())
+		{
+			_state.ChangeStatus(AutoCombatStatus.Summoning);
+			return true;
+		}
+
 		if (_state.CanApplyBuffs()) 
 		{
-			Trace.WriteLine("Buffing Before combat.");
 			_state.ChangeStatus(AutoCombatStatus.Buffing);
 			return true;
 		}
 
 		_state.ChangeStatus(AutoCombatStatus.Targeting);
 		return true;
+	}
+	
+	private bool _summons()
+	{
+		if (!_canSummon()) 
+		{
+			_state.Reset();
+			_state.ChangeStatus(CombatOptions.BuffsEnabled ? AutoCombatStatus.Buffing : AutoCombatStatus.Targeting); 
+			return true;
+		}
+		
+		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
+		if (activeSummonKeys.Count == 0)
+		{
+			Trace.WriteLine("No summon keys have been set");
+			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
+			_state.Reset();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			return false;
+		}
+
+		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
+		var nextKey = _state.CurrentCastingBuff;
+		var chosenKey = activeSummonKeys[nextKey];
+		if (_state.isHotkeyOnCooldown(chosenKey))
+		{
+			Trace.WriteLine("Attempted summon was on cooldown");
+			MainWindow.Logger.Warn("Attempted summon was on cooldown");
+			return false;
+		}
+
+		if (chosenKey.IsShift)
+		{
+			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for summon in slot {chosenKey.Key}");
+			// TODO: Implementation for shift-hotkeys required
+			return false;
+		}
+
+		RoseProcess.SendKey(chosenKey.KeyCode);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
+		_state.SetCooldown(TimeSpan.FromSeconds(2)); // Wait for animation
+		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		return true;
+	}
+	
+	private bool _canSummon()
+	{
+		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
+		Trace.Write($"Current summon meter {currentSummonMeter}");
+		var summonCost = _context.Settings.GeneralOptions.SummonCost;
+		var maxSummons = _context.Settings.GeneralOptions.MaxSummonCount;
+		return currentSummonMeter + summonCost <= maxSummons;
 	}
 
 	/// <summary>

@@ -167,6 +167,7 @@ public class Character : Entity
 	private readonly IntValue _mapIdField;
 	private readonly IntValue _targetIdField;
 	private readonly StringValue _targetNameField;
+	private readonly IntValue _consumedSummonsMeterField;
 
 	private TargetedEntity? _target;
 
@@ -217,6 +218,8 @@ public class Character : Entity
 		}
 	}
 
+	public int ConsumedSummonsMeter => _consumedSummonsMeterField.GetValue();
+
 	public Character() : this(new MemoryAddress("trose.exe",
 		StaticOffsets.PlayerObject))
 	{
@@ -235,6 +238,7 @@ public class Character : Entity
 		_mapIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentMapId));
 		_targetIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTarget, 0x8));
 		_targetNameField = new StringValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTargetName));
+		_consumedSummonsMeterField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x57A0));
 	}
 
 	public override bool IsValid()

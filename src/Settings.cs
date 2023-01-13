@@ -8,6 +8,7 @@ public class Settings : PropertyNotifyingClass
 {
 	private List<HotkeySlot> _keybindings = default!;
 	private List<HotkeySlot> _shiftKeybindings = default!;
+	public GeneralOptions GeneralOptions { get; } = new();
 	public CombatOptions CombatOptions { get; } = new();
 	public LootOptions LootOptions { get; } = new();
 	public FoodOptions FoodOptions { get; } = new();
@@ -53,6 +54,13 @@ public class Settings : PropertyNotifyingClass
 		matching.AddRange(ShiftKeybindings.FindAll(kb => types.Contains(kb.Action)));
 		return matching;
 	}
+}
+
+public sealed class GeneralOptions
+{
+	public bool SummonsEnabled { get; set; } = false;
+	public int SummonCost { get; set; } = 0;
+	public int MaxSummonCount { get; set; } = 0;
 }
 
 public sealed class CombatOptions : PropertyNotifyingClass
@@ -139,9 +147,8 @@ public sealed class FoodOptions : PropertyNotifyingClass
 
 public sealed class ZHackOptions : PropertyNotifyingClass
 {
-	[JsonIgnore]
-	private bool _enabled;
-	
+	[JsonIgnore] private bool _enabled;
+
 	public bool Enabled
 	{
 		get => _enabled;
@@ -184,4 +191,5 @@ public enum KeybindAction
 	MpFood,
 	MpInstant,
 	Buff,
+	Summon
 }
