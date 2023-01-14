@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ElfBot.Util;
 using Newtonsoft.Json;
 
 namespace ElfBot;
@@ -167,7 +168,7 @@ public sealed class ZHackOptions : PropertyNotifyingClass
 public class HotkeySlot
 {
 	[JsonProperty] public string Key { get; init; } = default!;
-	public int KeyCode => MainWindow.KeyMap[Key];
+	public Messaging.VKeys KeyCode => MainWindow.KeyMap[Key];
 
 	[JsonProperty] public int Value { get; set; }
 	public KeybindAction Action => (KeybindAction)Value;

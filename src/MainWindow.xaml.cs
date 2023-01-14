@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using ElfBot.Util;
 using Memory;
 using Microsoft.Win32;
 using Newtonsoft.Json;
@@ -33,20 +34,20 @@ public partial class MainWindow
 
 	// Structures
 
-	public static readonly Dictionary<string, int> KeyMap = new()
+	public static readonly Dictionary<string, Messaging.VKeys> KeyMap = new()
 	{
-		{ "1", 0x31 },
-		{ "2", 0x32 },
-		{ "3", 0x33 },
-		{ "4", 0x34 },
-		{ "5", 0x35 },
-		{ "6", 0x36 },
-		{ "7", 0x37 },
-		{ "8", 0x38 },
-		{ "9", 0x39 },
-		{ "0", 0x30 },
-		{ "-", 0xBD },
-		{ "=", 0xBB }
+		{ "1", Messaging.VKeys.KEY_1 },
+		{ "2", Messaging.VKeys.KEY_2 },
+		{ "3", Messaging.VKeys.KEY_3 },
+		{ "4", Messaging.VKeys.KEY_4 },
+		{ "5", Messaging.VKeys.KEY_5 },
+		{ "6", Messaging.VKeys.KEY_6 },
+		{ "7", Messaging.VKeys.KEY_7 },
+		{ "8", Messaging.VKeys.KEY_8 },
+		{ "9", Messaging.VKeys.KEY_9 },
+		{ "0", Messaging.VKeys.KEY_0 },
+		{ "-", Messaging.VKeys.KEY_MINUS }, 
+		{ "=", Messaging.VKeys.KEY_PLUS } 
 	};
 
 	// Values
@@ -145,7 +146,7 @@ public partial class MainWindow
 		HookBtn.Content = "H O O K";
 		HookBtn.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(" #36719E ")!;
 	}
-
+	
 	/// <summary> Loads a config to file </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>

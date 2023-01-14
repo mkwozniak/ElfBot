@@ -149,7 +149,7 @@ public sealed class AutoFood
 
 		if (hotkey == null) return false;
 
-		RoseProcess.SendKey(hotkey.KeyCode);
+		RoseProcess.SendKeypress(hotkey.KeyCode, hotkey.IsShift);
 		_cooldownTracker.SetCooldown(hotkey, TimeSpan.FromSeconds(hotkey.Cooldown));
 		Trace.WriteLine($"Consuming food for action {action} in slot {hotkey.Key} " +
 		                $"by pressing keycode {hotkey.KeyCode}.");
@@ -165,16 +165,7 @@ public sealed class AutoFood
 
 		// Select a random slot to use
 		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
-		var chosenKey = notOnCooldown[randomKeyIndex];
-
-		if (!chosenKey.IsShift) return chosenKey;
-
-		// TODO: Implementation for shift-hotkeys required
-		MainWindow.Logger.Warn(
-			$"Attempted to use unsupported shift keypress for food in slot {chosenKey.Key}");
-		_cooldownTracker.SetCooldown(chosenKey,
-			TimeSpan.FromDays(1)); // Temporarily disable the hotkey as shift is unsupported
-		return null;
+		return notOnCooldown[randomKeyIndex];
 	}
 
 	private static bool _shouldTrigger(int value, int maxValue, float threshold)

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ElfBot.Util;
 
 namespace ElfBot;
 
 public static class RoseProcess
 {
 	public static Process? HookedProcess { get; set; }
-
-	[DllImport("ROSE_Input.dll")]
-	public static extern void SendKey(int key);
 
 	[DllImport("kernel32.dll")]
 	public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress,
@@ -27,7 +25,22 @@ public static class RoseProcess
 		if (!dualClient) return processes.Length > 0 ? processes[0] : null;
 		return processes.Length > 1 ? processes[1] : null;
 	}
-	
+
+	/// <summary>
+	/// Sends a key press to the ROSE application.
+	/// </summary>
+	/// <param name="code">key code to send</param>
+	/// <param name="shift">whether to use the key press with shift</param>
+	/// <returns>whether the keypress was sent successfully</returns>
+	public static bool SendKeypress(Messaging.VKeys code, bool shift = false)
+	{
+		if (HookedProcess == null) return false;
+		var shiftType = shift ? Messaging.ShiftType.SHIFT : Messaging.ShiftType.NONE;
+		var shiftKey = shift ? Messaging.VKeys.KEY_SHIFT : Messaging.VKeys.NULL;
+		var key = new Key(code, shiftKey, shiftType);
+		return key.PressBackground(HookedProcess.MainWindowHandle);
+	}
+
 	public static bool EnableNoClip()
 	{
 		return _writeNoClip(new byte[] { 0xC3, 0x90 });

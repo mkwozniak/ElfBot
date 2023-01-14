@@ -31,8 +31,6 @@ public sealed class AutoCombat
 	
 	private readonly ApplicationContext _context;
 	private readonly AutoCombatState _state;
-	private readonly int _tabKeyCode = 0x09;
-	private readonly int _lootKeyCode = 0x54;
 
 	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
 
@@ -173,14 +171,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		if (chosenKey.IsShift)
-		{
-			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for summon in slot {chosenKey.Key}");
-			// TODO: Implementation for shift-hotkeys required
-			return false;
-		}
-
-		RoseProcess.SendKey(chosenKey.KeyCode);
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
 		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		_state.SetCooldown(TimeSpan.FromSeconds(2)); // Wait for animation
 		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
@@ -203,7 +194,7 @@ public sealed class AutoCombat
 	private bool _selectNewTarget()
 	{
 		_state.ResetTarget();
-		RoseProcess.SendKey(_tabKeyCode);
+		RoseProcess.SendKeypress(Messaging.VKeys.KEY_TAB);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
 		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
 		return true;
@@ -369,14 +360,7 @@ public sealed class AutoCombat
 		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
 		var chosenKey = notOnCooldown[randomKeyIndex];
 
-		if (chosenKey.IsShift)
-		{
-			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for attack in slot {chosenKey.Key}");
-			// TODO: Implementation for shift-hotkeys required
-			return false;
-		}
-
-		RoseProcess.SendKey(chosenKey.KeyCode);
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
 		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
@@ -396,7 +380,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		RoseProcess.SendKey(_lootKeyCode);
+		RoseProcess.SendKeypress(Messaging.VKeys.KEY_T);
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250));
 		Trace.WriteLine("Sent 'T' keypress to loot, waiting 250ms");
 		return true;
@@ -424,14 +408,7 @@ public sealed class AutoCombat
 			return false;
 		}
 
-		if (chosenKey.IsShift)
-		{
-			MainWindow.Logger.Warn($"Attempted to use unsupported shift keypress for buff in slot {chosenKey.Key}");
-			// TODO: Implementation for shift-hotkeys required
-			return false;
-		}
-
-		RoseProcess.SendKey(chosenKey.KeyCode);
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
 		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		Trace.WriteLine($"Running buff in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.CurrentCastingBuff++;
