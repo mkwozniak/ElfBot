@@ -286,7 +286,7 @@ public class TargetedEntity : Entity
 
 	public override bool IsValid()
 	{
-		return Id == _originalId;
+		return Id == _originalId && MaxHp > 0;
 	}
 
 	private static int _createBaseOffset(int id)
