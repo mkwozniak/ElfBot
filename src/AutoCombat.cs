@@ -149,7 +149,7 @@ public sealed class AutoCombat
 			return true;
 		}
 
-		_state.ChangeStatus(AutoCombatStatus.Targeting);
+		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
 		return true;
 	}
 	
@@ -158,7 +158,8 @@ public sealed class AutoCombat
 		if (!_canSummon()) 
 		{
 			_state.Reset();
-			_state.ChangeStatus(CombatOptions.BuffsEnabled ? AutoCombatStatus.Buffing : AutoCombatStatus.Targeting); 
+			if (CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoCombatStatus.Buffing);
+			else _state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
 			return true;
 		}
 		
@@ -168,7 +169,7 @@ public sealed class AutoCombat
 			Trace.WriteLine("No summon keys have been set");
 			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
 			return false;
 		}
 
@@ -328,9 +329,8 @@ public sealed class AutoCombat
 		// we need to move into either looting or restart the cycle.
 		if (_context.ActiveCharacter.TargetEntity?.Hp <= 0)
 		{
-			Trace.WriteLine($"Character XP or level changed. " +
-			                $"Previous had {_state.StartingXp} XP at level {_state.StartingLevel} " +
-			                $"and now has {_context.ActiveCharacter.Xp} XP at level {_context.ActiveCharacter.Level}");
+			Trace.WriteLine($"Target entity is dead");
+			_context.ActiveCharacter.LastTargetId = 0;
 
 			if (_context.Settings.LootOptions.LootAfterCombatEnabled)
 			{
@@ -408,7 +408,7 @@ public sealed class AutoCombat
 			Trace.WriteLine("No buff keys have been set");
 			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
 			return false;
 		}
 
@@ -430,7 +430,7 @@ public sealed class AutoCombat
 		{
 			_state.LastBuffTime = DateTime.Now;
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
 		}
 		else
 		{
@@ -520,7 +520,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		Status = status;
 		StatusTimeout = duration == null ? null : DateTime.Now.Add(duration.Value);
 		Cooldown = null;
-		Trace.WriteLine($"Auto-combat status changed to {status} (duration={duration})");
+		//Trace.WriteLine($"Auto-combat status changed to {status} (duration={duration})");
 	}
 
 	/// <summary>
