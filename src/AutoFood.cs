@@ -159,7 +159,7 @@ public sealed class AutoFood
 		if (hotkey == null) return false;
 
 		RoseProcess.SendKeypress(hotkey.KeyCode, hotkey.IsShift);
-		_cooldownTracker.SetCooldown(hotkey, TimeSpan.FromSeconds(hotkey.Cooldown));
+		_cooldownTracker.SetCooldown(hotkey, TimeSpan.FromSeconds(hotkey.Cooldown + 0.1f));
 		Trace.WriteLine($"Consuming food for action {action} in slot {hotkey.Key} " +
 		                $"by pressing keycode {hotkey.KeyCode}.");
 		return true;

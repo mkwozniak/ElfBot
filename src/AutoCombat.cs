@@ -182,7 +182,7 @@ public sealed class AutoCombat
 		}
 
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
-		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
 		_state.SetCooldown(TimeSpan.FromSeconds(2)); // Wait for animation
 		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		return true;
@@ -369,9 +369,12 @@ public sealed class AutoCombat
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
 		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
 		var chosenKey = notOnCooldown[randomKeyIndex];
-
+		
+		if (chosenKey.Cooldown > 0)
+		{
+			_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
+		}
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
-		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
 		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
 		return true;
@@ -419,7 +422,7 @@ public sealed class AutoCombat
 		}
 
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
-		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown));
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
 		Trace.WriteLine($"Running buff in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.CurrentCastingBuff++;
 		if (_state.CurrentCastingBuff >= activeBuffKeys.Count)

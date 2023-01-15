@@ -52,7 +52,7 @@
                                                    Foreground="White" />
                                             <Slider Maximum="40" Name="slValue" 
                                                     Value="{Binding Path=Cooldown}"
-                                                    IsSnapToTickEnabled="True" TickFrequency="1"
+                                                    IsSnapToTickEnabled="True" TickFrequency="0.5"
                                                     Width="100"/>
                                         </DockPanel>
                                     </UniformGrid>
@@ -107,7 +107,7 @@
                                                    Foreground="White" />
                                             <Slider Maximum="40" 
                                                     Value="{Binding Path=Cooldown}"
-                                                    IsSnapToTickEnabled="True" TickFrequency="1"
+                                                    IsSnapToTickEnabled="True" TickFrequency="0.5"
                                                     Width="100"/>
                                         </DockPanel>
                                     </UniformGrid>

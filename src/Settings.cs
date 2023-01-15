@@ -190,7 +190,7 @@ public class HotkeySlot
 	/// The cooldown time, in seconds.
 	/// </summary>
 	[JsonProperty]
-	public int Cooldown { get; set; }
+	public float Cooldown { get; set; }
 }
 
 public enum KeybindAction
