@@ -9,7 +9,7 @@
         <StackPanel>
             <CheckBox Content="Enable Auto Combat" Foreground="White"
                       Margin="5 5 0 0"
-                      IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                      IsEnabled="{Binding Path=UiData.CanEnableAutoCombat, Source={StaticResource ApplicationContext}}"
                       IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
                       Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
             <UniformGrid Columns="2" Width="400" Height="240"

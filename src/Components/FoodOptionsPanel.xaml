@@ -13,7 +13,7 @@
                 <Label Content="Auto HP" Foreground="White" FontSize="14" FontWeight="Bold" />
                 <CheckBox Content="Enable" Foreground="White"
                           Margin="5 5 0 0"
-                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsEnabled="{Binding Path=UiData.CanEnableAutoFood, Source={StaticResource ApplicationContext}}"
                           IsChecked="{Binding Path=Settings.FoodOptions.AutoHpEnabled, Source={StaticResource ApplicationContext}}"
                           Checked="EnableAutoFood" Unchecked="CheckDisableAutoFood" />
                 <StackPanel>
@@ -48,7 +48,7 @@
                 <Label Content="Auto MP" Foreground="White" FontSize="14" FontWeight="Bold" />
                 <CheckBox Content="Enable" Foreground="White"
                           Margin="5 5 0 0"
-                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                          IsEnabled="{Binding Path=UiData.CanEnableAutoFood, Source={StaticResource ApplicationContext}}"
                           IsChecked="{Binding Path=Settings.FoodOptions.AutoMpEnabled, Source={StaticResource ApplicationContext}}"
                           Checked="EnableAutoFood" Unchecked="CheckDisableAutoFood" />
                 <StackPanel>

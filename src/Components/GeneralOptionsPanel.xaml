@@ -11,6 +11,7 @@
                 <StackPanel>
                     <Label Content="ZHack" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Enable"
+                              IsEnabled="{Binding Path=UiData.CanEnableZHack, Source={StaticResource ApplicationContext}}"
                               IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
                               Margin="5 5 0 0" Foreground="White"
                               Checked="EnableZHack" Unchecked="DisableZHack" />

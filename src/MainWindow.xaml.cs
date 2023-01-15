@@ -324,6 +324,24 @@ public class UiData : PropertyNotifyingClass
 {
 	private readonly ApplicationContext _context;
 
+	#region Enablement information
+
+	public bool CanEnableAutoCombat => _canTimersBeEnabled() && _context.MonsterTable.Count > 0;
+
+	public bool CanEnableZHack => _canTimersBeEnabled();
+
+	public bool CanEnableAutoFood => _canTimersBeEnabled();
+
+	private bool _canTimersBeEnabled()
+	{
+		if (_context.ActiveCharacter == null) return false;
+		return !_context.ActiveCharacter.IsDead ||
+		       _context.Settings.GeneralOptions.DeathAction == DeathActions.PAUSE_TIMERS;
+	}
+
+	#endregion
+	
+	#region Character Data
 	public string Name => _context.ActiveCharacter?.Name ?? "N/A";
 	public int Level => _context.ActiveCharacter?.Level ?? -1;
 	public int Xp => _context.ActiveCharacter?.Xp ?? -1;
@@ -339,6 +357,8 @@ public class UiData : PropertyNotifyingClass
 	public float CameraZoom => _context.ActiveCharacter?.Camera.Zoom ?? 0f;
 	public float CameraPitch => _context.ActiveCharacter?.Camera.Pitch ?? 0f;
 	public float CameraYaw => _context.ActiveCharacter?.Camera.Yaw ?? 0f;
+	
+	#endregion
 
 	public UiData(ApplicationContext context)
 	{
