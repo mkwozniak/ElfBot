@@ -115,9 +115,9 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	public float DelayBeforeAttack { get; set; }
 	public int BuffFrequency { get; set; } = 60;
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
-	public bool PriorityTargetScan { get; set; } = true;
+	public bool PriorityTargetScan { get; set; }
 
-	public bool BuffsEnabled { get; set; } = true;
+	public bool BuffsEnabled { get; set; }
 
 	public bool NoClip
 	{
