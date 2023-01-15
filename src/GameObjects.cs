@@ -43,7 +43,7 @@ public enum State
 	StandingUp         = 0xD007, // Animation to stand up.
 	AttackWithSkill    = 0xD008, // Attacking with a skill.
 	FinishSkillAttack  = 0xD209, // Skill animation ending.
-	Dead               = 0xD010, // Currently dead.
+	Dead               = 0xC010, // Currently dead.
 	CastingSkill       = 0xD211  // Casting a non-attack skill such as a buff or summon.
 }
 // @formatter:on
@@ -101,7 +101,7 @@ public abstract class Entity
 
 	public Command CurrentCommand => (Command)_currentCommandField.GetValue();
 
-	public bool IsDead => State == State.Dead && CurrentCommand == Command.Die;
+	public bool IsDead => State == State.Dead || CurrentCommand == Command.Die;
 
 	public bool IsSitting => State is State.SittingDown or State.Sitting or State.StandingUp
 	                         || CurrentCommand == Command.Sit;
