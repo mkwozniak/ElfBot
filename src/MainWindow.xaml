@@ -44,11 +44,6 @@
                         Height="20" Width="128"
                         Tag="{Binding ElementName=CombatOptionsPanel}"
                         Click="NavigatePanel" />
-                <Button x:Name="MonsterTablePanelButton" Content="Monster Table"
-                        Background="Black" Foreground="White"
-                        Height="20" Width="128"
-                        Tag="{Binding ElementName=MonsterTablePanel}"
-                        Click="NavigatePanel" />
                 <Button x:Name="FoodOptionsPanelButton" Content="Food"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
@@ -95,9 +90,6 @@
         </GroupBox>
         <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:AutoCombatPanel/>
-        </GroupBox>
-        <GroupBox x:Name="MonsterTablePanel" Header="Monster Table" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
-            <components:MonsterTablePanel />
         </GroupBox>
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:FoodOptionsPanel />

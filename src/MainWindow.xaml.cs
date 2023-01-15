@@ -98,11 +98,9 @@ public partial class MainWindow
 		GeneralOptionsPanel.Visibility = Visibility.Hidden;
 		CombatOptionsPanel.Visibility = Visibility.Hidden;
 		FoodOptionsPanel.Visibility = Visibility.Hidden;
-		MonsterTablePanel.Visibility = Visibility.Hidden;
 		KeybindOptionsPanel.Visibility = Visibility.Hidden;
 		LoggingOptionsPanel.Visibility = Visibility.Hidden;
 		AutoCombatPanelButton.Background = Brushes.Black;
-		MonsterTablePanelButton.Background = Brushes.Black;
 		FoodOptionsPanelButton.Background = Brushes.Black;
 		GeneralPanelButton.Background = Brushes.Black;
 		KeybindingsPanelButton.Background = Brushes.Black;

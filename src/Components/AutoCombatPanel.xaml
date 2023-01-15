@@ -6,25 +6,24 @@
              mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
 
     <Grid Background="Black">
-        <StackPanel>
-            <CheckBox Content="Enable Auto Combat" Foreground="White"
-                      Margin="5 5 0 0"
-                      IsEnabled="{Binding Path=UiData.CanEnableAutoCombat, Source={StaticResource ApplicationContext}}"
-                      IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
-                      Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
-            <UniformGrid Columns="2" Width="400" Height="240"
-                         Margin="0 5 0 0"
-                         HorizontalAlignment="Left">
+        <DockPanel>
+            <StackPanel Width="200">
                 <StackPanel>
                     <Label Content="General" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Enable Auto Combat" Foreground="White"
+                              Margin="5 5 0 0"
+                              IsEnabled="{Binding Path=UiData.CanEnableAutoCombat, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=Settings.CombatOptions.AutoCombatEnabled, Source={StaticResource ApplicationContext}}"
+                              Checked="StartAutoCombat" Unchecked="StopAutoCombat" />
+
                     <StackPanel>
-                        <Label Content="Delay Before Attacking (s)" FontWeight="Bold" Foreground="White" />
+                        <Label Content="Delay Before Attacking (s)" Margin="0 5 0 0" FontWeight="Bold" Foreground="White" />
                         <TextBox Text="{Binding Path=Settings.CombatOptions.DelayBeforeAttack, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
                                  Background="Black" Foreground="White" />
                     </StackPanel>
                 </StackPanel>
-                <StackPanel>
+                <StackPanel Margin="0 10 0 0">
                     <Label Content="Loot Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Loot After Combat"
                               IsChecked="{Binding Path=Settings.LootOptions.LootAfterCombatEnabled, Source={StaticResource ApplicationContext}}"
@@ -34,18 +33,29 @@
                              HorizontalAlignment="Left" Width="90" Margin="5 0"
                              Background="Black" Foreground="White" />
                 </StackPanel>
-                <StackPanel>
-                    <Label Content="Target Priority" Foreground="White" FontWeight="Bold" FontSize="14"/>
-                    <CheckBox Content="Priority Targeting Mode" Foreground="White" 
+                <StackPanel Margin="0 10 0 0">
+                    <Label Content="Target Priority" Foreground="White" FontWeight="Bold" FontSize="14" />
+                    <CheckBox Content="Enable Priority Targeting" Foreground="White"
                               IsChecked="{Binding Path=Settings.CombatOptions.PriorityTargetScan, Source={StaticResource ApplicationContext}}"
-                              Margin="5"/>
-                    <Label Content="Max Priority Checks" FontWeight="Bold" Foreground="White" />
+                              Margin="5" />
+                    <Label Content="Max Checks" FontWeight="Bold" Foreground="White" />
                     <TextBox Text="{Binding Path=Settings.CombatOptions.MaxPriorityChecks, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
                              TextWrapping="Wrap" Width="120" Margin="5 0"
-                             HorizontalAlignment="Left" 
+                             HorizontalAlignment="Left"
                              Background="Black" Foreground="White" />
                 </StackPanel>
-            </UniformGrid>
-        </StackPanel>
+            </StackPanel>
+
+            <StackPanel Width="250" HorizontalAlignment="Right">
+                <Label Content="Monster Table" Foreground="White" FontSize="14" FontWeight="Bold" />
+                <ScrollViewer Content="Empty" x:Name="MonsterTableText"
+                              Height="275" Margin="5"
+                              Background="#FF171717" Foreground="White" FontSize="14" />
+                <Button Content="Load" HorizontalAlignment="Left"
+                        Width="75" Margin="5 0 0 0"
+                        Background="Black" Foreground="White"
+                        Click="LoadMonsterTable" />
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>
