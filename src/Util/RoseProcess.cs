@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using ElfBot.Util;
 
 namespace ElfBot;
@@ -32,13 +33,16 @@ public static class RoseProcess
 	/// <param name="code">key code to send</param>
 	/// <param name="shift">whether to use the key press with shift</param>
 	/// <returns>whether the keypress was sent successfully</returns>
-	public static bool SendKeypress(Messaging.VKeys code, bool shift = false)
+	public static async Task<bool> SendKeypress(Messaging.VKeys code, bool shift = false)
 	{
-		if (HookedProcess == null) return false;
-		var shiftType = shift ? Messaging.ShiftType.SHIFT : Messaging.ShiftType.NONE;
-		var shiftKey = shift ? Messaging.VKeys.KEY_SHIFT : Messaging.VKeys.NULL;
-		var key = new Key(code, shiftKey, shiftType);
-		return key.PressBackground(HookedProcess.MainWindowHandle);
+		return await Task.Run(() =>
+		{
+			if (HookedProcess == null) return false;
+			var shiftType = shift ? Messaging.ShiftType.SHIFT : Messaging.ShiftType.NONE;
+			var shiftKey = shift ? Messaging.VKeys.KEY_SHIFT : Messaging.VKeys.NULL;
+			var key = new Key(code, shiftKey, shiftType);
+			return key.PressBackground(HookedProcess.MainWindowHandle);
+		});
 	}
 
 	public static bool EnableNoClip()
