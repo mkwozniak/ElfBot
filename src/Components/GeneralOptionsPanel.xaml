@@ -3,79 +3,103 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+             mc:Ignorable="d" d:DesignHeight="550" d:DesignWidth="450">
 
     <Grid Background="Black">
-        <StackPanel>
-            <UniformGrid Columns="2" Width="350" HorizontalAlignment="Left">
-                <StackPanel>
-                    <Label Content="ZHack" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Enable"
-                              IsEnabled="{Binding Path=UiData.CanEnableZHack, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0" Foreground="White"
-                              Checked="EnableZHack" Unchecked="DisableZHack" />
-
-                    <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
-                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-
-                    <Label Content="Z-axis Increase Amount" FontWeight="Bold" Foreground="White" />
-                    <TextBox Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
-                             HorizontalAlignment="Left" Margin="5 0" Width="98"
-                             Foreground="White" Background="Black" />
-                    <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
-                               HorizontalAlignment="Left" Margin="5 0" Width="150"
-                               FontStyle="Italic" Foreground="#FFEFBD0A" />
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Right">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <DockPanel Width="265" HorizontalAlignment="Left">
+                    <StackPanel>
+                        <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
+                        <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
+                                  IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                                  IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
+                                  Checked="EnableNoClip" Unchecked="DisableNoClip" />
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Right">
+                        <Label Content="Death Handling" Foreground="White" FontSize="14" FontWeight="Bold" />
+                        <ComboBox Width="125" IsReadOnly="True" Margin="5 0 0 0"
+                                  SelectedIndex="{Binding Path=Settings.GeneralOptions.SelectedDeathActionIndex, Source={StaticResource ApplicationContext}}">
+                            <ComboBoxItem Content="Pause Timers" />
+                            <ComboBoxItem Content="Cancel Timers" />
+                        </ComboBox>
+                    </StackPanel>
+                </DockPanel>
+                <StackPanel Margin="0 10 0 0">
                     <Label Content="Camera Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Force Camera Zoom"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraZoom, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Force Camera Overhead"
-                              IsChecked="{Binding Path=Settings.CombatOptions.ForceCameraOverhead, Source={StaticResource ApplicationContext}}"
-                              Margin="5 5 0 0 " Foreground="White" />
-                    <CheckBox Content="Camera Yaw Wave"
+                    <CheckBox Content="Enable Yaw Wave"
                               IsChecked="{Binding Path=Settings.CombatOptions.CameraYawWaveEnabled, Source={StaticResource ApplicationContext}}"
                               Margin="5 5 0 0" Foreground="White" />
+                    <CheckBox Content="Enable Zoom Lock"
+                              IsChecked="{Binding Path=Settings.GeneralOptions.LockCameraZoom, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <CheckBox Content="Enable Angle Lock"
+                              IsChecked="{Binding Path=Settings.GeneralOptions.LockCameraPitch, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0 " Foreground="White" />
+                    <DockPanel>
+                        <StackPanel>
+                            <Label Content="Zoom Lock Amount" FontWeight="Bold" Foreground="White" />
+                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 0 0">
+                                <Label Content="{Binding ElementName=LockedZoomCount, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                       DockPanel.Dock="Right"
+                                       Width="40" Margin="0 -5 0 0"
+                                       Foreground="White" />
+                                <Slider Minimum="5" Maximum="105" Name="LockedZoomCount"
+                                        Value="{Binding Path=Settings.GeneralOptions.LockedCameraZoomAmount, Source={StaticResource ApplicationContext}}"
+                                        IsSnapToTickEnabled="True" TickFrequency="5"
+                                        Width="100" />
+                            </DockPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="Angle Lock Amount" FontWeight="Bold" Foreground="White" />
+                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 10 0 0">
+                                <Label Content="{Binding ElementName=LockedPitchAmount, Converter={StaticResource FloatFormattingConverter}, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                       DockPanel.Dock="Right"
+                                       Width="40" Margin="0 -5 0 0"
+                                       Foreground="White" />
+                                <Slider Minimum="0.6" Maximum="1" Name="LockedPitchAmount"
+                                        Value="{Binding Path=Settings.GeneralOptions.LockedCameraPitchAmount, Source={StaticResource ApplicationContext}}"
+                                        IsSnapToTickEnabled="True" TickFrequency="0.05"
+                                        Width="100" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
                 </StackPanel>
-            </UniformGrid>
-            <DockPanel Margin="0 5 0 0" Width="305" HorizontalAlignment="Left">
-                <StackPanel>
+                <StackPanel Margin="0 10 0 0">
                     <Label Content="Summons" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
                               IsChecked="{Binding Path=Settings.GeneralOptions.SummonsEnabled, Source={StaticResource ApplicationContext}}"
                               Checked="EnableNoClip" Unchecked="DisableNoClip" />
-                    <StackPanel>
-                        <Label Content="Summon Cost" FontWeight="Bold" Foreground="White" />
-                        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                            <Label Content="{Binding ElementName=SummonCost, Path=Value, UpdateSourceTrigger=PropertyChanged}"
-                                   DockPanel.Dock="Right"
-                                   Width="40" Margin="0 -5 0 0"
-                                   Foreground="White" />
-                            <Slider Maximum="150" Name="SummonCost"
-                                    Value="{Binding Path=Settings.GeneralOptions.SummonCost, Source={StaticResource ApplicationContext}}"
-                                    IsSnapToTickEnabled="True" TickFrequency="5"
-                                    Width="100" />
-                        </DockPanel>
-                    </StackPanel>
-                    <StackPanel>
-                        <Label Content="Max Summon Meter" FontWeight="Bold" Foreground="White" />
-                        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                            <Label Content="{Binding ElementName=MaxSummonMeter, Path=Value, UpdateSourceTrigger=PropertyChanged}"
-                                   DockPanel.Dock="Right"
-                                   Width="40" Margin="0 -5 0 0"
-                                   Foreground="White" />
-                            <Slider Maximum="100" Name="MaxSummonMeter"
-                                    Value="{Binding Path=Settings.GeneralOptions.MaxSummonCount, Source={StaticResource ApplicationContext}}"
-                                    IsSnapToTickEnabled="True" TickFrequency="5"
-                                    Width="100" />
-                        </DockPanel>
-                    </StackPanel>
+                    <DockPanel>
+                        <StackPanel>
+                            <Label Content="Summon Cost" FontWeight="Bold" Foreground="White" />
+                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                <Label Content="{Binding ElementName=SummonCost, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                       DockPanel.Dock="Right"
+                                       Width="40" Margin="0 -5 0 0"
+                                       Foreground="White" />
+                                <Slider Maximum="150" Name="SummonCost"
+                                        Value="{Binding Path=Settings.GeneralOptions.SummonCost, Source={StaticResource ApplicationContext}}"
+                                        IsSnapToTickEnabled="True" TickFrequency="5"
+                                        Width="100" />
+                            </DockPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="Max Summon Meter" FontWeight="Bold" Foreground="White" />
+                            <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                <Label Content="{Binding ElementName=MaxSummonMeter, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                       DockPanel.Dock="Right"
+                                       Width="40" Margin="0 -5 0 0"
+                                       Foreground="White" />
+                                <Slider Maximum="100" Name="MaxSummonMeter"
+                                        Value="{Binding Path=Settings.GeneralOptions.MaxSummonCount, Source={StaticResource ApplicationContext}}"
+                                        IsSnapToTickEnabled="True" TickFrequency="5"
+                                        Width="100" />
+                            </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
                 </StackPanel>
-                <StackPanel HorizontalAlignment="Right">
+                <StackPanel Margin="0 10 0 0">
                     <Label Content="Auto Buff" Foreground="White" FontSize="14" FontWeight="Bold" />
                     <CheckBox Content="Enable"
                               IsChecked="{Binding Path=Settings.CombatOptions.BuffsEnabled, Source={StaticResource ApplicationContext}}"
@@ -87,25 +111,32 @@
                                  Foreground="White" Background="Black" />
                     </StackPanel>
                 </StackPanel>
-            </DockPanel>
-            <DockPanel Margin="0 5 0 0" Width="325" HorizontalAlignment="Left">
-                <StackPanel Margin="0 5 0 0">
-                    <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
-                    <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
-                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                              IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
-                              Checked="EnableNoClip" Unchecked="DisableNoClip" />
+                <StackPanel Margin="0 10 0 0">
+                    <Label Content="ZHack" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Enable"
+                              IsEnabled="{Binding Path=UiData.CanEnableZHack, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=Settings.ZHackOptions.Enabled, Source={StaticResource ApplicationContext}}"
+                              Margin="5 5 0 0" Foreground="White"
+                              Checked="EnableZHack" Unchecked="DisableZHack" />
+                    <DockPanel>
+                        <StackPanel>
+                            <Label Content="Frequency (s)" FontWeight="Bold" Foreground="White" />
+                            <TextBox Text="{Binding Path=Settings.ZHackOptions.Frequency, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Left" Margin="5 0" Width="98"
+                                     Foreground="White" Background="Black" />
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="Z-axis Increase Amount" FontWeight="Bold" Foreground="White" />
+                            <TextBox Text="{Binding Path=Settings.ZHackOptions.Amount, Source={StaticResource ApplicationContext}, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Left" Margin="5 0" Width="98"
+                                     Foreground="White" Background="Black" />
+                            <TextBlock Text="Be careful with this value." TextWrapping="Wrap"
+                                       HorizontalAlignment="Left" Margin="5 0" Width="150"
+                                       FontStyle="Italic" Foreground="#FFEFBD0A" />
+                        </StackPanel>
+                    </DockPanel>
                 </StackPanel>
-                <StackPanel HorizontalAlignment="Right">
-                    <Label Content="Action On Death" Foreground="White" FontSize="14" FontWeight="Bold" />
-
-                    <ComboBox Width="125" IsReadOnly="True" Margin="5 0 0 0"
-                              SelectedIndex="{Binding Path=Settings.GeneralOptions.SelectedDeathActionIndex, Source={StaticResource ApplicationContext}}">
-                        <ComboBoxItem Content="Pause Timers" />
-                        <ComboBoxItem Content="Cancel Timers" />
-                    </ComboBox>
-                </StackPanel>
-            </DockPanel>
-        </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

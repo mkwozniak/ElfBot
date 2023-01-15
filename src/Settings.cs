@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ElfBot.Util;
 using Newtonsoft.Json;
@@ -68,11 +69,30 @@ public enum DeathActions
 
 public sealed class GeneralOptions
 {
+	private float _lockedCameraPitchAmount = 0.85f;
+	
 	public bool SummonsEnabled { get; set; } = false;
 	public int SummonCost { get; set; } = 0;
 	public int MaxSummonCount { get; set; } = 0;
 	public int SelectedDeathActionIndex { get; init; }
 	[JsonIgnore] public DeathActions DeathAction => (DeathActions)SelectedDeathActionIndex;
+	
+	#region Camera Options
+
+	public bool LockCameraZoom { get; set; }
+	public bool LockCameraPitch { get; set; }
+	public int LockedCameraZoomAmount { get; set; } = 105;
+
+	public float LockedCameraPitchAmount
+	{
+		get => _lockedCameraPitchAmount;
+		set
+		{
+			_lockedCameraPitchAmount = (float) Math.Round(value, 2);
+		}
+	}
+
+	#endregion
 }
 
 public sealed class CombatOptions : PropertyNotifyingClass
@@ -94,8 +114,6 @@ public sealed class CombatOptions : PropertyNotifyingClass
 
 	public float DelayBeforeAttack { get; set; }
 	public int BuffFrequency { get; set; } = 60;
-	public bool ForceCameraZoom { get; set; }
-	public bool ForceCameraOverhead { get; set; }
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
 	public bool PriorityTargetScan { get; set; } = true;
 

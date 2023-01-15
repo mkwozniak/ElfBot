@@ -53,10 +53,6 @@ public partial class MainWindow
 	// Values
 	private int _yawMouseScrollCounter = 0;
 	private int _yawMouseScrollCounterMax = 50;
-
-	private const float CameraMaxZoom = 100f;
-	private const float CameraMaxPitch = 0.85f;
-
 	private double _yawCounter = 0;
 	private double _yawCounterIncrement = 0.05;
 	
@@ -264,13 +260,13 @@ public partial class MainWindow
         if (ApplicationContext.ActiveCharacter == null)
             return;
 
-        if (Settings.CombatOptions.ForceCameraOverhead)
+        if (Settings.GeneralOptions.LockCameraPitch)
         {
-            ApplicationContext.ActiveCharacter.Camera.Pitch = CameraMaxPitch;
+            ApplicationContext.ActiveCharacter.Camera.Pitch = Settings.GeneralOptions.LockedCameraPitchAmount;
         }
-        if (Settings.CombatOptions.ForceCameraZoom)
+        if (Settings.GeneralOptions.LockCameraZoom)
         {
-            ApplicationContext.ActiveCharacter.Camera.Zoom = CameraMaxZoom;
+            ApplicationContext.ActiveCharacter.Camera.Zoom = Settings.GeneralOptions.LockedCameraZoomAmount;
         }
     }
 
