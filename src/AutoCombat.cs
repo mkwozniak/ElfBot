@@ -65,6 +65,7 @@ public sealed class AutoCombat
 	{
 		CombatOptions.AutoCombatEnabled = false;
 		_state.Reset();
+		_state.ClearHotkeyCooldowns();
 		_autoCombatTimer.Stop();
 	}
 
@@ -559,6 +560,14 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	}
 
 	/// <summary>
+	/// Clears all active hotkey cooldowns.
+	/// </summary>
+	public void ClearHotkeyCooldowns()
+	{
+		_hotkeyCooldowns.Clear();
+	}
+
+	/// <summary>
 	/// Resets all properties tracked by the state.
 	/// </summary>
 	public void Reset()
@@ -570,7 +579,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		PriorityCheckCount = 0;
 		CurrentCastingBuff = 0;
 		Cooldown = null;
-		_hotkeyCooldowns.Clear();
 		Trace.WriteLine("Auto-combat state was fully reset");
 	}
 
