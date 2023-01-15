@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
+#pragma warning disable CS4014
 
 namespace ElfBot;
 
