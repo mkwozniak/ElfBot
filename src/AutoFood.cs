@@ -74,6 +74,15 @@ public sealed class AutoFood
 			return;
 		}
 
+		if (_context.ActiveCharacter.IsDead)
+		{
+			if (_context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
+			Trace.WriteLine("Canceled auto-food due to player death");
+			MainWindow.Logger.Warn("Disabling auto-food due to player death");
+			Stop();
+			return;
+		}
+
 		try
 		{
 			if (FoodOptions.AutoHpEnabled)

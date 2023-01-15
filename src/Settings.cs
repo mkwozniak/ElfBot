@@ -57,11 +57,22 @@ public class Settings : PropertyNotifyingClass
 	}
 }
 
+/// <summary>
+/// Resulting action to take when the character dies.
+/// </summary>
+public enum DeathActions
+{
+	PAUSE_TIMERS, // Pauses all timers when the character dies
+	CANCEL_TIMERS // Cancels all timers when the character dies
+}
+
 public sealed class GeneralOptions
 {
 	public bool SummonsEnabled { get; set; } = false;
 	public int SummonCost { get; set; } = 0;
 	public int MaxSummonCount { get; set; } = 0;
+	public int SelectedDeathActionIndex { get; init; }
+	[JsonIgnore] public DeathActions DeathAction => (DeathActions)SelectedDeathActionIndex;
 }
 
 public sealed class CombatOptions : PropertyNotifyingClass

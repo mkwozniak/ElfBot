@@ -85,6 +85,15 @@ public sealed class AutoCombat
 			return;
 		}
 
+		if (_context.ActiveCharacter.IsDead)
+		{
+			if (_context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
+			Trace.WriteLine("Canceled auto-combat due to player death");
+			MainWindow.Logger.Warn("Disabling auto-combat due to player death");
+			Stop();
+			return;
+		}
+
 		if (_state.isOnCooldown())
 		{
 			return;

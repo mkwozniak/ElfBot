@@ -301,6 +301,16 @@ public partial class MainWindow
 			return;
 		}
 
+		if (ApplicationContext.ActiveCharacter.IsDead)
+		{
+			if (ApplicationContext.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
+			Trace.WriteLine("Canceled z-hack timer due to player death");
+			MainWindow.Logger.Warn("Disabling ZHack due to player death");
+			Settings.ZHackOptions.Enabled = false;
+			ApplicationContext.ZHackTimer.Stop();
+			return;
+		}
+		
 		if (ApplicationContext.ActiveCharacter.IsOnMount)
 		{
 			return;

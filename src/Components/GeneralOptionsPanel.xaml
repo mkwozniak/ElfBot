@@ -87,13 +87,24 @@
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
-            <StackPanel Margin="0 5 0 0">
-                <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
-                <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
-                          IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
-                          IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
-                          Checked="EnableNoClip" Unchecked="DisableNoClip" />
-            </StackPanel>
+            <DockPanel Margin="0 5 0 0" Width="325" HorizontalAlignment="Left">
+                <StackPanel Margin="0 5 0 0">
+                    <Label Content="No Clip" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <CheckBox Content="Enable" Foreground="White" Margin="5,5,5,5"
+                              IsEnabled="{Binding Path=Hooked, Source={StaticResource ApplicationContext}}"
+                              IsChecked="{Binding Path=Settings.CombatOptions.NoClip, Source={StaticResource ApplicationContext}}"
+                              Checked="EnableNoClip" Unchecked="DisableNoClip" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Right">
+                    <Label Content="Action On Death" Foreground="White" FontSize="14" FontWeight="Bold" />
+
+                    <ComboBox Width="125" IsReadOnly="True" Margin="5 0 0 0"
+                              SelectedIndex="{Binding Path=Settings.GeneralOptions.SelectedDeathActionIndex, Source={StaticResource ApplicationContext}}">
+                        <ComboBoxItem Content="Pause Timers" />
+                        <ComboBoxItem Content="Cancel Timers" />
+                    </ComboBox>
+                </StackPanel>
+            </DockPanel>
         </StackPanel>
     </Grid>
 </UserControl>
