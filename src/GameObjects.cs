@@ -5,13 +5,13 @@ namespace ElfBot;
 // @formatter:off
 internal static class StaticOffsets
 {
-	public const int PlayerObject       = 0x10BE100;  // type: pointer
-	public const int ClientCameraObject = 0x010D2520; // type: pointer
-	public const int CurrentMapId       = 0x10C4AE4;  // type: 4 bytes/int
-	public const int CurrentTarget      = 0x10C0458;  // type: pointer
-	public const int CurrentTargetName  = 0x10D8C10;  // type: pointer, name at 0x8
-	public const int EntityList         = 0x10C0FF0;  // type: ptr/list
-	public const int NoClipFunction     = 0xB4D70;    // type: function, requires kernel32.dll
+	public const int PlayerObject       = 0x10C1190;  // type: pointer
+	public const int ClientCameraObject = 0x10BFB88; // type: pointer
+	public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
+	public const int CurrentTarget      = 0x10C34F0;  // type: pointer
+	public const int CurrentTargetName  = 0x10DBC30;  // type: pointer, name at 0x8
+	public const int EntityList         = 0x10C4090;  // type: ptr/list
+	public const int NoClipFunction     = 0xB5430;    // type: function, requires kernel32.dll
 }
 // @formatter:on
 
@@ -229,16 +229,16 @@ public class Character : Entity
 	{
 		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
 		_levelField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x3AD8));
-		_xpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AD4));
-		_zulyField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3D38));
-		_hpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3ACC));
-		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AD0));
-		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4600));
-		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4604));
+		_xpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AF0));
+		_zulyField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3D58));
+		_hpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AE8));
+		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AEC));
+		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4620));
+		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4624));
 		_mapIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentMapId));
-		_targetIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTarget, 0x8));
+		_targetIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTarget, 0x08));
 		_targetNameField = new StringValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTargetName));
-		_consumedSummonsMeterField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x57A0));
+		_consumedSummonsMeterField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x57C0));
 	}
 
 	public override bool IsValid()
