@@ -223,5 +223,10 @@ public enum KeybindAction
 	MpFood,
 	MpInstant,
 	Buff,
-	Summon
+	Summon,
+	Revive,
+	Heal,
+	HealParty,
+	Restore,
+	RestoreParty
 }

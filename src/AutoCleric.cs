@@ -1,0 +1,404 @@
+﻿using System;
+using System.Diagnostics;
+using System.Windows.Threading;
+using ElfBot.Util;
+#pragma warning disable CS4014
+
+namespace ElfBot;
+
+/// <summary>
+/// Enumeration of possible statuses that the auto-cleric system can be in.
+/// </summary>
+public enum AutoClericStatus
+{
+	Inactive, // stopped
+	Idle, // no heals needed
+	Scanning, // Scanning and collecting nearby party members
+	Buffing,
+	Summoning,
+	Casting,
+	Reviving
+}
+
+/// <summary>
+/// Auto-combat state machine. Handles the status and actions
+/// of combat when enabled.
+/// </summary>
+public sealed class AutoCleric
+{
+	public static readonly Random Random = new();
+	
+	private readonly ApplicationContext _context;
+	private readonly AutoClericState _state;
+
+	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
+
+	private readonly DispatcherTimer _autoClericTimer = new()
+	{
+		Interval = TimeSpan.FromMilliseconds(500)
+	};
+
+	public AutoCleric(ApplicationContext context)
+	{
+		_context = context;
+		_autoClericTimer.Tick += Tick;
+		_state = new AutoClericState(this);
+	}
+
+	public AutoClericState State => _state;
+
+	/// <summary>
+	/// Starts the automation of combat.
+	/// </summary>
+	public void Start()
+	{
+		_state.Reset();
+		_state.ChangeStatus(AutoClericStatus.Idle);
+		_autoClericTimer.Start();
+	}
+
+	/// <summary>
+	/// Stops the automation of combat.
+	/// </summary>
+	public void Stop()
+	{
+		CombatOptions.AutoCombatEnabled = false;
+		_state.Reset();
+		_state.ClearHotkeyCooldowns();
+		_state.LastBuffTime = null;
+		_autoClericTimer.Stop();
+	}
+
+	/// <summary>
+	/// Master heartbeat method to handle the movement of state.
+	/// </summary>
+	private void Tick(object? sender, EventArgs e)
+	{
+		if (_context.ActiveCharacter == null
+		    || !CombatOptions.AutoCombatEnabled
+		    || _state.Status == AutoClericStatus.Inactive
+		    || _context.MonsterTable.Count == 0)
+		{
+			Trace.WriteLine("Canceled auto-combat due to invalid state");
+			MainWindow.Logger.Warn("Auto-combat disabled, please ensure that ROSE is hooked and that " +
+			                       "a monster table is loaded");
+			Stop();
+			return;
+		}
+
+		if (_context.ActiveCharacter.IsDead)
+		{
+			if (_context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
+			Trace.WriteLine("Canceled auto-combat due to player death");
+			MainWindow.Logger.Warn("Disabling auto-combat due to player death");
+			Stop();
+			return;
+		}
+
+		if (_state.isOnCooldown())
+		{
+			return;
+		}
+
+		try
+		{
+			_ = _state.Status switch
+			{
+				AutoClericStatus.Summoning => _summons(),
+				AutoClericStatus.Buffing => _buff(),
+				AutoClericStatus.Idle => _checkStatus(),
+				_ => true
+			};
+		}
+		catch (Exception ex)
+		{
+			MainWindow.Logger.Error($"An exception occurred when attempting to process state {_state.Status}");
+			MainWindow.Logger.Error($"Disabling auto-cleric");
+			MainWindow.Logger.Error(ex.Message);
+			if (ex.StackTrace != null)
+			{
+				MainWindow.Logger.Error(ex.StackTrace);
+			}
+
+			Stop();
+		}
+	}
+
+	private bool _checkStatus()
+	{
+		//??_state.Reset();
+
+		if (_context.Settings.GeneralOptions.SummonsEnabled && _canSummon())
+		{
+			_state.ChangeStatus(AutoClericStatus.Summoning);
+			return true;
+		}
+
+		if (_state.CanApplyBuffs())  // TODO: Check if buffing key is set
+		{
+			_state.ChangeStatus(AutoClericStatus.Buffing);
+			return true;
+		}
+
+		//??_state.ChangeStatus(AutoClericStatus.Idle);
+		return true;
+	}
+	
+	private bool _summons()
+	{
+		if (!_canSummon()) 
+		{
+			_state.Reset();
+			if (CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoClericStatus.Buffing);
+			else _state.ChangeStatus(AutoClericStatus.Idle);
+			return true;
+		}
+		
+		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
+		if (activeSummonKeys.Count == 0)
+		{
+			Trace.WriteLine("No summon keys have been set");
+			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
+			_state.Reset();
+			_state.ChangeStatus(AutoClericStatus.Idle);
+			return false;
+		}
+
+		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
+		var nextKey = _state.CurrentCastingBuff;
+		var chosenKey = activeSummonKeys[nextKey];
+		if (_state.isHotkeyOnCooldown(chosenKey))
+		{
+			Trace.WriteLine("Attempted summon was on cooldown");
+			MainWindow.Logger.Warn("Attempted summon was on cooldown");
+			return false;
+		}
+
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
+		_state.SetCooldown(TimeSpan.FromSeconds(2)); // Wait for animation
+		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		return true;
+	}
+	
+	private bool _canSummon() // TODO: Check if theres a summoning key
+	{
+		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
+		Trace.Write($"Current summon meter {currentSummonMeter}");
+		var summonCost = _context.Settings.GeneralOptions.SummonCost;
+		var maxSummons = _context.Settings.GeneralOptions.MaxSummonCount;
+		return currentSummonMeter + summonCost <= maxSummons;
+	}
+
+	private bool _buff()
+	{
+		var activeBuffKeys = _context.Settings.FindKeybindings(KeybindAction.Buff);
+		if (activeBuffKeys.Count == 0)
+		{
+			Trace.WriteLine("No buff keys have been set");
+			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
+			_state.Reset();
+			_state.ChangeStatus(AutoClericStatus.Idle, TimeSpan.FromMilliseconds(100));
+			return false;
+		}
+
+		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
+		var nextKey = _state.CurrentCastingBuff;
+		var chosenKey = activeBuffKeys[nextKey];
+		if (_state.isHotkeyOnCooldown(chosenKey))
+		{
+			Trace.WriteLine("Attempted buff was on cooldown");
+			MainWindow.Logger.Warn("Attempted buff was on cooldown");
+			return false;
+		}
+
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
+		Trace.WriteLine($"Running buff in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
+		_state.CurrentCastingBuff++;
+		if (_state.CurrentCastingBuff >= activeBuffKeys.Count)
+		{
+			_state.LastBuffTime = DateTime.Now;
+			_state.Reset();
+			_state.ChangeStatus(AutoClericStatus.Idle, TimeSpan.FromMilliseconds(100));
+		}
+		else
+		{
+			_state.SetCooldown(TimeSpan.FromSeconds(2));
+		}
+		return true;
+	}
+}
+
+public sealed class AutoClericState : PropertyNotifyingClass
+{
+	private readonly AutoCleric _autoCleric;
+	private string? _currentTarget;
+	private int _currentTargetId; // 0 indicates there is no active target
+	private AutoClericStatus _status = AutoClericStatus.Inactive;
+	private HotkeyCooldownTracker _hotkeyCooldowns = new();
+
+	public AutoClericState(AutoCleric autoCleric)
+	{
+		_autoCleric = autoCleric;
+	}
+
+	public AutoClericStatus Status
+	{
+		get => _status;
+		private set
+		{
+			if (_status == value) return;
+			_status = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	private DateTime? StatusTimeout { get; set; }
+	private DateTime? Cooldown { get; set; }
+
+	/// <summary>
+	/// Tracks the last time buffs were applied.
+	/// </summary>
+	public DateTime? LastBuffTime { get; set; }
+	
+	/// <summary>
+	/// During buffing, tracks the current buff being cast.
+	///
+	/// As auto-combat ticks, it increments the buff count so that each
+	/// buff keybind is ran only 1 time.
+	/// </summary>
+	public int CurrentCastingBuff { get; set; }
+
+	public string? CurrentTarget // might not need this
+	{
+		get => _currentTarget;
+		set
+		{
+			if (_currentTarget == value) return;
+			_currentTarget = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	public int CurrentTargetId
+	{
+		get => _currentTargetId;
+		set
+		{
+			if (_currentTargetId == value) return;
+			_currentTargetId = value;
+			NotifyPropertyChanged();
+		}
+	}
+
+	/// <summary>
+	/// Changes the current status to a new one, optionally
+	/// with a specified duration.
+	/// </summary>
+	/// <param name="status">New status</param>
+	/// <param name="duration">The maximum amount of time to stay in the new state for</param>
+	public void ChangeStatus(AutoClericStatus status, TimeSpan? duration = null)
+	{
+		Status = status;
+		StatusTimeout = duration == null ? null : DateTime.Now.Add(duration.Value);
+		Cooldown = null;
+	}
+
+	/// <summary>
+	/// Sets a cooldown period until the next time the
+	/// current state can be processed.
+	/// </summary>
+	/// <param name="duration">cooldown duration</param>
+	public void SetCooldown(TimeSpan duration)
+	{
+		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
+		Cooldown = DateTime.Now.Add(duration);
+	}
+	
+	/// <summary>
+	/// Returns true if the current state is on a cooldown.
+	/// </summary>
+	/// <returns>cooldown state</returns>
+	public bool isOnCooldown()
+	{
+		return Cooldown != null && !_isDateInPast(Cooldown);
+	}
+
+	/// <summary>
+	/// Marks a hotkey as being on cooldown for a specified duration.
+	/// </summary>
+	/// <param name="slot">hotkey slot</param>
+	/// <param name="duration">cooldown duration</param>
+	public void SetHotkeyCooldown(HotkeySlot slot, TimeSpan duration)
+	{
+		_hotkeyCooldowns.SetCooldown(slot, duration);
+	}
+
+	/// <summary>
+	/// Returns true if a hotkey slot is currently on cooldown.
+	/// </summary>
+	/// <param name="slot">hotkey slot</param>
+	/// <returns>hotkey cooldown status</returns>
+	public bool isHotkeyOnCooldown(HotkeySlot slot)
+	{
+		return _hotkeyCooldowns.isOnCooldown(slot);
+	}
+
+	/// <summary>
+	/// Clears all active hotkey cooldowns.
+	/// </summary>
+	public void ClearHotkeyCooldowns()
+	{
+		_hotkeyCooldowns.Clear();
+	}
+
+	/// <summary>
+	/// Resets all properties tracked by the state.
+	/// </summary>
+	public void Reset()
+	{
+		ChangeStatus(AutoClericStatus.Inactive);
+		ResetTarget();
+		CurrentCastingBuff = 0;
+		Cooldown = null;
+		Trace.WriteLine("Auto-combat state was fully reset");
+	}
+
+	/// <summary>
+	/// Resets the last target selected by the user.
+	/// </summary>
+	public void ResetTarget()
+	{
+		_currentTarget = null;
+		_currentTargetId = 0;
+		Trace.WriteLine("Auto-combat target was reset");
+	}
+	
+	/// <summary>
+	/// Returns true if buffs are able to be applied.
+	/// </summary>
+	/// <returns>buff readiness status</returns>
+	public bool CanApplyBuffs()
+	{
+		return _autoCleric.CombatOptions.BuffsEnabled
+			&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCleric.CombatOptions.BuffFrequency));
+	}
+	
+	/// <summary>
+	/// Returns true if this state has timed out. If the state
+	/// does not have a timeout set, this method will always
+	/// return false.
+	/// </summary>
+	/// <returns>expiry/timeout status</returns>
+	public bool IsExpired()
+	{
+		return _isDateInPast(StatusTimeout);
+	}
+	
+	private static bool _isDateInPast(DateTime? time)
+	{
+		var now = DateTime.Now;
+		return time != null && now.CompareTo(time) > 0;
+	}
+}
