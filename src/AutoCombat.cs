@@ -150,6 +150,13 @@ public sealed class AutoCombat
 			return true;
 		}
 
+		if (CombatOptions.PriorityTargetScan
+		    && _context.MonsterTable.Any(x => x.Priority))
+		{
+			_state.PriorityCheckCount = 0;
+			_state.ScanningForPriority = true;
+		}
+
 		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
 		return true;
 	}
@@ -331,12 +338,6 @@ public sealed class AutoCombat
 				_state.ChangeStatus(AutoCombatStatus.Starting);
 			}
 
-			if (CombatOptions.PriorityTargetScan)
-			{
-				_state.PriorityCheckCount = 0;
-				_state.ScanningForPriority = true;
-			}
-
 			return false;
 		}
 
@@ -441,7 +442,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		_autoCombat = autoCombat;
 	}
 
-	public bool ScanningForPriority { get; set; } = true;
+	public bool ScanningForPriority { get; set; }
 	public int PriorityCheckCount { get; set; }
 
 	public AutoCombatStatus Status
