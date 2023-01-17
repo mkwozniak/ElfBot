@@ -16,6 +16,8 @@ public class Settings : PropertyNotifyingClass
 	public FoodOptions FoodOptions { get; } = new();
 	public ZHackOptions ZHackOptions { get; } = new();
 
+	public string? LastMonsterTableLocation { get; set; }
+
 	public List<HotkeySlot> Keybindings
 	{
 		get => _keybindings;

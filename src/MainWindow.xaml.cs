@@ -210,6 +210,12 @@ public partial class MainWindow
 			settings.ShiftKeybindings = Settings.ShiftKeybindings;
 		}
 
+		if (settings.LastMonsterTableLocation != null)
+		{
+			var loaded = ApplicationContext.LoadMonsterTable(settings.LastMonsterTableLocation);
+			if (!loaded) settings.LastMonsterTableLocation = null;
+		}
+
 		ApplicationContext.Settings = settings;
 	}
 	

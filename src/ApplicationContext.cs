@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace ElfBot;
@@ -116,6 +118,51 @@ public class ApplicationContext : PropertyNotifyingClass
 	}
 
 	public bool UseSecondClient { get; set; }
+
+	public bool LoadMonsterTable(string file)
+	{
+		if (!File.Exists(file)) return false;
+		try
+		{
+			using var reader = new StreamReader(file);
+			var contents = reader.ReadToEnd();
+			var monsters = contents.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+			MonsterTable.Clear();
+			foreach (var line in monsters)
+			{
+				var split = line.Split(','); // Backwards compatibility with single-line files
+				foreach (var monster in split)
+				{
+					var name = monster.Trim();
+					if (name.Length == 0) continue;
+					var priority = false;
+					if (monster.StartsWith('*'))
+					{
+						priority = true;
+						name = monster.TrimStart('*');
+					}
+
+					var item = MonsterTable.SingleOrDefault(v => v.Name == name);
+					if (item != null) continue;
+
+					MonsterTable.Add(new MonsterTableEntry()
+					{
+						Name = name,
+						Priority = priority
+					});
+				}
+			}
+
+			return true;
+		}
+		catch (System.Security.SecurityException ex)
+		{
+			MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+			                $"Details:\n\n{ex.StackTrace}");
+			return false;
+		}
+	}
 }
 
 public class MonsterTableEntry
