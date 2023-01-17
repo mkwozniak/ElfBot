@@ -3,7 +3,67 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:elfbot="clr-namespace:ElfBot"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+
+    <UserControl.Resources>
+        <!-- Star shaped priority button Template -->
+        <ControlTemplate x:Key="PriorityToggleButton" TargetType="{x:Type ToggleButton}">
+            <Canvas Width="15" Height="15">
+                <Path
+                    x:Name="ButtonPath"
+                    Width="15"
+                    Height="15"
+                    Data="F1 M 17.416,32.25L 32.910,32.25L 38,18L 43.089,32.25L 58.583,32.25L 45.679,41.494L 51.458,56L 38,48.083L 26.125,56L 30.597,41.710L 17.416,32.25 Z "
+                    Fill="Transparent"
+                    Stroke="Yellow"
+                    StrokeThickness="1"
+                    Stretch="Fill" />
+            </Canvas>
+            <!-- When checked, fill with Yellow -->
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="ButtonPath" Property="Fill" Value="Yellow" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="ButtonPath" Property="Stroke" Value="Gold" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="ButtonPath" Property="Fill" Value="Gold" />
+                    <Setter TargetName="ButtonPath" Property="Stroke" Value="Gold" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <!-- Delete button -->
+        <Style x:Key="DeleteButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" Background="Transparent"
+                                BorderBrush="Transparent"
+                                BorderThickness="0">
+                            <ContentPresenter x:Name="contentPresenter" TextElement.Foreground="{TemplateBinding Foreground}"
+                                              Focusable="False"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#D11A2A" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="Red" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="DarkRed" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
     <Grid Background="Black">
         <DockPanel>
@@ -47,14 +107,58 @@
             </StackPanel>
 
             <StackPanel Width="250" HorizontalAlignment="Right">
-                <Label Content="Monster Table" Foreground="White" FontSize="14" FontWeight="Bold" />
-                <ScrollViewer Content="Empty" x:Name="MonsterTableText"
+                <DockPanel>
+                    <Label Content="Monster Table" Foreground="White" FontSize="14" FontWeight="Bold" />
+                    <DockPanel HorizontalAlignment="Right">
+                        <Button Content="Save"
+                                Width="50" Height="20"
+                                Background="Black" Foreground="White"
+                                Click="SaveMonsterTable" />
+                        <Button Content="Load" Margin="5 0 0 0"
+                                Width="50" Height="20"
+                                Background="Black" Foreground="White"
+                                Click="LoadMonsterTable" />
+                    </DockPanel>
+                </DockPanel>
+                <ScrollViewer x:Name="MonsterTableText"
                               Height="275" Margin="5"
-                              Background="#FF171717" Foreground="White" FontSize="14" />
-                <Button Content="Load" HorizontalAlignment="Left"
-                        Width="75" Margin="5 0 0 0"
-                        Background="Black" Foreground="White"
-                        Click="LoadMonsterTable" />
+                              Background="#FF171717" Foreground="White" FontSize="14">
+
+                    <ItemsControl ItemsSource="{Binding Source={StaticResource ApplicationContext}, Path=MonsterTable}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type elfbot:MonsterTableEntry}">
+                                <DockPanel>
+                                    <Label Content="{Binding Name}" Width="175"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top"
+                                           Foreground="White"
+                                           Margin="0 0 0 0">
+                                    </Label>
+                                    <DockPanel HorizontalAlignment="Right">
+                                        <ToggleButton Margin="0 0 5 0" Cursor="Hand"
+                                                      IsChecked="{Binding Priority}"
+                                                      Template="{DynamicResource PriorityToggleButton}"
+                                                      Tag="{Binding Name}" />
+                                        <Button Cursor="Hand" Margin="0 3 5 0" Content="&#x2716;"
+                                                Style="{StaticResource DeleteButtonStyle}"
+                                                Tag="{Binding Name}"
+                                                Click="DeleteMonsterTableEntry" />
+                                    </DockPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <DockPanel>
+                    <TextBox x:Name="NewMonsterTableEntryText"
+                             TextWrapping="Wrap" Width="175" Margin="5 0 0 0"
+                             HorizontalAlignment="Left"
+                             Background="Black" Foreground="White" />
+                    <Button Content="Add" Margin="5 0 5 0"
+                            HorizontalAlignment="Right"
+                            Width="50" Height="23"
+                            Background="Black" Foreground="White"
+                            Click="AddNewMonsterTableEntry" />
+                </DockPanel>
             </StackPanel>
         </DockPanel>
     </Grid>

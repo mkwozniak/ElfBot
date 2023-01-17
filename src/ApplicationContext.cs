@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Threading;
 
 namespace ElfBot;
@@ -58,9 +60,10 @@ public class ApplicationContext : PropertyNotifyingClass
 	{
 		Interval = TimeSpan.FromMilliseconds(50)
 	};
+
 	public DispatcherTimer ZHackTimer = new();
 
-	public readonly HashSet<string> MonsterTable = new();
+	public ObservableCollection<MonsterTableEntry> MonsterTable { get; } = new();
 
 	public ApplicationContext()
 	{
@@ -84,7 +87,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	public UiData UiData { get; }
 
 	public AutoCombat AutoCombat { get; }
-	
+
 	public AutoFood AutoFood { get; }
 
 	public bool Hooked
@@ -99,17 +102,24 @@ public class ApplicationContext : PropertyNotifyingClass
 				Hooked = false;
 				return false;
 			}
+
 			return true;
 		}
 		set
 		{
 			if (_hooked == value) return;
 			_hooked = value;
-			if (!value && RoseUnhookDelegate != null) 
+			if (!value && RoseUnhookDelegate != null)
 				RoseUnhookDelegate.Invoke();
 			NotifyPropertyChanged();
 		}
 	}
 
 	public bool UseSecondClient { get; set; }
+}
+
+public class MonsterTableEntry
+{
+	public string Name { get; init; }
+	public bool Priority { get; init; }
 }

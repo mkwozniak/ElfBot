@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
+using System.Linq;
 #pragma warning disable CS4014
 
 namespace ElfBot;
@@ -239,8 +240,10 @@ public sealed class AutoCombat
 
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
+		
+		var monsterTableEntry = _context.MonsterTable.SingleOrDefault(v => v.Name == name.Trim());
 
-		if(CombatOptions.PriorityTargetScan && _state.ScanningForPriority) 
+		if (CombatOptions.PriorityTargetScan && _state.ScanningForPriority)
 		{
 			if (_state.PriorityCheckCount > CombatOptions.MaxPriorityChecks)
 			{
@@ -252,32 +255,17 @@ public sealed class AutoCombat
 				return false;
 			}
 
-			Trace.WriteLine($"Priority Target Check: {_state.PriorityCheckCount} / {CombatOptions.MaxPriorityChecks}");
-			// If the selected monster is not whitelisted in the monster table,
-			// we need to restart our target search.
-			if (_context.MonsterTable.Contains($"*{name.Trim()}"))
+			if (!monsterTableEntry?.Priority == true)
 			{
-				// A whitelisted monster was finally targeted, so we can 
-				// now move to start attacking it.
-				Trace.WriteLine("Found priority monster to attack");
-				_state.ChangeStatus(AutoCombatStatus.StartAttack);
-				if (CombatOptions.DelayBeforeAttack > 0)
-				{
-					_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
-				}
-				return true;
+				Trace.WriteLine("Priority Monster name not in table");
+				_state.PriorityCheckCount++;
+				_state.ResetTarget();
+				_state.ChangeStatus(AutoCombatStatus.Targeting);
+				return false;
 			}
-
-			Trace.WriteLine("Priority Monster name not in table");
-			_state.PriorityCheckCount++;
-			_state.ResetTarget();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			return false;
 		}
-
-		// If the selected monster is not whitelisted in the monster table,
-		// we need to restart our target search.
-		if (!_context.MonsterTable.Contains(name.Trim()))
+		
+		if (monsterTableEntry == null)
 		{
 			Trace.WriteLine("Monster name not in table");
 			_state.ResetTarget();
