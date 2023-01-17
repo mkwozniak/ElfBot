@@ -35,6 +35,7 @@ public sealed class AutoCombat
 	private readonly AutoCombatState _state;
 
 	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
+	internal GeneralOptions GeneralOptions => _context.Settings.GeneralOptions;
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{
@@ -158,7 +159,7 @@ public sealed class AutoCombat
 			_state.ScanningForPriority = true;
 		}
 
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
+		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(GeneralOptions.TargetCheckDelay));
 		return true;
 	}
 	
@@ -217,7 +218,7 @@ public sealed class AutoCombat
 		_state.ResetTarget();
 		RoseProcess.SendKeypress(Messaging.VKeys.KEY_TAB);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
+		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(GeneralOptions.TargetCheckDelay));
 		return true;
 	}
 

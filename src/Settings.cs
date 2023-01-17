@@ -77,6 +77,7 @@ public sealed class GeneralOptions
 	public int SummonCost { get; set; } = 0;
 	public int MaxSummonCount { get; set; } = 0;
 	public int SelectedDeathActionIndex { get; init; }
+	public int TargetCheckDelay { get; set; } = 500;
 	[JsonIgnore] public DeathActions DeathAction => (DeathActions)SelectedDeathActionIndex;
 	
 	#region Camera Options
