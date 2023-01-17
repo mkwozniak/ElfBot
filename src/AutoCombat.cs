@@ -380,7 +380,7 @@ public sealed class AutoCombat
 		if (_state.IsExpired())
 		{
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			_state.ChangeStatus(AutoCombatStatus.Starting);
 			return false;
 		}
 
