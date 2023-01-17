@@ -68,6 +68,7 @@ public sealed class AutoCombat
 		CombatOptions.AutoCombatEnabled = false;
 		_state.Reset();
 		_state.ClearHotkeyCooldowns();
+		_state.LastBuffTime = null;
 		_autoCombatTimer.Stop();
 	}
 
