@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="ElfBot.Components.AutoClericPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ElfBot.Components"
+             mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
+
+    <Grid Background="Black">
+        <StackPanel Width="200">
+            <StackPanel>
+                <Label Content="General" Foreground="White" FontSize="14" FontWeight="Bold" />
+                <!--IsEnabled="{Binding Path=UiData.CanEnableAutoCombat, Source={StaticResource ApplicationContext}}"-->
+                <CheckBox Content="Enable Auto Cleric" Foreground="White"
+                          Margin="5 5 0 0"
+                          IsChecked="{Binding Path=Settings.ClericOptions.AutoClericEnabled, Source={StaticResource ApplicationContext}}"
+                          Checked="StartAutoCleric" Unchecked="StopAutoCleric" />
+            </StackPanel>
+            <ContentControl Tag="Cleric State: "
+                            Content="{Binding Path=AutoCleric.State.Status, Source={StaticResource ApplicationContext}}"
+                             />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -44,6 +44,11 @@
                         Height="20" Width="128"
                         Tag="{Binding ElementName=CombatOptionsPanel}"
                         Click="NavigatePanel" />
+                <Button x:Name="AutoClericPanelButton" Content="Auto Cleric"
+                        Background="Black" Foreground="White"
+                        Height="20" Width="128"
+                        Tag="{Binding ElementName=AutoClericPanel}"
+                        Click="NavigatePanel" />
                 <Button x:Name="FoodOptionsPanelButton" Content="Food"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
@@ -90,6 +95,9 @@
         </GroupBox>
         <GroupBox x:Name="CombatOptionsPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:AutoCombatPanel/>
+        </GroupBox>
+        <GroupBox x:Name="AutoClericPanel" Header="Auto Combat" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
+            <components:AutoClericPanel/>
         </GroupBox>
         <GroupBox x:Name="FoodOptionsPanel" Header="Food Options" Margin="158,0,182,10" Foreground="White" Visibility="Hidden">
             <components:FoodOptionsPanel />

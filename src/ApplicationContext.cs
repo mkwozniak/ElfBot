@@ -70,6 +70,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	public ApplicationContext()
 	{
 		AutoCombat = new AutoCombat(this);
+		AutoCleric = new AutoCleric(this);
 		AutoFood = new AutoFood(this);
 		UiData = new UiData(this);
 	}
@@ -89,7 +90,7 @@ public class ApplicationContext : PropertyNotifyingClass
 	public UiData UiData { get; }
 
 	public AutoCombat AutoCombat { get; }
-
+	public AutoCleric AutoCleric { get; }
 	public AutoFood AutoFood { get; }
 
 	public bool Hooked

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
@@ -13,6 +14,7 @@ public enum AutoClericStatus
 {
 	Inactive, // stopped
 	Idle, // no heals needed
+	PrepareScanning,
 	Scanning, // Scanning and collecting nearby party members
 	Buffing,
 	Summoning,
@@ -31,11 +33,11 @@ public sealed class AutoCleric
 	private readonly ApplicationContext _context;
 	private readonly AutoClericState _state;
 
-	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
+	internal ClericOptions ClericOptions => _context.Settings.ClericOptions;
 
 	private readonly DispatcherTimer _autoClericTimer = new()
 	{
-		Interval = TimeSpan.FromMilliseconds(500)
+		Interval = TimeSpan.FromMilliseconds(250)
 	};
 
 	public AutoCleric(ApplicationContext context)
@@ -62,11 +64,16 @@ public sealed class AutoCleric
 	/// </summary>
 	public void Stop()
 	{
-		CombatOptions.AutoCombatEnabled = false;
+		ClericOptions.AutoClericEnabled = false;
 		_state.Reset();
 		_state.ClearHotkeyCooldowns();
 		_state.LastBuffTime = null;
 		_autoClericTimer.Stop();
+		
+		
+		
+		// TODO
+		requiresScanTest = true;
 	}
 
 	/// <summary>
@@ -75,13 +82,11 @@ public sealed class AutoCleric
 	private void Tick(object? sender, EventArgs e)
 	{
 		if (_context.ActiveCharacter == null
-		    || !CombatOptions.AutoCombatEnabled
-		    || _state.Status == AutoClericStatus.Inactive
-		    || _context.MonsterTable.Count == 0)
+		    || !ClericOptions.AutoClericEnabled
+		    || _state.Status == AutoClericStatus.Inactive)
 		{
-			Trace.WriteLine("Canceled auto-combat due to invalid state");
-			MainWindow.Logger.Warn("Auto-combat disabled, please ensure that ROSE is hooked and that " +
-			                       "a monster table is loaded");
+			Trace.WriteLine("Canceled auto-cleric due to invalid state");
+			MainWindow.Logger.Warn("Auto-cleric disabled, please ensure that ROSE is hooked");
 			Stop();
 			return;
 		}
@@ -89,8 +94,8 @@ public sealed class AutoCleric
 		if (_context.ActiveCharacter.IsDead)
 		{
 			if (_context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
-			Trace.WriteLine("Canceled auto-combat due to player death");
-			MainWindow.Logger.Warn("Disabling auto-combat due to player death");
+			Trace.WriteLine("Canceled auto-cleric due to player death");
+			MainWindow.Logger.Warn("Disabling auto-cleric due to player death");
 			Stop();
 			return;
 		}
@@ -104,15 +109,17 @@ public sealed class AutoCleric
 		{
 			_ = _state.Status switch
 			{
+				AutoClericStatus.Idle => _checkStatus(),
+				AutoClericStatus.PrepareScanning => _prepareScan(),
+				AutoClericStatus.Scanning => _scan(),
 				AutoClericStatus.Summoning => _summons(),
 				AutoClericStatus.Buffing => _buff(),
-				AutoClericStatus.Idle => _checkStatus(),
 				_ => true
 			};
 		}
 		catch (Exception ex)
 		{
-			MainWindow.Logger.Error($"An exception occurred when attempting to process state {_state.Status}");
+			MainWindow.Logger.Error($"An exception occurred when attempting to process auto-cleric state {_state.Status}");
 			MainWindow.Logger.Error($"Disabling auto-cleric");
 			MainWindow.Logger.Error(ex.Message);
 			if (ex.StackTrace != null)
@@ -124,9 +131,105 @@ public sealed class AutoCleric
 		}
 	}
 
+	private bool _requiresScan()
+	{
+		
+		// TODO: Rescan if party size has changed
+		// or if a party member has become invalid
+		
+		return requiresScanTest;
+	}
+
+	
+	// Scanning
+	private int? _lastTargetScanned;
+
+	private bool requiresScanTest = true;
+
+	private List<TargetedEntity> _party = new(); // TODO: don't have player name. maybe targeted player class?
+	
+	private bool _prepareScan()
+	{
+		_party.Clear();
+		
+		if (_context.ActiveCharacter!.LastTargetId != _context.ActiveCharacter.Id)
+		{
+			// F1 selects the current player, so we are ensuring that the scan 
+			// starts with the current player selected, and then rotates through
+			// the party members.
+			Trace.WriteLine("Waiting for self selection");
+			RoseProcess.SendKeypress(Messaging.VKeys.KEY_F1);
+			return false;
+		}
+		
+		Trace.WriteLine("Starting to scan");
+		_state.ChangeStatus(AutoClericStatus.Scanning);
+		_lastTargetScanned = _context.ActiveCharacter.Id;
+		// immediately start scanning to avoid starting the scan at the same player
+		RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3); 
+		return true;
+	}
+	
+	// TODO: Current player target name is available and can be used to reinforce scanning checks
+	// TODO: it appears possible to be able to get the current selected party member index, this would be the most reliable method
+	private bool _scan()
+	{
+		var currentTarget = _context.ActiveCharacter!.LastTargetId;
+
+		if (_lastTargetScanned == currentTarget)  
+		{
+			return false;
+		}
+
+		if (currentTarget == _context.ActiveCharacter.Id) 
+		{
+			Trace.WriteLine("Back at self, scanning completed");
+			_lastTargetScanned = 0;
+			requiresScanTest = false;
+			_state.ChangeStatus(AutoClericStatus.Idle);
+			return true;
+		}
+		
+		if (currentTarget <= 0) // player might not be in range, skip to next
+		{
+			Trace.WriteLine("Invalid target, skipping");
+			_context.ActiveCharacter.LastTargetId = -1;
+			_lastTargetScanned = -1;
+			RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3);
+			return false;
+		}
+		
+		// TODO: Set current target to -1 or some arbitrary value to prevent double 0 skips
+		
+		// Keep scanning
+		Trace.WriteLine($"Found target {currentTarget}"); // TODO: Get the current target and track them
+		_party.Add(new TargetedEntity(currentTarget));
+		RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3);
+		_lastTargetScanned = currentTarget;
+		return true;
+	}
+
 	private bool _checkStatus()
 	{
+		// TODO: check self health
+		
 		//??_state.Reset();
+		if (_requiresScan())
+		{
+			// TODO: Do we need to initialize?
+			_state.ChangeStatus(AutoClericStatus.PrepareScanning);
+			return true;
+		}
+		
+		// find player with lowest hp
+		// determine when to use restore
+		// determine when to use party restore/heals
+		
+		
+		// check if we need to scan
+		// check if we're even in a party - pause if not
+		
+		// check party members health, handle healing and revive logic
 
 		if (_context.Settings.GeneralOptions.SummonsEnabled && _canSummon())
 		{
@@ -134,7 +237,7 @@ public sealed class AutoCleric
 			return true;
 		}
 
-		if (_state.CanApplyBuffs())  // TODO: Check if buffing key is set
+		if (_state.CanApplyBuffs())  // TODO: Check if buffing keypresses are set
 		{
 			_state.ChangeStatus(AutoClericStatus.Buffing);
 			return true;
@@ -149,7 +252,7 @@ public sealed class AutoCleric
 		if (!_canSummon()) 
 		{
 			_state.Reset();
-			if (CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoClericStatus.Buffing);
+			if (_context.Settings.CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoClericStatus.Buffing);
 			else _state.ChangeStatus(AutoClericStatus.Idle);
 			return true;
 		}
@@ -362,7 +465,6 @@ public sealed class AutoClericState : PropertyNotifyingClass
 		ResetTarget();
 		CurrentCastingBuff = 0;
 		Cooldown = null;
-		Trace.WriteLine("Auto-combat state was fully reset");
 	}
 
 	/// <summary>
@@ -372,7 +474,6 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	{
 		_currentTarget = null;
 		_currentTargetId = 0;
-		Trace.WriteLine("Auto-combat target was reset");
 	}
 	
 	/// <summary>
@@ -381,8 +482,10 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	/// <returns>buff readiness status</returns>
 	public bool CanApplyBuffs()
 	{
-		return _autoCleric.CombatOptions.BuffsEnabled
-			&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCleric.CombatOptions.BuffFrequency));
+		// TODO;
+		return false;
+//		return Settings.CombatOptions.BuffsEnabled
+			//&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCleric.CombatOptions.BuffFrequency));
 	}
 	
 	/// <summary>
