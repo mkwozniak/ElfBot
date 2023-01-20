@@ -250,6 +250,14 @@ public sealed class AutoCombat
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
 
+		var target = new TargetedEntity(id);
+		if (_context.ActiveCharacter.GetDistanceTo(target) > CombatOptions.MaximumAttackDistance)
+		{
+			_state.ResetTarget();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			return false;
+		}
+
 		var monsterTableEntry = _context.MonsterTable.SingleOrDefault(v => v.Name == name.Trim());
 
 		if (CombatOptions.PriorityTargetScan && _state.ScanningForPriority)

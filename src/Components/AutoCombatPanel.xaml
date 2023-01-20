@@ -81,6 +81,20 @@
                                  HorizontalAlignment="Left" Width="90" Margin="5 0"
                                  Background="Black" Foreground="White" />
                     </StackPanel>
+                    <StackPanel>
+                        <Label Content="Maximum Attack Distance"
+                               FontWeight="Bold" Foreground="White" />
+                        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                            <Label Content="{Binding ElementName=MaxAttackDistance, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                                   DockPanel.Dock="Right"
+                                   Width="40" Margin="0 -5 0 0"
+                                   Foreground="White" />
+                            <Slider Maximum="50" Name="MaxAttackDistance"
+                                    Value="{Binding Path=Settings.CombatOptions.MaximumAttackDistance, Source={StaticResource ApplicationContext}}"
+                                    IsSnapToTickEnabled="True" TickFrequency="1"
+                                    Width="100" />
+                        </DockPanel>
+                    </StackPanel>
                 </StackPanel>
                 <StackPanel Margin="0 10 0 0">
                     <Label Content="Loot Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
