@@ -257,8 +257,8 @@ public abstract class Entity
 	/// <returns>distance between this entity and the provided coordinates</returns>
 	public int GetDistanceTo(float x, float y)
 	{
-		var diffX = Math.Abs(PositionX - x);
-		var diffY = Math.Abs(PositionY - y);
+		var diffX = Math.Abs(PositionX) - Math.Abs(x);
+		var diffY = Math.Abs(PositionY) - Math.Abs(y);
 		return (int) Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
 	}
 
