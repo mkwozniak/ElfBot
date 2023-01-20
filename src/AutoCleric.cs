@@ -201,7 +201,7 @@ public sealed class AutoCleric
 			return _cast(KeybindAction.HealParty);
 		}
 
-		if (nearbyRestoreableMembers > 1
+		if (nearbyRestoreableMembers > 0
 		    && _findHotkeys(KeybindAction.RestoreParty).Length > 0)
 		{
 			return _cast(KeybindAction.RestoreParty);
