@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Threading;
 using ElfBot.Util;
+
 #pragma warning disable CS4014
 
 namespace ElfBot;
@@ -12,11 +14,10 @@ namespace ElfBot;
 public enum AutoClericStatus
 {
 	Inactive, // stopped
-	Idle, // no heals needed
+	Monitoring, // no heals needed
 	Buffing,
 	Summoning,
 	Casting,
-	Reviving
 }
 
 /// <summary>
@@ -25,12 +26,15 @@ public enum AutoClericStatus
 /// </summary>
 public sealed class AutoCleric
 {
-	public static readonly Random Random = new();
-	
-	private readonly ApplicationContext _context;
+	private static readonly Random Random = new();
+
+	private const int MaxAoeDistance = 15;
+	private const int MaxTargetDistance = 25;
+
+	internal readonly ApplicationContext Context;
 	private readonly AutoClericState _state;
 
-	internal ClericOptions ClericOptions => _context.Settings.ClericOptions;
+	private ClericOptions ClericOptions => Context.Settings.ClericOptions;
 
 	private readonly DispatcherTimer _autoClericTimer = new()
 	{
@@ -39,7 +43,7 @@ public sealed class AutoCleric
 
 	public AutoCleric(ApplicationContext context)
 	{
-		_context = context;
+		Context = context;
 		_autoClericTimer.Tick += Tick;
 		_state = new AutoClericState(this);
 	}
@@ -52,7 +56,7 @@ public sealed class AutoCleric
 	public void Start()
 	{
 		_state.Reset();
-		_state.ChangeStatus(AutoClericStatus.Idle);
+		_state.ChangeStatus(AutoClericStatus.Monitoring);
 		_autoClericTimer.Start();
 	}
 
@@ -73,7 +77,7 @@ public sealed class AutoCleric
 	/// </summary>
 	private void Tick(object? sender, EventArgs e)
 	{
-		if (_context.ActiveCharacter == null
+		if (Context.ActiveCharacter == null
 		    || !ClericOptions.AutoClericEnabled
 		    || _state.Status == AutoClericStatus.Inactive)
 		{
@@ -83,9 +87,9 @@ public sealed class AutoCleric
 			return;
 		}
 
-		if (_context.ActiveCharacter.IsDead)
+		if (Context.ActiveCharacter.IsDead)
 		{
-			if (_context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
+			if (Context.Settings.GeneralOptions.DeathAction != DeathActions.CANCEL_TIMERS) return;
 			Trace.WriteLine("Canceled auto-cleric due to player death");
 			MainWindow.Logger.Warn("Disabling auto-cleric due to player death");
 			Stop();
@@ -96,14 +100,18 @@ public sealed class AutoCleric
 		{
 			return;
 		}
-		
-		// TODO: If not in party, pause? check self?
+
+		if (_state.Status == AutoClericStatus.Casting && _state.IsExpired())
+		{
+			_state.ChangeStatus(AutoClericStatus.Monitoring);
+			return;
+		}
 
 		try
 		{
 			_ = _state.Status switch
 			{
-				AutoClericStatus.Idle => _checkStatus(),
+				AutoClericStatus.Monitoring => _checkStatus(),
 				AutoClericStatus.Summoning => _summons(),
 				AutoClericStatus.Buffing => _buff(),
 				_ => true
@@ -111,7 +119,8 @@ public sealed class AutoCleric
 		}
 		catch (Exception ex)
 		{
-			MainWindow.Logger.Error($"An exception occurred when attempting to process auto-cleric state {_state.Status}");
+			MainWindow.Logger.Error(
+				$"An exception occurred when attempting to process auto-cleric state {_state.Status}");
 			MainWindow.Logger.Error($"Disabling auto-cleric");
 			MainWindow.Logger.Error(ex.Message);
 			if (ex.StackTrace != null)
@@ -122,75 +131,148 @@ public sealed class AutoCleric
 			Stop();
 		}
 	}
-	
+
+	private bool _castTarget(PartyMember target, KeybindAction action)
+	{
+		Context.ActiveCharacter!.LastTargetId = target.Id;
+		Trace.WriteLine($"Applying action {action} to player {target.Name} (HP: {target.Entity!.Hp})");
+		return _cast(action);
+	}
+
+	private bool _cast(KeybindAction action)
+	{
+		var hotkeys = _findHotkeys(action);
+		if (hotkeys.Length == 0)
+		{
+			_state.ChangeStatus(AutoClericStatus.Monitoring);
+			return false;
+		}
+
+		var chosenKey = hotkeys[Random.Next(0, hotkeys.Length)];
+		Trace.WriteLine($"Running action {action} in hotkey slot {chosenKey.KeyCode}");
+		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
+		_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
+		_state.ChangeStatus(AutoClericStatus.Casting, TimeSpan.FromSeconds(2));
+		return true;
+	}
+
+	/// <summary>
+	/// Checks the status of all party members and decides what action to take.
+	///
+	/// Action priority is:
+	/// 1. Revive any dead players
+	/// 2. Party heal if enough damaged players are nearby
+	/// 3. Party restore if enough damaged players are nearby
+	/// 4. Focus the most damaged player and heal/restore as necessary
+	/// 5. Summons/buffs
+	/// </summary>
+	/// <returns>whether an action was taken</returns>
 	private bool _checkStatus()
 	{
-		var partyMembers = _context.ActiveCharacter!.Party.PartyMembers;
-		
-		
-		
-		
-		// TODO: check self health
-		// TODO: Delay between scans
+		var partyMembers = Context.ActiveCharacter!.Party.PartyMembers.Where(m => m.IsVisible).ToArray();
 
-		PartyMember member = _context.ActiveCharacter.Party.PartyMembers[1];
+		var nearbyRestoreableMembers = 0;
+		var nearbyHealableMembers = 0;
 
-		_context.ActiveCharacter.LastTargetId = member.Id;
-		
-		var player = member.Entity;
+		foreach (var member in partyMembers)
+		{
+			if (!member.IsVisible) continue;
+			var player = member.Entity!;
+			var dist = Context.ActiveCharacter.GetDistanceTo(player);
 
-		Trace.WriteLine("Test");
-		
-		// find player with lowest hp
-		// determine when to use restore <-- threshold
-		// determine when to use party restore/heals
-		// if multiple people in range that can benefit (threshold)? 
-		
-		
-		// check if we need to scan
-		// check if we're even in a party - pause if not
-		
-		// check party members health, handle healing and revive logic
+			// The first priority is a dead player, if they are within range
+			// we attempt to revive them.
+			if (player.IsDead && dist <= MaxTargetDistance
+			                  && _findHotkeys(KeybindAction.Revive).Length > 0)
+			{
+				return _castTarget(member, KeybindAction.Revive);
+			}
 
-		if (_context.Settings.GeneralOptions.SummonsEnabled && _canSummon())
+			if (dist <= MaxAoeDistance &&
+			    _shouldTrigger(player.Hp, player.MaxHp, ClericOptions.RestoreHpThresholdPercent))
+				nearbyRestoreableMembers += 1;
+			if (dist <= MaxAoeDistance && _shouldTrigger(player.Hp, player.MaxHp, ClericOptions.HealHpThresholdPercent))
+				nearbyHealableMembers += 1;
+		}
+
+		if (nearbyHealableMembers > 0
+		    && _findHotkeys(KeybindAction.HealParty).Length > 0)
+		{
+			return _cast(KeybindAction.HealParty);
+		}
+
+		if (nearbyRestoreableMembers > 1
+		    && _findHotkeys(KeybindAction.RestoreParty).Length > 0)
+		{
+			return _cast(KeybindAction.RestoreParty);
+		}
+
+		var mostDamaged = partyMembers
+			.Where(m => Context.ActiveCharacter.GetDistanceTo(m.Entity!) < MaxTargetDistance)
+			.Where(m => m.Entity!.Hp < m.Entity.MaxHp)
+			.MinBy(m => m.Entity!.Hp / (float)m.Entity.MaxHp * 100);
+		if (mostDamaged != null)
+		{
+			if (_findHotkeys(KeybindAction.Heal).Length > 0
+			    && _shouldTrigger(mostDamaged.Entity!.Hp, mostDamaged.Entity.MaxHp,
+				    ClericOptions.HealHpThresholdPercent))
+			{
+				return _castTarget(mostDamaged, KeybindAction.Heal);
+			}
+
+			if (_findHotkeys(KeybindAction.Restore).Length > 0
+			    && _shouldTrigger(mostDamaged.Entity!.Hp, mostDamaged.Entity.MaxHp,
+				    ClericOptions.RestoreHpThresholdPercent))
+			{
+				return _castTarget(mostDamaged, KeybindAction.Restore);
+			}
+		}
+
+		if (Context.Settings.GeneralOptions.SummonsEnabled && _canSummon())
 		{
 			_state.ChangeStatus(AutoClericStatus.Summoning);
 			return true;
 		}
 
-		if (_state.CanApplyBuffs())  // TODO: Check if buffing keypresses are set
+		if (_state.CanApplyBuffs())
 		{
 			_state.ChangeStatus(AutoClericStatus.Buffing);
 			return true;
 		}
 
-		//??_state.ChangeStatus(AutoClericStatus.Idle);
-		return true;
+		return false;
 	}
-	
+
+	private HotkeySlot[] _findHotkeys(KeybindAction action)
+	{
+		var activeKeys = Context.Settings.FindKeybindings(action);
+		return activeKeys.Count == 0
+			? Array.Empty<HotkeySlot>()
+			: activeKeys.Where(k => !_state.isHotkeyOnCooldown(k)).ToArray();
+	}
+
 	private bool _summons()
 	{
-		if (!_canSummon()) 
+		if (!_canSummon())
 		{
 			_state.Reset();
-			if (_context.Settings.CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoClericStatus.Buffing);
-			else _state.ChangeStatus(AutoClericStatus.Idle);
+			if (Context.Settings.CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoClericStatus.Buffing);
+			else _state.ChangeStatus(AutoClericStatus.Monitoring);
 			return true;
 		}
-		
-		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
+
+		var activeSummonKeys = Context.Settings.FindKeybindings(KeybindAction.Summon);
 		if (activeSummonKeys.Count == 0)
 		{
 			Trace.WriteLine("No summon keys have been set");
 			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoClericStatus.Idle);
+			_state.ChangeStatus(AutoClericStatus.Monitoring);
 			return false;
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var nextKey = _state.CurrentCastingBuff;
-		var chosenKey = activeSummonKeys[nextKey];
+		var chosenKey = activeSummonKeys[0];
 		if (_state.isHotkeyOnCooldown(chosenKey))
 		{
 			Trace.WriteLine("Attempted summon was on cooldown");
@@ -204,25 +286,24 @@ public sealed class AutoCleric
 		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		return true;
 	}
-	
+
 	private bool _canSummon() // TODO: Check if theres a summoning key
 	{
-		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
-		Trace.Write($"Current summon meter {currentSummonMeter}");
-		var summonCost = _context.Settings.GeneralOptions.SummonCost;
-		var maxSummons = _context.Settings.GeneralOptions.MaxSummonCount;
+		var currentSummonMeter = Context.ActiveCharacter!.ConsumedSummonsMeter;
+		var summonCost = Context.Settings.GeneralOptions.SummonCost;
+		var maxSummons = Context.Settings.GeneralOptions.MaxSummonCount;
 		return currentSummonMeter + summonCost <= maxSummons;
 	}
 
 	private bool _buff()
 	{
-		var activeBuffKeys = _context.Settings.FindKeybindings(KeybindAction.Buff);
+		var activeBuffKeys = Context.Settings.FindKeybindings(KeybindAction.Buff);
 		if (activeBuffKeys.Count == 0)
 		{
 			Trace.WriteLine("No buff keys have been set");
 			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoClericStatus.Idle, TimeSpan.FromMilliseconds(100));
+			_state.ChangeStatus(AutoClericStatus.Monitoring, TimeSpan.FromMilliseconds(100));
 			return false;
 		}
 
@@ -244,21 +325,27 @@ public sealed class AutoCleric
 		{
 			_state.LastBuffTime = DateTime.Now;
 			_state.Reset();
-			_state.ChangeStatus(AutoClericStatus.Idle, TimeSpan.FromMilliseconds(100));
+			_state.ChangeStatus(AutoClericStatus.Monitoring, TimeSpan.FromMilliseconds(100));
 		}
 		else
 		{
 			_state.SetCooldown(TimeSpan.FromSeconds(2));
 		}
+
 		return true;
+	}
+
+	private static bool _shouldTrigger(int value, int maxValue, float threshold)
+	{
+		var percent = value / (float)maxValue;
+		var thresholdPercent = threshold / 100;
+		return percent <= thresholdPercent;
 	}
 }
 
 public sealed class AutoClericState : PropertyNotifyingClass
 {
 	private readonly AutoCleric _autoCleric;
-	private string? _currentTarget;
-	private int _currentTargetId; // 0 indicates there is no active target
 	private AutoClericStatus _status = AutoClericStatus.Inactive;
 	private HotkeyCooldownTracker _hotkeyCooldowns = new();
 
@@ -285,7 +372,7 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	/// Tracks the last time buffs were applied.
 	/// </summary>
 	public DateTime? LastBuffTime { get; set; }
-	
+
 	/// <summary>
 	/// During buffing, tracks the current buff being cast.
 	///
@@ -293,28 +380,6 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	/// buff keybind is ran only 1 time.
 	/// </summary>
 	public int CurrentCastingBuff { get; set; }
-
-	public string? CurrentTarget // might not need this
-	{
-		get => _currentTarget;
-		set
-		{
-			if (_currentTarget == value) return;
-			_currentTarget = value;
-			NotifyPropertyChanged();
-		}
-	}
-
-	public int CurrentTargetId
-	{
-		get => _currentTargetId;
-		set
-		{
-			if (_currentTargetId == value) return;
-			_currentTargetId = value;
-			NotifyPropertyChanged();
-		}
-	}
 
 	/// <summary>
 	/// Changes the current status to a new one, optionally
@@ -339,7 +404,7 @@ public sealed class AutoClericState : PropertyNotifyingClass
 		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
 		Cooldown = DateTime.Now.Add(duration);
 	}
-	
+
 	/// <summary>
 	/// Returns true if the current state is on a cooldown.
 	/// </summary>
@@ -383,32 +448,21 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	public void Reset()
 	{
 		ChangeStatus(AutoClericStatus.Inactive);
-		ResetTarget();
 		CurrentCastingBuff = 0;
 		Cooldown = null;
 	}
 
-	/// <summary>
-	/// Resets the last target selected by the user.
-	/// </summary>
-	public void ResetTarget()
-	{
-		_currentTarget = null;
-		_currentTargetId = 0;
-	}
-	
 	/// <summary>
 	/// Returns true if buffs are able to be applied.
 	/// </summary>
 	/// <returns>buff readiness status</returns>
 	public bool CanApplyBuffs()
 	{
-		// TODO;
-		return false;
-//		return Settings.CombatOptions.BuffsEnabled
-			//&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCleric.CombatOptions.BuffFrequency));
+		return _autoCleric.Context.Settings.CombatOptions.BuffsEnabled
+		       && LastBuffTime == null
+		       || _isDateInPast(LastBuffTime?.AddSeconds(_autoCleric.Context.Settings.CombatOptions.BuffFrequency));
 	}
-	
+
 	/// <summary>
 	/// Returns true if this state has timed out. If the state
 	/// does not have a timeout set, this method will always
@@ -419,7 +473,7 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	{
 		return _isDateInPast(StatusTimeout);
 	}
-	
+
 	private static bool _isDateInPast(DateTime? time)
 	{
 		var now = DateTime.Now;

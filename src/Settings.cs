@@ -151,6 +151,9 @@ public sealed class ClericOptions : PropertyNotifyingClass
 			NotifyPropertyChanged();
 		}
 	}
+	
+	public float HealHpThresholdPercent { get; set; } = 50f;
+	public float RestoreHpThresholdPercent { get; set; } = 50f;
 }
 
 public sealed class LootOptions

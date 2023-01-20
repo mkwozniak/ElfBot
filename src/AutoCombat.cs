@@ -184,8 +184,7 @@ public sealed class AutoCombat
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var nextKey = _state.CurrentCastingBuff;
-		var chosenKey = activeSummonKeys[nextKey];
+		var chosenKey = activeSummonKeys[0];
 		if (_state.isHotkeyOnCooldown(chosenKey))
 		{
 			Trace.WriteLine("Attempted summon was on cooldown");

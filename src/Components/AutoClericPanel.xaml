@@ -7,18 +7,47 @@
              mc:Ignorable="d" d:DesignHeight="365" d:DesignWidth="450">
 
     <Grid Background="Black">
-        <StackPanel Width="200">
+        <StackPanel Width="200" HorizontalAlignment="Left">
             <StackPanel>
                 <Label Content="General" Foreground="White" FontSize="14" FontWeight="Bold" />
-                <!--IsEnabled="{Binding Path=UiData.CanEnableAutoCombat, Source={StaticResource ApplicationContext}}"-->
                 <CheckBox Content="Enable Auto Cleric" Foreground="White"
                           Margin="5 5 0 0"
                           IsChecked="{Binding Path=Settings.ClericOptions.AutoClericEnabled, Source={StaticResource ApplicationContext}}"
                           Checked="StartAutoCleric" Unchecked="StopAutoCleric" />
             </StackPanel>
-            <ContentControl Tag="Cleric State: "
-                            Content="{Binding Path=AutoCleric.State.Status, Source={StaticResource ApplicationContext}}"
-                             />
+
+            <StackPanel Margin="0 5 0 0">
+                <Label Content="Settings" Foreground="White" FontSize="14" FontWeight="Bold" />
+
+                <StackPanel>
+                    <Label Content="Heal HP Threshold (%)"
+                           FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=HealHpThresholdPercent, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="40" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="HealHpThresholdPercent"
+                                Value="{Binding Path=Settings.ClericOptions.HealHpThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Restore HP Threshold (%)"
+                           FontWeight="Bold" Foreground="White" />
+                    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                        <Label Content="{Binding ElementName=RestoreHpThresholdPercent, Path=Value, UpdateSourceTrigger=PropertyChanged}"
+                               DockPanel.Dock="Right"
+                               Width="40" Margin="0 -5 0 0"
+                               Foreground="White" />
+                        <Slider Maximum="100" Name="RestoreHpThresholdPercent"
+                                Value="{Binding Path=Settings.ClericOptions.RestoreHpThresholdPercent, Source={StaticResource ApplicationContext}}"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Width="100" />
+                    </DockPanel>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

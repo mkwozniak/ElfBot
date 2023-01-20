@@ -44,7 +44,7 @@
                         Height="20" Width="128"
                         Tag="{Binding ElementName=CombatOptionsPanel}"
                         Click="NavigatePanel" />
-                <Button x:Name="AutoClericPanelButton" Content="Auto Cleric"
+                <Button x:Name="AutoClericPanelButton" Content="Auto Cleric (BETA)"
                         Background="Black" Foreground="White"
                         Height="20" Width="128"
                         Tag="{Binding ElementName=AutoClericPanel}"

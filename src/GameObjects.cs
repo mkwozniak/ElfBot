@@ -250,6 +250,29 @@ public abstract class Entity
 	}
 
 	/// <summary>
+	/// Calculates the distance to an X, Y coordinate.
+	/// </summary>
+	/// <param name="x">other X coordinate</param>
+	/// <param name="y">other Y coordinate</param>
+	/// <returns>distance between this entity and the provided coordinates</returns>
+	public int GetDistanceTo(float x, float y)
+	{
+		var diffX = Math.Abs(PositionX - x);
+		var diffY = Math.Abs(PositionY - y);
+		return (int) Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
+	}
+
+	/// <summary>
+	/// Calculates the distance to another entity.
+	/// </summary>
+	/// <param name="entity">entity target</param>
+	/// <returns>distance between this entity and the provided entity</returns>
+	public int GetDistanceTo(Entity entity)
+	{
+		return GetDistanceTo(entity.PositionX, entity.PositionY);
+	}
+
+	/// <summary>
 	/// Checks the desired ID for this monster against the ID
 	/// sitting in memory and returns whether they match.
 	/// </summary>
