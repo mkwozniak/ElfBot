@@ -97,10 +97,12 @@ public partial class MainWindow
 		// Reset visibility & colors of all panels + navigation buttons
 		GeneralOptionsPanel.Visibility = Visibility.Hidden;
 		CombatOptionsPanel.Visibility = Visibility.Hidden;
+		AutoClericPanel.Visibility = Visibility.Hidden;
 		FoodOptionsPanel.Visibility = Visibility.Hidden;
 		KeybindOptionsPanel.Visibility = Visibility.Hidden;
 		LoggingOptionsPanel.Visibility = Visibility.Hidden;
 		AutoCombatPanelButton.Background = Brushes.Black;
+		AutoClericPanelButton.Background = Brushes.Black;
 		FoodOptionsPanelButton.Background = Brushes.Black;
 		GeneralPanelButton.Background = Brushes.Black;
 		KeybindingsPanelButton.Background = Brushes.Black;

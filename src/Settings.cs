@@ -12,6 +12,7 @@ public class Settings : PropertyNotifyingClass
 	private List<HotkeySlot> _shiftKeybindings = default!;
 	public GeneralOptions GeneralOptions { get; } = new();
 	public CombatOptions CombatOptions { get; } = new();
+	public ClericOptions ClericOptions { get; } = new();
 	public LootOptions LootOptions { get; } = new();
 	public FoodOptions FoodOptions { get; } = new();
 	public ZHackOptions ZHackOptions { get; } = new();
@@ -135,6 +136,26 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	public int MaxPriorityChecks { get; set; } = 10;
 }
 
+public sealed class ClericOptions : PropertyNotifyingClass
+{
+	private bool _autoClericEnabled;
+
+	[JsonIgnore]
+	public bool AutoClericEnabled
+	{
+		get => _autoClericEnabled;
+		set
+		{
+			if (_autoClericEnabled == value) return;
+			_autoClericEnabled = value;
+			NotifyPropertyChanged();
+		}
+	}
+	
+	public float HealHpThresholdPercent { get; set; } = 50f;
+	public float RestoreHpThresholdPercent { get; set; } = 50f;
+}
+
 public sealed class LootOptions
 {
 	public float Duration { get; set; } = 1f;
@@ -223,5 +244,10 @@ public enum KeybindAction
 	MpFood,
 	MpInstant,
 	Buff,
-	Summon
+	Summon,
+	Revive,
+	Heal,
+	HealParty,
+	Restore,
+	RestoreParty
 }

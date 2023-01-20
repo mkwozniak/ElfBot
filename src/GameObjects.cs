@@ -1,19 +1,41 @@
-﻿using ElfBot.Util;
+﻿using System;
+using ElfBot.Util;
 
 namespace ElfBot;
 
 // @formatter:off
 internal static class StaticOffsets
 {
+	public const string ApplicationName = "trose.exe";
+	
 	public const int PlayerObject       = 0x10C1190;  // type: pointer
-	public const int ClientCameraObject = 0x10BFB88; // type: pointer
+	public const int PartyBase          = 0x10C7090;  // type: n/a, party information is relative to this address
+	public const int ClientCameraObject = 0x10BFB88;  // type: pointer
 	public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
 	public const int CurrentTarget      = 0x10C34F0;  // type: pointer
 	public const int CurrentTargetName  = 0x10DBC30;  // type: pointer, name at 0x8
 	public const int EntityList         = 0x10C4090;  // type: ptr/list
 	public const int NoClipFunction     = 0xB5430;    // type: function, requires kernel32.dll
+	public const int ObjectMappings     = 0x10C4090;  // type: pointer
 }
 // @formatter:on
+
+public static class GameObjects {
+
+	public static int GetClientId(int serverId)
+	{
+		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+			StaticOffsets.ObjectMappings, (serverId * 2) + 0xC);
+		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
+	}
+	
+	public static int GetServerId(int clientId)
+	{
+		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+			StaticOffsets.ObjectMappings, (clientId * 2) + 0x2000A);
+		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
+	}
+}
 
 /// <summary>
 /// Current method of transportation.
@@ -66,6 +88,90 @@ public enum Command
 	Sit            = 0x000a  // Sitting down
 }
 // @formatter:on
+
+public enum ItemEarningPriority
+{
+	FreeForAll,
+	EvenShare
+}
+
+public enum ExpDivision
+{
+	EqualShareOn,
+	EqualShareOff
+}
+
+public class Party
+{
+	private readonly ByteValue _inPartyField;
+	private readonly IntValue _memberCountField;
+	private readonly ByteValue _levelField;
+	private readonly IntValue _expField;
+	private readonly ByteValue _optionsField;
+
+	public bool IsInParty => _inPartyField.GetValue() == 0x1;
+
+	public int MemberCount => _memberCountField.GetValue();
+
+	public int Level => _levelField.GetValue();
+
+	public int Exp => _expField.GetValue();
+
+	public ItemEarningPriority ItemEarningPriority => (ItemEarningPriority)(_optionsField.GetValue() & (1 << 7) >> 7);
+
+	public ExpDivision ExpDivision => (ExpDivision)(_optionsField.GetValue() & 1);
+
+	public PartyMember[] PartyMembers
+	{
+		get
+		{
+			if (!IsInParty) return Array.Empty<PartyMember>();
+			var members = new PartyMember[MemberCount];
+			for (var i = 0; i < MemberCount; i++)
+			{
+				members[i] = new PartyMember(i);
+			}
+
+			return members;
+		}
+	}
+
+	internal Party()
+	{
+		_inPartyField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x19));
+		_memberCountField =
+			new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x38));
+		_levelField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x1C));
+		_expField = new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x20));
+		_optionsField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x18));
+	}
+}
+
+public class PartyMember
+{
+	private TwoByteValue _serverIdField;
+	private StringValue _nameField;
+	
+	public int ServerId => _serverIdField.GetValue();
+
+	public int Id => GameObjects.GetClientId(ServerId);
+
+	public string Name => _nameField.GetValue();
+
+	public bool IsVisible => Id != 0;
+
+	public TargetedEntity? Entity => !IsVisible ? null : new TargetedEntity(Id);
+
+	internal PartyMember(int index)
+	{
+		var partyMemberListAddress = new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x30);
+		var memberBase = new WrappedMemoryAddress(partyMemberListAddress, new int[index + 1]);
+		_serverIdField = new TwoByteValue(new WrappedMemoryAddress(memberBase, 0x14));
+		_nameField = new StringValue(new WrappedMemoryAddress(memberBase, 0x38));
+	}
+}
+
+//public class PartyMemberList : IEnumerator
 
 /// <summary>
 /// Represents an entity in the game.
@@ -144,6 +250,29 @@ public abstract class Entity
 	}
 
 	/// <summary>
+	/// Calculates the distance to an X, Y coordinate.
+	/// </summary>
+	/// <param name="x">other X coordinate</param>
+	/// <param name="y">other Y coordinate</param>
+	/// <returns>distance between this entity and the provided coordinates</returns>
+	public int GetDistanceTo(float x, float y)
+	{
+		var diffX = Math.Abs(PositionX - x);
+		var diffY = Math.Abs(PositionY - y);
+		return (int) Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
+	}
+
+	/// <summary>
+	/// Calculates the distance to another entity.
+	/// </summary>
+	/// <param name="entity">entity target</param>
+	/// <returns>distance between this entity and the provided entity</returns>
+	public int GetDistanceTo(Entity entity)
+	{
+		return GetDistanceTo(entity.PositionX, entity.PositionY);
+	}
+
+	/// <summary>
 	/// Checks the desired ID for this monster against the ID
 	/// sitting in memory and returns whether they match.
 	/// </summary>
@@ -182,6 +311,8 @@ public class Character : Entity
 	public int MapId => _mapIdField.GetValue();
 
 	public Camera Camera { get; } = new();
+
+	public Party Party { get; } = new();
 
 	public int LastTargetId
 	{
@@ -225,7 +356,7 @@ public class Character : Entity
 	{
 	}
 
-	private Character(IMemoryAddress baseAddress) : base(baseAddress)
+	internal Character(IMemoryAddress baseAddress) : base(baseAddress)
 	{
 		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
 		_levelField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x3AD8));
@@ -289,9 +420,22 @@ public class TargetedEntity : Entity
 		return Id == _originalId && MaxHp > 0;
 	}
 
-	private static int _createBaseOffset(int id)
+	internal static int _createBaseOffset(int id)
 	{
 		return (id * 8) + 0x22078;
+	}
+}
+
+public class TargetedCharacter : TargetedEntity
+{
+	private readonly StringValue _nameField;
+	public string Name => _nameField.GetValue();
+
+	public TargetedCharacter(int id) : base(id)
+	{
+		var baseAddress = new MemoryAddress(StaticOffsets.ApplicationName,
+			StaticOffsets.EntityList, _createBaseOffset(id));
+		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
 	}
 }
 
