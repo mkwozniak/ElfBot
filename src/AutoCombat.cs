@@ -384,6 +384,7 @@ public sealed class AutoCombat
 			_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
 		}
 
+		_context.ActiveCharacter.LastTargetId = _state.CurrentTargetId;
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
 		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
