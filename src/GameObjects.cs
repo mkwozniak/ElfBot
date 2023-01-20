@@ -16,8 +16,26 @@ internal static class StaticOffsets
 	public const int CurrentTargetName  = 0x10DBC30;  // type: pointer, name at 0x8
 	public const int EntityList         = 0x10C4090;  // type: ptr/list
 	public const int NoClipFunction     = 0xB5430;    // type: function, requires kernel32.dll
+	public const int ObjectMappings     = 0x10C4090;  // type: pointer
 }
 // @formatter:on
+
+public static class GameObjects {
+
+	public static int GetClientId(int serverId)
+	{
+		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+			StaticOffsets.ObjectMappings, (serverId * 2) + 0xC);
+		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
+	}
+	
+	public static int GetServerId(int clientId)
+	{
+		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+			StaticOffsets.ObjectMappings, (clientId * 2) + 0x2000A);
+		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
+	}
+}
 
 /// <summary>
 /// Current method of transportation.
@@ -133,11 +151,17 @@ public class PartyMember
 {
 	private TwoByteValue _serverIdField;
 	private StringValue _nameField;
-
+	
 	public int ServerId => _serverIdField.GetValue();
 
+	public int Id => GameObjects.GetClientId(ServerId);
+
 	public string Name => _nameField.GetValue();
-	
+
+	public bool IsVisible => Id != 0;
+
+	public TargetedEntity? Entity => !IsVisible ? null : new TargetedEntity(Id);
+
 	internal PartyMember(int index)
 	{
 		var partyMemberListAddress = new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x30);
@@ -309,7 +333,7 @@ public class Character : Entity
 	{
 	}
 
-	private Character(IMemoryAddress baseAddress) : base(baseAddress)
+	internal Character(IMemoryAddress baseAddress) : base(baseAddress)
 	{
 		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
 		_levelField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x3AD8));
@@ -373,9 +397,22 @@ public class TargetedEntity : Entity
 		return Id == _originalId && MaxHp > 0;
 	}
 
-	private static int _createBaseOffset(int id)
+	internal static int _createBaseOffset(int id)
 	{
 		return (id * 8) + 0x22078;
+	}
+}
+
+public class TargetedCharacter : TargetedEntity
+{
+	private readonly StringValue _nameField;
+	public string Name => _nameField.GetValue();
+
+	public TargetedCharacter(int id) : base(id)
+	{
+		var baseAddress = new MemoryAddress(StaticOffsets.ApplicationName,
+			StaticOffsets.EntityList, _createBaseOffset(id));
+		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
 	}
 }
 

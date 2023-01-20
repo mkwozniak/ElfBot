@@ -96,6 +96,8 @@ public sealed class AutoCleric
 		{
 			return;
 		}
+		
+		// TODO: If not in party, pause? check self?
 
 		try
 		{
@@ -123,9 +125,21 @@ public sealed class AutoCleric
 	
 	private bool _checkStatus()
 	{
+		var partyMembers = _context.ActiveCharacter!.Party.PartyMembers;
+		
+		
+		
+		
 		// TODO: check self health
 		// TODO: Delay between scans
+
+		PartyMember member = _context.ActiveCharacter.Party.PartyMembers[1];
+
+		_context.ActiveCharacter.LastTargetId = member.Id;
 		
+		var player = member.Entity;
+
+		Trace.WriteLine("Test");
 		
 		// find player with lowest hp
 		// determine when to use restore <-- threshold
