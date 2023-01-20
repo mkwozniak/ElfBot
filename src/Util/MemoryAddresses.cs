@@ -182,7 +182,14 @@ public class FloatValue : AddressValue<float>
 {
 	public override float GetValue()
 	{
-		return MainWindow.TargetApplicationMemory.ReadFloat(Address.Address);
+		try
+		{
+			return MainWindow.TargetApplicationMemory.ReadFloat(Address.Address);
+		}
+		catch (Exception e)
+		{
+			return 0f;
+		}
 	}
 
 	public override bool WriteValue(float value)
