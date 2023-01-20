@@ -1,12 +1,16 @@
-﻿using ElfBot.Util;
+﻿using System;
+using ElfBot.Util;
 
 namespace ElfBot;
 
 // @formatter:off
 internal static class StaticOffsets
 {
+	public const string ApplicationName = "trose.exe";
+	
 	public const int PlayerObject       = 0x10C1190;  // type: pointer
-	public const int ClientCameraObject = 0x10BFB88; // type: pointer
+	public const int PartyBase          = 0x10C7090;  // type: n/a, party information is relative to this address
+	public const int ClientCameraObject = 0x10BFB88;  // type: pointer
 	public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
 	public const int CurrentTarget      = 0x10C34F0;  // type: pointer
 	public const int CurrentTargetName  = 0x10DBC30;  // type: pointer, name at 0x8
@@ -66,6 +70,84 @@ public enum Command
 	Sit            = 0x000a  // Sitting down
 }
 // @formatter:on
+
+public enum ItemEarningPriority
+{
+	FreeForAll,
+	EvenShare
+}
+
+public enum ExpDivision
+{
+	EqualShareOn,
+	EqualShareOff
+}
+
+public class Party
+{
+	private readonly ByteValue _inPartyField;
+	private readonly IntValue _memberCountField;
+	private readonly ByteValue _levelField;
+	private readonly IntValue _expField;
+	private readonly ByteValue _optionsField;
+
+	public bool IsInParty => _inPartyField.GetValue() == 0x1;
+
+	public int MemberCount => _memberCountField.GetValue();
+
+	public int Level => _levelField.GetValue();
+
+	public int Exp => _expField.GetValue();
+
+	public ItemEarningPriority ItemEarningPriority => (ItemEarningPriority)(_optionsField.GetValue() & (1 << 7) >> 7);
+
+	public ExpDivision ExpDivision => (ExpDivision)(_optionsField.GetValue() & 1);
+
+	public PartyMember[] PartyMembers
+	{
+		get
+		{
+			if (!IsInParty) return Array.Empty<PartyMember>();
+			var members = new PartyMember[MemberCount];
+			for (var i = 0; i < MemberCount; i++)
+			{
+				members[i] = new PartyMember(i);
+			}
+
+			return members;
+		}
+	}
+
+	internal Party()
+	{
+		_inPartyField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x19));
+		_memberCountField =
+			new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x38));
+		_levelField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x1C));
+		_expField = new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x20));
+		_optionsField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x18));
+	}
+}
+
+public class PartyMember
+{
+	private TwoByteValue _serverIdField;
+	private StringValue _nameField;
+
+	public int ServerId => _serverIdField.GetValue();
+
+	public string Name => _nameField.GetValue();
+	
+	internal PartyMember(int index)
+	{
+		var partyMemberListAddress = new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x30);
+		var memberBase = new WrappedMemoryAddress(partyMemberListAddress, new int[index + 1]);
+		_serverIdField = new TwoByteValue(new WrappedMemoryAddress(memberBase, 0x14));
+		_nameField = new StringValue(new WrappedMemoryAddress(memberBase, 0x38));
+	}
+}
+
+//public class PartyMemberList : IEnumerator
 
 /// <summary>
 /// Represents an entity in the game.
@@ -182,6 +264,8 @@ public class Character : Entity
 	public int MapId => _mapIdField.GetValue();
 
 	public Camera Camera { get; } = new();
+
+	public Party Party { get; } = new();
 
 	public int LastTargetId
 	{

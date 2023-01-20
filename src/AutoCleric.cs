@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
@@ -14,8 +13,6 @@ public enum AutoClericStatus
 {
 	Inactive, // stopped
 	Idle, // no heals needed
-	PrepareScanning,
-	Scanning, // Scanning and collecting nearby party members
 	Buffing,
 	Summoning,
 	Casting,
@@ -69,11 +66,6 @@ public sealed class AutoCleric
 		_state.ClearHotkeyCooldowns();
 		_state.LastBuffTime = null;
 		_autoClericTimer.Stop();
-		
-		
-		
-		// TODO
-		requiresScanTest = true;
 	}
 
 	/// <summary>
@@ -110,8 +102,6 @@ public sealed class AutoCleric
 			_ = _state.Status switch
 			{
 				AutoClericStatus.Idle => _checkStatus(),
-				AutoClericStatus.PrepareScanning => _prepareScan(),
-				AutoClericStatus.Scanning => _scan(),
 				AutoClericStatus.Summoning => _summons(),
 				AutoClericStatus.Buffing => _buff(),
 				_ => true
@@ -130,100 +120,17 @@ public sealed class AutoCleric
 			Stop();
 		}
 	}
-
-	private bool _requiresScan()
-	{
-		
-		// TODO: Rescan if party size has changed
-		// or if a party member has become invalid
-		
-		return requiresScanTest;
-	}
-
 	
-	// Scanning
-	private int? _lastTargetScanned;
-
-	private bool requiresScanTest = true;
-
-	private List<TargetedEntity> _party = new(); // TODO: don't have player name. maybe targeted player class?
-	
-	private bool _prepareScan()
-	{
-		_party.Clear();
-		
-		if (_context.ActiveCharacter!.LastTargetId != _context.ActiveCharacter.Id)
-		{
-			// F1 selects the current player, so we are ensuring that the scan 
-			// starts with the current player selected, and then rotates through
-			// the party members.
-			Trace.WriteLine("Waiting for self selection");
-			RoseProcess.SendKeypress(Messaging.VKeys.KEY_F1);
-			return false;
-		}
-		
-		Trace.WriteLine("Starting to scan");
-		_state.ChangeStatus(AutoClericStatus.Scanning);
-		_lastTargetScanned = _context.ActiveCharacter.Id;
-		// immediately start scanning to avoid starting the scan at the same player
-		RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3); 
-		return true;
-	}
-	
-	// TODO: Current player target name is available and can be used to reinforce scanning checks
-	// TODO: it appears possible to be able to get the current selected party member index, this would be the most reliable method
-	private bool _scan()
-	{
-		var currentTarget = _context.ActiveCharacter!.LastTargetId;
-
-		if (_lastTargetScanned == currentTarget)  
-		{
-			return false;
-		}
-
-		if (currentTarget == _context.ActiveCharacter.Id) 
-		{
-			Trace.WriteLine("Back at self, scanning completed");
-			_lastTargetScanned = 0;
-			requiresScanTest = false;
-			_state.ChangeStatus(AutoClericStatus.Idle);
-			return true;
-		}
-		
-		if (currentTarget <= 0) // player might not be in range, skip to next
-		{
-			Trace.WriteLine("Invalid target, skipping");
-			_context.ActiveCharacter.LastTargetId = -1;
-			_lastTargetScanned = -1;
-			RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3);
-			return false;
-		}
-		
-		// TODO: Set current target to -1 or some arbitrary value to prevent double 0 skips
-		
-		// Keep scanning
-		Trace.WriteLine($"Found target {currentTarget}"); // TODO: Get the current target and track them
-		_party.Add(new TargetedEntity(currentTarget));
-		RoseProcess.SendKeypress(Messaging.VKeys.KEY_F3);
-		_lastTargetScanned = currentTarget;
-		return true;
-	}
-
 	private bool _checkStatus()
 	{
 		// TODO: check self health
+		// TODO: Delay between scans
 		
-		//??_state.Reset();
-		if (_requiresScan())
-		{
-			// TODO: Do we need to initialize?
-			_state.ChangeStatus(AutoClericStatus.PrepareScanning);
-			return true;
-		}
 		
 		// find player with lowest hp
-		// determine when to use restore
+		// determine when to use restore <-- threshold
 		// determine when to use party restore/heals
+		// if multiple people in range that can benefit (threshold)? 
 		
 		
 		// check if we need to scan
