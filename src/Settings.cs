@@ -116,7 +116,7 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	}
 
 	public float DelayBeforeAttack { get; set; }
-	public int TargetCheckDelay { get; set; } = 150;
+	public int TargetCheckDelay { get; set; } = 500;
 	public int MaximumAttackDistance { get; set; } = 25;
 	public int BuffFrequency { get; set; } = 60;
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle

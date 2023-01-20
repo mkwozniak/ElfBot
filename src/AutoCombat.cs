@@ -159,11 +159,7 @@ public sealed class AutoCombat
 			_state.ScanningForPriority = true;
 		}
 
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
-		if (CombatOptions.TargetCheckDelay > 0)
-		{
-			_state.SetCooldown(TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
-		}
+		_state.ChangeStatus(AutoCombatStatus.Targeting, TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
 
 		return true;
 	}
@@ -222,11 +218,7 @@ public sealed class AutoCombat
 		_state.ResetTarget();
 		RoseProcess.SendKeypress(Messaging.VKeys.KEY_TAB);
 		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
-		if (CombatOptions.TargetCheckDelay > 0)
-		{
-			_state.SetCooldown(TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
-		}
+		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
 		return true;
 	}
 
