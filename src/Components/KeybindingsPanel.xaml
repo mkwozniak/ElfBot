@@ -44,6 +44,11 @@
                                             <ComboBoxItem Content="MP (Instant)" />
                                             <ComboBoxItem Content="Buff" />
                                             <ComboBoxItem Content="Summon" />
+                                            <ComboBoxItem Content="Revive" />
+                                            <ComboBoxItem Content="Heal" />
+                                            <ComboBoxItem Content="HealParty" />
+                                            <ComboBoxItem Content="Restore" />
+                                            <ComboBoxItem Content="RestoreParty" />
                                         </ComboBox>
                                         <DockPanel VerticalAlignment="Center">
                                             <Label Content="{Binding ElementName=slValue, Path=Value, UpdateSourceTrigger=PropertyChanged}" 
@@ -99,6 +104,11 @@
                                             <ComboBoxItem Content="MP (Instant)" />
                                             <ComboBoxItem Content="Buff" />
                                             <ComboBoxItem Content="Summon" />
+                                            <ComboBoxItem Content="Revive" />
+                                            <ComboBoxItem Content="Heal" />
+                                            <ComboBoxItem Content="HealParty" />
+                                            <ComboBoxItem Content="Restore" />
+                                            <ComboBoxItem Content="RestoreParty" />
                                         </ComboBox>
                                         <DockPanel VerticalAlignment="Center">
                                             <Label Content="{Binding Path=Cooldown}" 

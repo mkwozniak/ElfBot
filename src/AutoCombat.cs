@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
 using System.Linq;
+
 #pragma warning disable CS4014
 
 namespace ElfBot;
@@ -30,7 +31,7 @@ public enum AutoCombatStatus
 public sealed class AutoCombat
 {
 	public static readonly Random Random = new();
-	
+
 	private readonly ApplicationContext _context;
 	private readonly AutoCombatState _state;
 
@@ -146,7 +147,7 @@ public sealed class AutoCombat
 			return true;
 		}
 
-		if (_state.CanApplyBuffs()) 
+		if (_state.CanApplyBuffs())
 		{
 			_state.ChangeStatus(AutoCombatStatus.Buffing);
 			return true;
@@ -162,17 +163,17 @@ public sealed class AutoCombat
 		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(GeneralOptions.TargetCheckDelay));
 		return true;
 	}
-	
+
 	private bool _summons()
 	{
-		if (!_canSummon()) 
+		if (!_canSummon())
 		{
 			_state.Reset();
 			if (CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoCombatStatus.Buffing);
 			else _state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
 			return true;
 		}
-		
+
 		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
 		if (activeSummonKeys.Count == 0)
 		{
@@ -184,8 +185,7 @@ public sealed class AutoCombat
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var nextKey = _state.CurrentCastingBuff;
-		var chosenKey = activeSummonKeys[nextKey];
+		var chosenKey = activeSummonKeys[0];
 		if (_state.isHotkeyOnCooldown(chosenKey))
 		{
 			Trace.WriteLine("Attempted summon was on cooldown");
@@ -199,7 +199,7 @@ public sealed class AutoCombat
 		Trace.WriteLine($"Running summon in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		return true;
 	}
-	
+
 	private bool _canSummon()
 	{
 		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
@@ -249,7 +249,7 @@ public sealed class AutoCombat
 
 		_state.CurrentTargetId = id;
 		_state.CurrentTarget = name;
-		
+
 		var monsterTableEntry = _context.MonsterTable.SingleOrDefault(v => v.Name == name.Trim());
 
 		if (CombatOptions.PriorityTargetScan && _state.ScanningForPriority)
@@ -273,7 +273,7 @@ public sealed class AutoCombat
 				return false;
 			}
 		}
-		
+
 		if (monsterTableEntry == null)
 		{
 			Trace.WriteLine("Monster name not in table");
@@ -290,6 +290,7 @@ public sealed class AutoCombat
 		{
 			_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
 		}
+
 		return true;
 	}
 
@@ -311,7 +312,7 @@ public sealed class AutoCombat
 	/// <returns>whether an attack will be performed</returns>
 	private bool _attack()
 	{
-		if(_context.ActiveCharacter?.TargetEntity == null)
+		if (_context.ActiveCharacter?.TargetEntity == null)
 		{
 			Trace.WriteLine("Canceling attack due to expiration or invalid target.");
 			_state.Reset();
@@ -361,11 +362,12 @@ public sealed class AutoCombat
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
 		var randomKeyIndex = Random.Next(0, notOnCooldown.Count);
 		var chosenKey = notOnCooldown[randomKeyIndex];
-		
+
 		if (chosenKey.Cooldown > 0)
 		{
 			_state.SetHotkeyCooldown(chosenKey, TimeSpan.FromSeconds(chosenKey.Cooldown + 0.1f));
 		}
+
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
 		Trace.WriteLine($"Running skill in slot {chosenKey.Key} by pressing keycode {chosenKey.KeyCode}. ");
 		_state.SetCooldown(TimeSpan.FromMilliseconds(250)); // Wait 250ms before next attack
@@ -427,6 +429,7 @@ public sealed class AutoCombat
 		{
 			_state.SetCooldown(TimeSpan.FromSeconds(2));
 		}
+
 		return true;
 	}
 }
@@ -469,7 +472,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// Tracks the last time buffs were applied.
 	/// </summary>
 	public DateTime? LastBuffTime { get; set; }
-	
+
 	/// <summary>
 	/// During buffing, tracks the current buff being cast.
 	///
@@ -524,7 +527,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
 		Cooldown = DateTime.Now.Add(duration);
 	}
-	
+
 	/// <summary>
 	/// Returns true if the current state is on a cooldown.
 	/// </summary>
@@ -586,7 +589,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		_currentTargetId = 0;
 		Trace.WriteLine("Auto-combat target was reset");
 	}
-	
+
 	/// <summary>
 	/// Returns true if buffs are able to be applied.
 	/// </summary>
@@ -596,7 +599,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		return _autoCombat.CombatOptions.BuffsEnabled
 			&& LastBuffTime == null || _isDateInPast(LastBuffTime?.AddSeconds(_autoCombat.CombatOptions.BuffFrequency));
 	}
-	
+
 	/// <summary>
 	/// Returns true if this state has timed out. If the state
 	/// does not have a timeout set, this method will always
@@ -607,7 +610,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	{
 		return _isDateInPast(StatusTimeout);
 	}
-	
+
 	private static bool _isDateInPast(DateTime? time)
 	{
 		var now = DateTime.Now;

@@ -71,7 +71,7 @@ public class WrappedMemoryAddress : IMemoryAddress
 
 	public string App => _wrapped.App;
 
-	public int[] Offsets => _wrapped.Offsets.Union(_offsets).ToArray();
+	public int[] Offsets => _wrapped.Offsets.Concat(_offsets).ToArray();
 
 	public string Address => IMemoryAddress.CreateAddress(App, Offsets);
 
@@ -151,6 +151,26 @@ public class IntValue : AddressValue<int>
 	}
 
 	public IntValue(IMemoryAddress address) : base(address)
+	{
+	}
+}
+
+/// <summary>
+/// Value at an address which contains an int value (4 bytes).
+/// </summary>
+public class LongValue : AddressValue<long>
+{
+	public override long GetValue()
+	{
+		return MainWindow.TargetApplicationMemory.ReadLong(Address.Address);
+	}
+
+	public override bool WriteValue(long value)
+	{
+		return MainWindow.TargetApplicationMemory.WriteMemory(Address.Address, "long", value.ToString());
+	}
+
+	public LongValue(IMemoryAddress address) : base(address)
 	{
 	}
 }
