@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using ElfBot.Util;
+using Newtonsoft.Json;
 
 namespace ElfBot;
 
@@ -20,20 +26,68 @@ internal static class StaticOffsets
 }
 // @formatter:on
 
-public static class GameObjects {
-
+public static class GameObjects
+{
+	private static NpcMappingTable _npcMappingTable = LoadNpcIdMap();
 	public static int GetClientId(int serverId)
 	{
-		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+		var address = new MemoryAddress(StaticOffsets.ApplicationName,
 			StaticOffsets.ObjectMappings, (serverId * 2) + 0xC);
 		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
 	}
-	
+
 	public static int GetServerId(int clientId)
 	{
-		var address = new MemoryAddress(StaticOffsets.ApplicationName, 
+		var address = new MemoryAddress(StaticOffsets.ApplicationName,
 			StaticOffsets.ObjectMappings, (clientId * 2) + 0x2000A);
 		return MainWindow.TargetApplicationMemory.Read2Byte(address.Address);
+	}
+
+	public static string? GetNpcName(int id)
+	{
+		return _npcMappingTable.GetName(id);
+	}
+
+	public static List<TargetedEntity> GetVisibleMonsters()
+	{
+		List<TargetedEntity> monsters = new();
+		for (var i = 0; i < 0x1000; i++)
+		{
+			var serverId = GetServerId(i);
+			if (serverId == 0) continue;
+			TargetedEntity ent = new TargetedEntity(i);
+			if (ent.Type == ObjectType.Mob) monsters.Add(ent);
+		}
+
+		return monsters;
+	}
+
+	private static NpcMappingTable LoadNpcIdMap()
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		using var stream = assembly.GetManifestResourceStream("ElfBot.Assets.npc_list.json");
+
+		if (stream == null) return new NpcMappingTable();
+
+		using var reader = new StreamReader(stream);
+		var json = reader.ReadToEnd();
+
+		return JsonConvert.DeserializeObject<NpcMappingTable>(json)!;
+	}
+}
+
+internal class NpcMappingTable
+{
+	[JsonProperty("id_to_lnpc")]
+	private ImmutableDictionary<int, string> _idToLnpc = ImmutableDictionary<int, string>.Empty;
+	[JsonProperty("lnpc_to_name")]
+	private ImmutableDictionary<string, string> _lnpcToName = ImmutableDictionary<string, string>.Empty;
+
+	public string? GetName(int id)
+	{
+		var lnpc = _idToLnpc.TryGetValue(id, out var value) ? value : null;
+		if (lnpc == null) return null;
+		return _lnpcToName.TryGetValue(lnpc, out var value2) ? value2.Trim() : null;
 	}
 }
 
@@ -86,6 +140,29 @@ public enum Command
 	SkillPosition  = 0x0008, // Casting a skill on a position
 	RunAway        = 0x8009, // Running away
 	Sit            = 0x000a  // Sitting down
+}
+// @formatter:on
+
+// @formatter:off
+/// <summary>
+/// The type of a game object.
+/// </summary>
+public enum ObjectType
+{
+	None        = 0x0,
+	Morph       = 0x1,
+	Item        = 0x2,
+	Collision   = 0x3,
+	Ground      = 0x4,
+	Building    = 0x5,
+	Npc         = 0x6,
+	Mob         = 0x7,
+	Avatar      = 0x8, // external user
+	User        = 0x9, // current user player
+	Cart        = 0xA,
+	CastleGear  = 0xB,
+	EventObject = 0xC,
+	Ride        = 0xD
 }
 // @formatter:on
 
@@ -178,13 +255,14 @@ public class PartyMember
 /// </summary>
 public abstract class Entity
 {
+	private readonly TwoByteValue _idField;
+	private readonly LongValue _typeInstrAddrValue;
 	private readonly FloatValue _rawPosXField;
 	private readonly FloatValue _rawPosYField;
 	private readonly FloatValue _rawPosZField;
 	private readonly FloatValue _posXField;
 	private readonly FloatValue _posYField;
 	private readonly FloatValue _posZField;
-	private readonly TwoByteValue _idField;
 	private readonly TwoByteValue _currentStateField;
 	private readonly TwoByteValue _currentCommandField;
 	private readonly IntValue _activeObjectId;
@@ -202,6 +280,30 @@ public abstract class Entity
 	}
 
 	public int Id => _idField.GetValue();
+
+	public ObjectType Type
+	{
+		get
+		{
+			// In the game code, the type is a static enum value that is returned. Because of this,
+			// the game compiles the enum to an instruction that is ran whenever the GetType method
+			// of an object is called. This means that the entity type isn't a simple memory value 
+			// that can be read and so we need to trace the instruction to get the value. The 
+			// instruction set of an entity is always at offset 0x0, and the GetType instruction 
+			// is at 0x40 within the instruction set.
+			var instrAddress = _typeInstrAddrValue.GetValue();
+			var jmp = MainWindow.TargetApplicationMemory.ReadBytes($"{instrAddress:x8}", 5);
+			if (jmp == null || jmp[0] != 0xE9) // Expecting a `jmp` instruction to the `mov eax,<id>` instruction
+				return ObjectType.None;
+			var jmpAmt = BitConverter.ToInt32(jmp.Skip(1).Take(4).ToArray()) + 0x5; // 0x5 added for # jmp bytes
+
+			var mov = MainWindow.TargetApplicationMemory.ReadBytes($"{instrAddress + jmpAmt:x8}", 5);
+			if (mov == null || mov[0] != 0xB8) // Expecting a `mov eax,<int32>`. 0xB8 is op code for mov eax.
+				return ObjectType.None;
+			// we take the int32 value being assigned, this is the type enum being returned by the game
+			return (ObjectType)BitConverter.ToInt32(mov.Skip(1).Take(4).ToArray());
+		}
+	}
 
 	public State State => (State)_currentStateField.GetValue();
 
@@ -233,6 +335,7 @@ public abstract class Entity
 	protected Entity(IMemoryAddress baseAddress)
 	{
 		_idField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x1C));
+		_typeInstrAddrValue = new LongValue(new WrappedMemoryAddress(baseAddress, 0x0, 0x40));
 		_rawPosXField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x10));
 		_rawPosYField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x14));
 		_rawPosZField = new FloatValue(new WrappedMemoryAddress(baseAddress, 0x18));
@@ -259,7 +362,7 @@ public abstract class Entity
 	{
 		var diffX = Math.Abs(PositionX) - Math.Abs(x);
 		var diffY = Math.Abs(PositionY) - Math.Abs(y);
-		return (int) Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
+		return (int)Math.Sqrt(Math.Pow(diffX, 2) + Math.Pow(diffY, 2));
 	}
 
 	/// <summary>
@@ -393,6 +496,7 @@ public class TargetedEntity : Entity
 	private readonly IntValue _mpField;
 	private readonly IntValue _maxHpField;
 	private readonly IntValue _maxMpField;
+	private readonly TwoByteValue _idKeyField;
 
 	private readonly int _originalId;
 
@@ -400,6 +504,9 @@ public class TargetedEntity : Entity
 	public int MaxHp => _maxHpField.GetValue();
 	public int Mp => _mpField.GetValue();
 	public int MaxMp => _maxMpField.GetValue();
+
+	public string? Name => Type is ObjectType.Npc or ObjectType.Mob ? GameObjects.GetNpcName(Key) : null;
+	public int Key => _idKeyField.GetValue();
 
 	public TargetedEntity(int id) : this(id,
 		new MemoryAddress("trose.exe", StaticOffsets.EntityList, _createBaseOffset(id)))
@@ -413,6 +520,7 @@ public class TargetedEntity : Entity
 		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0xEC));
 		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0xF0));
 		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0xF4));
+		_idKeyField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x2C0));
 	}
 
 	public override bool IsValid()

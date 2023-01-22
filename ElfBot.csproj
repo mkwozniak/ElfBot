@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\elfbot-icon-large.png" />
+    <EmbeddedResource Include="Assets\npc_list.json" />
   </ItemGroup>
 
   <ItemGroup>

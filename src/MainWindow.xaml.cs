@@ -142,6 +142,23 @@ public partial class MainWindow
 		HookBtn.Content = "H O O K";
 		HookBtn.Background = (SolidColorBrush)new BrushConverter().ConvertFromString(" #36719E ")!;
 	}
+
+	private void Test(object sender, RoutedEventArgs e)
+	{
+		Trace.WriteLine("Test?");
+		
+
+		if (ApplicationContext.ActiveCharacter == null) return;
+		
+		foreach (var mob in GameObjects.GetVisibleMonsters())
+		{
+			Trace.WriteLine($"Can see monster {mob.Name} (Type: {mob.Key} ID: {mob.Id:x4})");
+			if (mob.IsAttacking)
+			{
+				Trace.WriteLine($"   Currently attacking object {mob.ActiveObjectId:x4} (S->C? {GameObjects.GetClientId(mob.ActiveObjectId):x4}) (C-S? {GameObjects.GetServerId(mob.ActiveObjectId):x4})");
+			}
+		}
+	}
 	
 	/// <summary> Loads a config to file </summary>
 	/// <param name="sender"></param>

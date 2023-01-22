@@ -116,11 +116,9 @@ public sealed class CombatOptions : PropertyNotifyingClass
 	}
 
 	public float DelayBeforeAttack { get; set; }
-	public int TargetCheckDelay { get; set; } = 150;
 	public int MaximumAttackDistance { get; set; } = 25;
 	public int BuffFrequency { get; set; } = 60;
 	public bool CameraYawWaveEnabled { get; set; } // moves camera in a circle
-	public bool PriorityTargetScan { get; set; }
 
 	public bool BuffsEnabled { get; set; }
 
@@ -134,8 +132,6 @@ public sealed class CombatOptions : PropertyNotifyingClass
 			NotifyPropertyChanged();
 		}
 	}
-
-	public int MaxPriorityChecks { get; set; } = 10;
 }
 
 public sealed class ClericOptions : PropertyNotifyingClass

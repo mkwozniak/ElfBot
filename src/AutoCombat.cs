@@ -18,8 +18,6 @@ public enum AutoCombatStatus
 	Summoning,
 	Buffing,
 	Targeting,
-	CheckTarget,
-	StartAttack,
 	Attacking,
 	Looting,
 }
@@ -39,7 +37,7 @@ public sealed class AutoCombat
 
 	private readonly DispatcherTimer _autoCombatTimer = new()
 	{
-		Interval = TimeSpan.FromMilliseconds(50)
+		Interval = TimeSpan.FromMilliseconds(250)
 	};
 
 	public AutoCombat(ApplicationContext context)
@@ -111,9 +109,7 @@ public sealed class AutoCombat
 				AutoCombatStatus.Starting => _start(),
 				AutoCombatStatus.Summoning => _summons(),
 				AutoCombatStatus.Buffing => _buff(),
-				AutoCombatStatus.Targeting => _selectNewTarget(),
-				AutoCombatStatus.CheckTarget => _checkTarget(),
-				AutoCombatStatus.StartAttack => _prepareAttacking(),
+				AutoCombatStatus.Targeting => _findTarget(),
 				AutoCombatStatus.Attacking => _attack(),
 				AutoCombatStatus.Looting => _loot(),
 				_ => true
@@ -152,19 +148,7 @@ public sealed class AutoCombat
 			return true;
 		}
 
-		if (CombatOptions.PriorityTargetScan
-		    && _context.MonsterTable.Any(x => x.Priority))
-		{
-			_state.PriorityCheckCount = 0;
-			_state.ScanningForPriority = true;
-		}
-
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
-		if (CombatOptions.TargetCheckDelay > 0)
-		{
-			_state.SetCooldown(TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
-		}
-
+		_state.ChangeStatus(AutoCombatStatus.Targeting);
 		return true;
 	}
 
@@ -174,7 +158,7 @@ public sealed class AutoCombat
 		{
 			_state.Reset();
 			if (CombatOptions.BuffsEnabled) _state.ChangeStatus(AutoCombatStatus.Buffing);
-			else _state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
+			else _state.ChangeStatus(AutoCombatStatus.Targeting);
 			return true;
 		}
 
@@ -184,7 +168,7 @@ public sealed class AutoCombat
 			Trace.WriteLine("No summon keys have been set");
 			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
 			return false;
 		}
 
@@ -213,21 +197,23 @@ public sealed class AutoCombat
 		return currentSummonMeter + summonCost <= maxSummons;
 	}
 
-	/// <summary>
-	/// Attempts to select a new target monster by pressing the TAB key.
-	/// </summary>
-	/// <returns>whether the tab key was pressed</returns>
-	private bool _selectNewTarget()
+	private bool _isAttackingPlayer(TargetedEntity entity)
 	{
-		_state.ResetTarget();
-		RoseProcess.SendKeypress(Messaging.VKeys.KEY_TAB);
-		Trace.WriteLine("Sent tab key press to simulator to attempt selecting a new target");
-		_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(250));
-		if (CombatOptions.TargetCheckDelay > 0)
-		{
-			_state.SetCooldown(TimeSpan.FromMilliseconds(CombatOptions.TargetCheckDelay));
-		}
-		return true;
+		return entity.IsAttacking && entity.ActiveObjectId == _context.ActiveCharacter!.Id;
+	}
+
+	private bool _isAttackingParty(TargetedEntity entity)
+	{
+		var party = _context.ActiveCharacter!.Party;
+		return party.IsInParty
+		       && entity.IsAttacking
+		       && party.PartyMembers.Any(pm => pm.Id == entity.ActiveObjectId);
+	}
+
+	private bool _isPriority(TargetedEntity entity)
+	{
+		var entry = _context.MonsterTable.SingleOrDefault(v => v.Name == entity.Name);
+		return entry is { Priority: true };
 	}
 
 	/// <summary>
@@ -236,89 +222,73 @@ public sealed class AutoCombat
 	/// monster table.
 	/// </summary>
 	/// <returns>true if attacking will start</returns>
-	private bool _checkTarget()
+	private bool _findTarget()
 	{
-		if (_state.IsExpired()) // if the mob selection has taken too long, attempt to find a new monster
+		var monsters = GameObjects.GetVisibleMonsters()
+			.Where(t => _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
+			.ToArray();
+
+		if (monsters.Length == 0)
 		{
-			Trace.WriteLine("Target selection expired");
-			_state.ResetTarget();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			Trace.WriteLine("No visible monsters available");
 			return false;
 		}
 
-		var name = _context.ActiveCharacter!.TargetName;
-		var id = _context.ActiveCharacter.LastTargetId;
-		Trace.WriteLine($"Target name is {name} with id {id}");
+		TargetedEntity? target = null;
 
-		// If a target is not yet found, we may need to wait more time
-		// for the addresses to update. Otherwise, we may time out and 
-		// attempt to select a new monster.
-		if (id == 0 || name == null) return false;
-
-		_state.CurrentTargetId = id;
-		_state.CurrentTarget = name;
-
-		var target = new TargetedEntity(id);
-		if (_context.ActiveCharacter.GetDistanceTo(target) > CombatOptions.MaximumAttackDistance)
+		// The first priority is a monster that is attacking the current player, or
+		// is attacking a party member.
+		foreach (var monster in monsters)
 		{
-			_state.ResetTarget();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			return false;
-		}
-
-		var monsterTableEntry = _context.MonsterTable.SingleOrDefault(v => v.Name == name.Trim());
-
-		if (CombatOptions.PriorityTargetScan && _state.ScanningForPriority)
-		{
-			if (_state.PriorityCheckCount > CombatOptions.MaxPriorityChecks)
+			// We don't care if the monster is in the mob list at this point,
+			// the goal is to not let the player die, so we omit the mob table.
+			if (_isAttackingPlayer(monster))
 			{
-				Trace.WriteLine("Priority target selection expired");
-				_state.ScanningForPriority = false;
-				_context.ActiveCharacter.ResetTargetMemory();
-				_state.ResetTarget();
-				_state.ChangeStatus(AutoCombatStatus.Targeting);
-				return false;
+				Trace.WriteLine("Found a monster attacking the current player");
+				target = monster;
+				break;
 			}
 
-			if (!monsterTableEntry?.Priority == true)
+			if (_isAttackingParty(monster))
 			{
-				Trace.WriteLine("Priority Monster name not in table");
-				_state.PriorityCheckCount++;
-				_state.ResetTarget();
-				_state.ChangeStatus(AutoCombatStatus.Targeting);
-				return false;
+				Trace.WriteLine("Found a monster attacking a party member");
+				target = monster;
 			}
 		}
 
-		if (monsterTableEntry == null)
+		// If we haven't yet found a monster lets reference the priority list
+		// and see if anything can be attacked - otherwise we opt for any monster.
+		if (target == null)
 		{
-			Trace.WriteLine("Monster name not in table");
-			_state.ResetTarget();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			return false;
+			var inMobTable = monsters.Where(m => _context.MonsterTable.Any(v => v.Name == m.Name)).ToArray();
+			if (inMobTable.Length == 0)
+			{
+				Trace.WriteLine("No monsters are in the monster table");
+				return false;
+			}
+			foreach (var entry in inMobTable)
+			{
+				target = entry;
+				if (_isPriority(entry)) break;
+			}
 		}
 
-		// A whitelisted monster was finally targeted, so we can 
-		// now move to start attacking it.
-		Trace.WriteLine("Found monster to attack");
-		_state.ChangeStatus(AutoCombatStatus.StartAttack);
+		// We check again and proceed if a mob has been found to start attacking
+		if (target == null)
+		{
+			Trace.WriteLine("Did not find a target");
+			return false;
+		}
+		Trace.WriteLine($"Found monster {target.Id:x4} ({target.Name}) to attack");
+		_context.ActiveCharacter!.LastTargetId = target.Id;
+		_state.CurrentTargetId = target.Id;
+		_state.CurrentTarget = target.Name; 
+		_state.ChangeStatus(AutoCombatStatus.Attacking);
 		if (CombatOptions.DelayBeforeAttack > 0)
 		{
 			_state.SetCooldown(TimeSpan.FromSeconds(CombatOptions.DelayBeforeAttack));
 		}
 
-		return true;
-	}
-
-	/// <summary>
-	/// Prepares the state to begin attacking a targeted monster.
-	/// </summary>
-	/// <returns>true if attacking will begin</returns>
-	private bool _prepareAttacking()
-	{
-		_state.StartingXp = _context.ActiveCharacter!.Xp;
-		_state.StartingLevel = _context.ActiveCharacter.Level;
-		_state.ChangeStatus(AutoCombatStatus.Attacking);
 		return true;
 	}
 
@@ -418,7 +388,7 @@ public sealed class AutoCombat
 			Trace.WriteLine("No buff keys have been set");
 			MainWindow.Logger.Warn("Tried to buff, but no keys are set");
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
 			return false;
 		}
 
@@ -440,7 +410,7 @@ public sealed class AutoCombat
 		{
 			_state.LastBuffTime = DateTime.Now;
 			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.CheckTarget, TimeSpan.FromMilliseconds(100));
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
 		}
 		else
 		{
@@ -464,9 +434,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		_autoCombat = autoCombat;
 	}
 
-	public bool ScanningForPriority { get; set; }
-	public int PriorityCheckCount { get; set; }
-
 	public AutoCombatStatus Status
 	{
 		get => _status;
@@ -480,10 +447,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 
 	private DateTime? StatusTimeout { get; set; }
 	private DateTime? Cooldown { get; set; }
-
-	public int StartingXp { get; set; }
-
-	public int StartingLevel { get; set; }
 
 	/// <summary>
 	/// Tracks the last time buffs were applied.
@@ -589,9 +552,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	{
 		ChangeStatus(AutoCombatStatus.Inactive);
 		ResetTarget();
-		StartingXp = 0;
-		StartingLevel = 0;
-		PriorityCheckCount = 0;
 		CurrentCastingBuff = 0;
 		Cooldown = null;
 		Trace.WriteLine("Auto-combat state was fully reset");
