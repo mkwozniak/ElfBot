@@ -69,12 +69,6 @@
             <ListBox Margin="10 -5" Width="143" BorderBrush="Black" Background="Black" Foreground="White"
                      VerticalAlignment="Bottom"
                                   HorizontalAlignment="Left" HorizontalContentAlignment="Center">
-                
-                <Button x:Name="TestBtn" Content="Test" 
-                        Foreground="White" Background="Black" 
-                        Height="20" Width="128" 
-                        HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                        Click="Test"/>
                 <Button x:Name="SaveConfigBtn" Content="Save Config" 
                         Foreground="White" Background="Black" 
                         Height="20" Width="128" 
