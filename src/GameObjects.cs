@@ -269,13 +269,13 @@ public abstract class Entity
 	private readonly ByteValue _runMode;
 	private readonly ByteValue _moveMode;
 
-	public float PositionX => IsOnMount ? _rawPosXField.GetValue() / 100f : _posXField.GetValue();
+	public float PositionX => _rawPosXField.GetValue() / 100f;
 
-	public float PositionY => IsOnMount ? _rawPosYField.GetValue() / 100f : _posYField.GetValue();
+	public float PositionY => _rawPosYField.GetValue() / 100f;
 
 	public float PositionZ
 	{
-		get => IsOnMount ? _rawPosZField.GetValue() / 100f : _posZField.GetValue();
+		get => _rawPosZField.GetValue() / 100f;
 		set => _posZField.WriteValue(value);
 	}
 
