@@ -126,10 +126,7 @@ public sealed class AutoCombat
 			}
 
 			Stop();
-			return;
 		}
-
-		Trace.WriteLine($"Auto-combat heartbeat completed (status: {_state.Status}");
 	}
 
 	private bool _start()
@@ -162,17 +159,8 @@ public sealed class AutoCombat
 			return true;
 		}
 
-		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
-		if (activeSummonKeys.Count == 0)
-		{
-			Trace.WriteLine("No summon keys have been set");
-			MainWindow.Logger.Warn("Tried to summon, but no keys are set");
-			_state.Reset();
-			_state.ChangeStatus(AutoCombatStatus.Targeting);
-			return false;
-		}
-
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
+		var activeSummonKeys = _context.Settings.FindKeybindings(KeybindAction.Summon);
 		var chosenKey = activeSummonKeys[0];
 		if (_state.isHotkeyOnCooldown(chosenKey))
 		{
@@ -190,6 +178,7 @@ public sealed class AutoCombat
 
 	private bool _canSummon()
 	{
+		if (_context.Settings.FindKeybindings(KeybindAction.Summon).Count == 0) return false;
 		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
 		Trace.Write($"Current summon meter {currentSummonMeter}");
 		var summonCost = _context.Settings.GeneralOptions.SummonCost;
@@ -225,7 +214,10 @@ public sealed class AutoCombat
 	private bool _findTarget()
 	{
 		var monsters = GameObjects.GetVisibleMonsters()
-			.Where(t => _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
+			.Where(t => t.IsValid() && !t.IsDead)
+			.Where(t => CombatOptions.MaximumAttackDistance == 0
+			            || _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
+			.OrderByDescending(t => _context.ActiveCharacter!.GetDistanceTo(t))
 			.ToArray();
 
 		if (monsters.Length == 0)
@@ -263,7 +255,7 @@ public sealed class AutoCombat
 			var inMobTable = monsters.Where(m => _context.MonsterTable.Any(v => v.Name == m.Name)).ToArray();
 			if (inMobTable.Length == 0)
 			{
-				Trace.WriteLine("No monsters are in the monster table");
+				Trace.WriteLine("No nearby monsters are in the monster table");
 				return false;
 			}
 			foreach (var entry in inMobTable)
@@ -341,7 +333,6 @@ public sealed class AutoCombat
 		var notOnCooldown = activeCombatKeys.FindAll(hk => !_state.isHotkeyOnCooldown(hk));
 		if (notOnCooldown.Count == 0)
 		{
-			Trace.WriteLine("Tried to attack but all attacks are on cooldown");
 			return false;
 		}
 
@@ -494,7 +485,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		Status = status;
 		StatusTimeout = duration == null ? null : DateTime.Now.Add(duration.Value);
 		Cooldown = null;
-		//Trace.WriteLine($"Auto-combat status changed to {status} (duration={duration})");
 	}
 
 	/// <summary>
@@ -504,7 +494,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// <param name="duration">cooldown duration</param>
 	public void SetCooldown(TimeSpan duration)
 	{
-		Trace.WriteLine($"Set cooldown of {duration} for current state ({Status})");
 		Cooldown = DateTime.Now.Add(duration);
 	}
 
@@ -554,7 +543,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 		ResetTarget();
 		CurrentCastingBuff = 0;
 		Cooldown = null;
-		Trace.WriteLine("Auto-combat state was fully reset");
 	}
 
 	/// <summary>
@@ -564,7 +552,6 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	{
 		_currentTarget = null;
 		_currentTargetId = 0;
-		Trace.WriteLine("Auto-combat target was reset");
 	}
 
 	/// <summary>
