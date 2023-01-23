@@ -328,7 +328,7 @@ public class UiData : PropertyNotifyingClass
 
 	#region Enablement information
 
-	public bool CanEnableAutoCombat => _canTimersBeEnabled() && _context.MonsterTable.Count > 0;
+	public bool CanEnableAutoCombat => _canTimersBeEnabled();
 
 	public bool CanEnableZHack => _canTimersBeEnabled();
 

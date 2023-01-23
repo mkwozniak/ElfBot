@@ -78,12 +78,10 @@ public sealed class AutoCombat
 	{
 		if (_context.ActiveCharacter == null
 		    || !CombatOptions.AutoCombatEnabled
-		    || _state.Status == AutoCombatStatus.Inactive
-		    || _context.MonsterTable.Count == 0)
+		    || _state.Status == AutoCombatStatus.Inactive)
 		{
 			Trace.WriteLine("Canceled auto-combat due to invalid state");
-			MainWindow.Logger.Warn("Auto-combat disabled, please ensure that ROSE is hooked and that " +
-			                       "a monster table is loaded");
+			MainWindow.Logger.Warn("Auto-combat disabled, please ensure that ROSE is hooked");
 			Stop();
 			return;
 		}
