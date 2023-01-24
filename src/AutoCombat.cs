@@ -325,6 +325,14 @@ public sealed class AutoCombat
 			return false;
 		}
 
+		if (_context.ActiveCharacter!.GetDistanceTo(_context.ActiveCharacter.TargetEntity)
+		    > CombatOptions.MaximumAttackDistance)
+		{
+			_state.Reset();
+			_state.ChangeStatus(AutoCombatStatus.Targeting);
+			return false;
+		}
+
 		var activeCombatKeys = _context.Settings.FindKeybindings(KeybindAction.Attack, KeybindAction.Skill);
 		if (activeCombatKeys.Count == 0)
 		{
