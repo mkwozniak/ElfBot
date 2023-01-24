@@ -225,6 +225,7 @@ public sealed class AutoCombat
 	private bool _findTarget()
 	{
 		var monsters = GameObjects.GetVisibleMonsters()
+			.Where(t => t.Name != "Bonfire" && t.Name != "Salamander Flame")
 			.Where(t => _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
 			.ToArray();
 

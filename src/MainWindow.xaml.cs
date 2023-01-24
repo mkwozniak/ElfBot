@@ -146,17 +146,12 @@ public partial class MainWindow
 	private void Test(object sender, RoutedEventArgs e)
 	{
 		Trace.WriteLine("Test?");
-		
 
-		if (ApplicationContext.ActiveCharacter == null) return;
-		
-		foreach (var mob in GameObjects.GetVisibleMonsters())
+		string err;
+		Inject.DoInject(RoseProcess.HookedProcess, "rose_packets.dll", out err);
+		if (err != "")
 		{
-			Trace.WriteLine($"Can see monster {mob.Name} (Type: {mob.Key} ID: {mob.Id:x4})");
-			if (mob.IsAttacking)
-			{
-				Trace.WriteLine($"   Currently attacking object {mob.ActiveObjectId:x4} (S->C? {GameObjects.GetClientId(mob.ActiveObjectId):x4}) (C-S? {GameObjects.GetServerId(mob.ActiveObjectId):x4})");
-			}
+			Trace.WriteLine($"ERrrrrrrrrrrrrrorr {err}");
 		}
 	}
 	
@@ -237,7 +232,7 @@ public partial class MainWindow
 
 		ApplicationContext.Settings = settings;
 	}
-	
+
     private void Interface_Tick(object? sender, EventArgs e)
     {
 	    if (LoggingOptionsPanel.Visibility == Visibility.Visible)
