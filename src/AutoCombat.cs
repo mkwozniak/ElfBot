@@ -213,6 +213,9 @@ public sealed class AutoCombat
 	{
 		var monsters = GameObjects.GetVisibleMonsters()
 			.Where(t => t.IsValid() && !t.IsDead)
+			.Where(t => t.Name != "Bonfire" 
+			            && t.Name != "Salamander Flame"
+			            && t.Name != "Mana Flame")
 			.Where(t => CombatOptions.MaximumAttackDistance == 0
 			            || _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
 			.OrderByDescending(t => _context.ActiveCharacter!.GetDistanceTo(t))
@@ -220,7 +223,6 @@ public sealed class AutoCombat
 
 		if (monsters.Length == 0)
 		{
-			Trace.WriteLine("No visible monsters available");
 			return false;
 		}
 
@@ -253,7 +255,6 @@ public sealed class AutoCombat
 			var inMobTable = monsters.Where(m => _context.MonsterTable.Any(v => v.Name == m.Name)).ToArray();
 			if (inMobTable.Length == 0)
 			{
-				Trace.WriteLine("No nearby monsters are in the monster table");
 				return false;
 			}
 			foreach (var entry in inMobTable)
