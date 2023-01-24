@@ -178,7 +178,6 @@ public sealed class AutoCombat
 	{
 		if (_context.Settings.FindKeybindings(KeybindAction.Summon).Count == 0) return false;
 		var currentSummonMeter = _context.ActiveCharacter!.ConsumedSummonsMeter;
-		Trace.Write($"Current summon meter {currentSummonMeter}");
 		var summonCost = _context.Settings.GeneralOptions.SummonCost;
 		var maxSummons = _context.Settings.GeneralOptions.MaxSummonCount;
 		return currentSummonMeter + summonCost <= maxSummons;
@@ -481,6 +480,7 @@ public sealed class AutoCombatState : PropertyNotifyingClass
 	/// <param name="duration">The maximum amount of time to stay in the new state for</param>
 	public void ChangeStatus(AutoCombatStatus status, TimeSpan? duration = null)
 	{
+		Trace.WriteLine($"Auto-combat status changed to {status}");
 		Status = status;
 		StatusTimeout = duration == null ? null : DateTime.Now.Add(duration.Value);
 		Cooldown = null;
