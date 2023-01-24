@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Windows.Threading;
 using ElfBot.Util;
@@ -32,6 +33,12 @@ public sealed class AutoCombat
 
 	private readonly ApplicationContext _context;
 	private readonly AutoCombatState _state;
+
+	private readonly ImmutableList<string> summonNames = ImmutableList.Create<string>(
+		"Campfire", "Bonfire", "Mana Flame", "Salamander Flame", "Twilight Flame",
+		"Phantom Sword", "Mercenary Warrior", "Mercenary Hunter", "Dread Knight",
+		"Terror Knight", "Hawk", "Beast"
+	);
 
 	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
 
@@ -212,9 +219,7 @@ public sealed class AutoCombat
 	{
 		var monsters = GameObjects.GetVisibleMonsters()
 			.Where(t => t.IsValid() && !t.IsDead)
-			.Where(t => t.Name != "Bonfire" 
-			            && t.Name != "Salamander Flame"
-			            && t.Name != "Mana Flame")
+			.Where(t => t.Name != null && !summonNames.Contains(t.Name))
 			.Where(t => CombatOptions.MaximumAttackDistance == 0
 			            || _context.ActiveCharacter!.GetDistanceTo(t) <= CombatOptions.MaximumAttackDistance)
 			.OrderByDescending(t => _context.ActiveCharacter!.GetDistanceTo(t))
