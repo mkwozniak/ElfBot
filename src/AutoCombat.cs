@@ -37,7 +37,7 @@ public sealed class AutoCombat
 	private readonly ImmutableList<string> summonNames = ImmutableList.Create<string>(
 		"Campfire", "Bonfire", "Mana Flame", "Salamander Flame", "Twilight Flame",
 		"Phantom Sword", "Mercenary Warrior", "Mercenary Hunter", "Dread Knight",
-		"Terror Knight", "Hawk", "Beast"
+		"Terror Knight", "Hawk", "Beast", "Fire Elemental", "Earth Elemental", "Wind Elemental", "Ice Elemental"
 	);
 
 	internal CombatOptions CombatOptions => _context.Settings.CombatOptions;
