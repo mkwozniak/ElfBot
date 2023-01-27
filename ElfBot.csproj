@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-	<DebugType>embedded</DebugType>
 	<Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   
@@ -24,9 +23,9 @@
     <PackageReference Include="Fody" Version="6.6.4">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Reloaded.Injector" Version="1.2.5" />
     <PackageReference Include="Memory.dll.x64" Version="1.2.24" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="Reloaded.Injector" Version="1.2.5" />
   </ItemGroup>
 
   <ItemGroup>
