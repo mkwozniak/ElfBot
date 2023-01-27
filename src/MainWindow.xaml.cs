@@ -10,6 +10,7 @@ using ElfBot.Util;
 using Memory;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Reloaded.Injector;
 
 namespace ElfBot;
 
@@ -147,11 +148,23 @@ public partial class MainWindow
 	{
 		Trace.WriteLine("Test?");
 
-		string err;
-		Inject.DoInject(RoseProcess.HookedProcess, "rose_packets.dll", out err);
-		if (err != "")
+		
+		var dialog = new OpenFileDialog
 		{
-			Trace.WriteLine($"ERrrrrrrrrrrrrrorr {err}");
+			Filter = "Dll files|*.dll"
+		};
+		if (dialog.ShowDialog() is not true) return;
+
+		
+		var injector = new Injector(RoseProcess.HookedProcess!);
+
+		if (injector.Inject(dialog.FileName) == 0)
+		{
+			Trace.WriteLine("injector returned 0");
+		}
+		else
+		{
+			Trace.WriteLine("success?");
 		}
 	}
 	
