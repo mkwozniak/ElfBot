@@ -11,19 +11,35 @@ trose.exe+132D73 - 48 8B 0D 46E4F800 - mov rcx,[trose.exe+10C11C0]
 trose.exe+1B0633 - 48 8B 0D 860BF100 - mov rcx,[trose.exe+10C11C0]
 ```
 
-### Entity List
-```
-trose.exe+21B20F - 48 8B 0D 7A8EEA00 - mov rcx,[trose.exe+10C4090]
-trose.exe+21B2B0 - 4C 8B 0D D98DEA00 - mov r9,[trose.exe+10C4090]
-trose.exe+E57D8  - 48 8B 05 B1E8FD00 - mov rax,[trose.exe+10C4090]
-trose.exe+21B5FE - 48 8B 0D 8B8AEA00 - mov rcx,[trose.exe+10C4090]
-trose.exe+E5930  - 48 8B 1D 59E7FD00 - mov rbx,[trose.exe+10C4090]
-```
-
 ### Current Target Entity
 ```
-trose.exe+1AEBEC - 48 8D 0D FD48F100 - lea rcx,[trose.exe+10C34F0]
-trose.exe+DB859  - 48 8D 05 907CFE00 - lea rax,[trose.exe+10C34F0]
+{
+// ORIGINAL CODE - INJECTION POINT: trose.exe+1AF7FC
+
+trose.exe+1AF7C6: 83 F8 09                    - cmp eax,09
+trose.exe+1AF7C9: 0F 85 AA 01 00 00           - jne trose.exe+1AF979
+trose.exe+1AF7CF: 8B 0D 4B A5 F3 00           - mov ecx,[trose.exe+10E9D20]
+trose.exe+1AF7D5: 65 48 8B 04 25 58 00 00 00  - mov rax,gs:[00000058]
+trose.exe+1AF7DE: 41 B8 24 01 00 00           - mov r8d,00000124
+trose.exe+1AF7E4: 48 8B 14 C8                 - mov rdx,[rax+rcx*8]
+trose.exe+1AF7E8: 41 8B 04 10                 - mov eax,[r8+rdx]
+trose.exe+1AF7EC: 39 05 22 8D F1 00           - cmp [trose.exe+10C8514],eax
+trose.exe+1AF7F2: 0F 8F A0 01 00 00           - jg trose.exe+1AF998
+trose.exe+1AF7F8: 0F BF 5F 1C                 - movsx ebx,word ptr [rdi+1C]
+// ---------- INJECTING HERE ----------
+trose.exe+1AF7FC: 48 8D 0D FD 8C F1 00        - lea rcx,[trose.exe+10C8500]
+// ---------- DONE INJECTING  ----------
+trose.exe+1AF803: E8 FE 67 E9 FF              - call trose.exe+46006
+trose.exe+1AF808: 3B C3                       - cmp eax,ebx
+trose.exe+1AF80A: 0F 94 C3                    - sete bl
+trose.exe+1AF80D: 48 8B 07                    - mov rax,[rdi]
+trose.exe+1AF810: 48 8B CF                    - mov rcx,rdi
+trose.exe+1AF813: FF 50 40                    - call qword ptr [rax+40]
+trose.exe+1AF816: 83 E8 06                    - sub eax,06
+trose.exe+1AF819: 0F 84 24 01 00 00           - je trose.exe+1AF943
+trose.exe+1AF81F: 83 E8 01                    - sub eax,01
+trose.exe+1AF822: 74 72                       - je trose.exe+1AF896
+}
 ```
 
 ### Party
@@ -77,7 +93,7 @@ trose.exe+237E1C: 41 56                 - push r14
 trose.exe+237E1E: 48 83 EC 50           - sub rsp,50
 trose.exe+237E22: 4C 8B F1              - mov r14,rcx
 trose.exe+237E25: 0F B7 41 08           - movzx eax,word ptr [rcx+08]
-trose.exe+237E29: 48 8B 0D 60 C2 E8 00  - mov rcx,[trose.exe+10C4090]
+trose.exe+237E29: 48 8B 0D 60 C2 E8 00  - mov rcx,[trose.exe+10C4090] // Entity map address
 // ---------- INJECTING HERE ----------
 trose.exe+237E30: 0F BF 54 41 0C        - movsx edx,word ptr [rcx+rax*2+0C]
 // ---------- DONE INJECTING  ----------
@@ -107,7 +123,7 @@ trose.exe+21B5EF: 45 84 E4                 - test r12l,r12l
 trose.exe+21B5F2: 75 57                    - jne trose.exe+21B64B
 trose.exe+21B5F4: E8 4F 06 E0 FF           - call trose.exe+1BC48
 trose.exe+21B5F9: 48 0F BF 56 1C           - movsx rdx,word ptr [rsi+1C]
-trose.exe+21B5FE: 48 8B 0D 8B 8A EA 00     - mov rcx,[trose.exe+10C4090]
+trose.exe+21B5FE: 48 8B 0D 8B 8A EA 00     - mov rcx,[trose.exe+10C4090] // Entity map address
 // ---------- INJECTING HERE ----------
 trose.exe+21B605: 0F B7 94 51 0A 00 02 00  - movzx edx,word ptr [rcx+rdx*2+0002000A]
 // ---------- DONE INJECTING  ----------

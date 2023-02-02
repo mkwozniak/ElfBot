@@ -355,7 +355,7 @@ public class UiData : PropertyNotifyingClass
 	public double PositionX => Math.Round(_context.ActiveCharacter?.PositionX ?? 0f, 2);
 	public double PositionY => Math.Round(_context.ActiveCharacter?.PositionY ?? 0f, 2);
 	public double PositionZ => Math.Round(_context.ActiveCharacter?.PositionZ ?? 0f, 2);
-	public int MapId => _context.ActiveCharacter?.MapId ?? -1;
+	public int MapId => -1;
 	public float CameraZoom => _context.ActiveCharacter?.Camera.Zoom ?? 0f;
 	public float CameraPitch => _context.ActiveCharacter?.Camera.Pitch ?? 0f;
 	public float CameraYaw => _context.ActiveCharacter?.Camera.Yaw ?? 0f;

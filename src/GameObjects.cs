@@ -13,16 +13,15 @@ namespace ElfBot;
 internal static class StaticOffsets
 {
 	public const string ApplicationName = "trose.exe";
-	
-	public const int PlayerObject       = 0x10C1190;  // type: pointer
-	public const int PartyBase          = 0x10C7090;  // type: n/a, party information is relative to this address
-	public const int ClientCameraObject = 0x10BFB88;  // type: pointer
-	public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
-	public const int CurrentTarget      = 0x10C34F0;  // type: pointer
-	public const int CurrentTargetName  = 0x10DBC30;  // type: pointer, name at 0x8
-	public const int EntityList         = 0x10C4090;  // type: ptr/list
-	public const int NoClipFunction     = 0xB5430;    // type: function, requires kernel32.dll
-	public const int ObjectMappings     = 0x10C4090;  // type: pointer
+	public const int PlayerObject       = 0x10C61A0;  // type: pointer
+	public const int PartyBase          = 0x10CC0D0;  // type: n/a, party information is relative to this address
+	public const int ClientCameraObject = 0x10C4B98;  // type: pointer
+	//public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
+	public const int CurrentTarget      = 0x10C8500;  // type: pointer // trose.exe+1AF7FC
+	public const int CurrentTargetName  = 0x10E0C70;  // type: string
+	public const int EntityList         = 0x10C90A0;  // type: ptr/list
+	public const int NoClipFunction     = 0xB55C0;    // type: function, requires kernel32.dll
+	public const int ObjectMappings     = 0x10C90A0;  // type: pointer
 }
 // @formatter:on
 
@@ -396,7 +395,7 @@ public class Character : Entity
 	private readonly IntValue _maxHpField;
 	private readonly IntValue _mpField;
 	private readonly IntValue _maxMpField;
-	private readonly IntValue _mapIdField;
+	//private readonly IntValue _mapIdField;
 	private readonly IntValue _targetIdField;
 	private readonly StringValue _targetNameField;
 	private readonly IntValue _consumedSummonsMeterField;
@@ -411,7 +410,7 @@ public class Character : Entity
 	public int MaxHp => _maxHpField.GetValue();
 	public int Mp => _mpField.GetValue();
 	public int MaxMp => _maxMpField.GetValue();
-	public int MapId => _mapIdField.GetValue();
+	//public int MapId => _mapIdField.GetValue();
 
 	public Camera Camera { get; } = new();
 
@@ -469,7 +468,7 @@ public class Character : Entity
 		_mpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AEC));
 		_maxHpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4620));
 		_maxMpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x4624));
-		_mapIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentMapId));
+		//_mapIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentMapId));
 		_targetIdField = new IntValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTarget, 0x08));
 		_targetNameField = new StringValue(new MemoryAddress("trose.exe", StaticOffsets.CurrentTargetName));
 		_consumedSummonsMeterField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x57C0));
