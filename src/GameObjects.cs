@@ -464,7 +464,7 @@ public class Character : Entity
 	internal Character(IMemoryAddress baseAddress) : base(baseAddress)
 	{
 		_nameField = new StringValue(new WrappedMemoryAddress(baseAddress, 0xB10));
-		_levelField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x3AD8));
+		_levelField = new TwoByteValue(new WrappedMemoryAddress(baseAddress, 0x3AF4));
 		_xpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AF0));
 		_zulyField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3D58));
 		_hpField = new IntValue(new WrappedMemoryAddress(baseAddress, 0x3AE8));
