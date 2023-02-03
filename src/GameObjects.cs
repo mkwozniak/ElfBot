@@ -14,7 +14,7 @@ internal static class StaticOffsets
 {
 	public const string ApplicationName = "trose.exe";
 	public const int PlayerObject       = 0x10C61A0;  // type: pointer
-	public const int PartyBase          = 0x10CC0D0;  // type: n/a, party information is relative to this address
+	public const int PartyBase          = 0x10CC0B0;  // type: n/a, party information is relative to this address
 	public const int ClientCameraObject = 0x10C4B98;  // type: pointer
 	//public const int CurrentMapId       = 0x10C7BF8;  // type: 4 bytes/int
 	public const int CurrentTarget      = 0x10C8500;  // type: pointer // trose.exe+1AF7FC
@@ -24,6 +24,9 @@ internal static class StaticOffsets
 	public const int ObjectMappings     = 0x10C90A0;  // type: pointer
 }
 // @formatter:on
+
+//00007FF6F45BC0B0
+// 7ff6f34f0000
 
 public static class GameObjects
 {
@@ -216,7 +219,7 @@ public class Party
 	{
 		_inPartyField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x19));
 		_memberCountField =
-			new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x38));
+			new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x40));
 		_levelField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x1C));
 		_expField = new IntValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x20));
 		_optionsField = new ByteValue(new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x18));

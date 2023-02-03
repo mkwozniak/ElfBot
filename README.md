@@ -44,8 +44,33 @@ trose.exe+1AF822: 74 72                       - je trose.exe+1AF896
 
 ### Party
 ```
-trose.exe+166B19 - 48 8D 05 7005F600     - lea rax,[trose.exe+10C7090]
-trose.exe+166B3B - 48 8D 1D 4E05F600     - lea rbx,[trose.exe+10C7090]
+{
+// ORIGINAL CODE - INJECTION POINT: trose.exe+1667E9
+
+trose.exe+1667BF: CC                          - int 3 
+trose.exe+1667C0: 40 53                       - push rbx
+trose.exe+1667C2: 48 83 EC 20                 - sub rsp,20
+trose.exe+1667C6: 8B 0D 54 35 F8 00           - mov ecx,[trose.exe+10E9D20]
+trose.exe+1667CC: 65 48 8B 04 25 58 00 00 00  - mov rax,gs:[00000058]
+trose.exe+1667D5: BA 24 01 00 00              - mov edx,00000124
+trose.exe+1667DA: 48 8B 0C C8                 - mov rcx,[rax+rcx*8]
+trose.exe+1667DE: 8B 04 0A                    - mov eax,[rdx+rcx]
+trose.exe+1667E1: 39 05 95 59 F6 00           - cmp [trose.exe+10CC17C],eax
+trose.exe+1667E7: 7F 0D                       - jg trose.exe+1667F6
+// ---------- INJECTING HERE ----------
+trose.exe+1667E9: 48 8D 05 C0 58 F6 00        - lea rax,[trose.exe+10CC0B0]
+// ---------- DONE INJECTING  ----------
+trose.exe+1667F0: 48 83 C4 20                 - add rsp,20
+trose.exe+1667F4: 5B                          - pop rbx
+trose.exe+1667F5: C3                          - ret 
+trose.exe+1667F6: 48 8D 0D 7F 59 F6 00        - lea rcx,[trose.exe+10CC17C]
+trose.exe+1667FD: E8 49 FE ED FF              - call trose.exe+4664B
+trose.exe+166802: 83 3D 73 59 F6 00 FF        - cmp dword ptr [trose.exe+10CC17C],-01
+trose.exe+166809: 75 DE                       - jne trose.exe+1667E9
+trose.exe+16680B: 48 8D 1D 9E 58 F6 00        - lea rbx,[trose.exe+10CC0B0]
+trose.exe+166812: 48 8B CB                    - mov rcx,rbx
+trose.exe+166815: E8 82 7A EE FF              - call trose.exe+4E29C
+}
 ```
 
 ### NoClip
