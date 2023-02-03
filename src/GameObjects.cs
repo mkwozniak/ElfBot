@@ -243,7 +243,7 @@ public class PartyMember
 
 	internal PartyMember(int index)
 	{
-		var partyMemberListAddress = new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x30);
+		var partyMemberListAddress = new MemoryAddress(StaticOffsets.ApplicationName, StaticOffsets.PartyBase + 0x38);
 		var memberBase = new WrappedMemoryAddress(partyMemberListAddress, new int[index + 1]);
 		_serverIdField = new TwoByteValue(new WrappedMemoryAddress(memberBase, 0x14));
 		_nameField = new StringValue(new WrappedMemoryAddress(memberBase, 0x38));
