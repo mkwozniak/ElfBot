@@ -96,7 +96,7 @@
                                        DockPanel.Dock="Right"
                                        Width="40" Margin="0 -5 0 0"
                                        Foreground="White" />
-                                <Slider Maximum="100" Name="MaxSummonMeter"
+                                <Slider Maximum="105" Name="MaxSummonMeter"
                                         Value="{Binding Path=Settings.GeneralOptions.MaxSummonCount, Source={StaticResource ApplicationContext}}"
                                         IsSnapToTickEnabled="True" TickFrequency="5"
                                         Width="100" />
