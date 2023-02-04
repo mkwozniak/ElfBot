@@ -176,7 +176,7 @@ public sealed class AutoCleric
 
 		foreach (var member in partyMembers)
 		{
-			if (!member.IsVisible) continue;
+			if (!member.IsVisible || member.Name == Context.ActiveCharacter.Name) continue;
 			var player = member.Entity!;
 			var dist = Context.ActiveCharacter.GetDistanceTo(player);
 
@@ -208,6 +208,7 @@ public sealed class AutoCleric
 		}
 
 		var mostDamaged = partyMembers
+			.Where(m => m.Name != Context.ActiveCharacter.Name)
 			.Where(m => Context.ActiveCharacter.GetDistanceTo(m.Entity!) < MaxTargetDistance)
 			.Where(m => m.Entity!.Hp < m.Entity.MaxHp)
 			.MinBy(m => m.Entity!.Hp / (float)m.Entity.MaxHp * 100);
@@ -272,12 +273,18 @@ public sealed class AutoCleric
 		}
 
 		// Select a random slot to attack/skill from and then go on cooldown for a little bit.
-		var chosenKey = activeSummonKeys[0];
+		var chosenKey = activeSummonKeys[_state.CurrentCastingSummon];
 		if (_state.isHotkeyOnCooldown(chosenKey))
 		{
 			Trace.WriteLine("Attempted summon was on cooldown");
 			MainWindow.Logger.Warn("Attempted summon was on cooldown");
 			return false;
+		}
+
+		_state.CurrentCastingSummon++;
+		if (_state.CurrentCastingSummon >= activeSummonKeys.Count)
+		{
+			_state.CurrentCastingSummon = 0;
 		}
 
 		RoseProcess.SendKeypress(chosenKey.KeyCode, chosenKey.IsShift);
@@ -380,6 +387,8 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	/// buff keybind is ran only 1 time.
 	/// </summary>
 	public int CurrentCastingBuff { get; set; }
+	
+	public int CurrentCastingSummon { get; set; }
 
 	/// <summary>
 	/// Changes the current status to a new one, optionally
@@ -449,6 +458,7 @@ public sealed class AutoClericState : PropertyNotifyingClass
 	{
 		ChangeStatus(AutoClericStatus.Inactive);
 		CurrentCastingBuff = 0;
+		CurrentCastingSummon = 0;
 		Cooldown = null;
 	}
 
