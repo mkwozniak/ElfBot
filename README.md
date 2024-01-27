@@ -1,4 +1,5 @@
 ﻿ # ElfBot
+ Currently discontinued and not in development anymore. 
  ElfBot is a client to enable automation of actions in ROSE Online.
  
 ## AOBs
